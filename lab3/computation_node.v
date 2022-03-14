@@ -11,6 +11,6 @@ module signed_mult (out, a, b);
 	wire 	signed	[53:0]	mult_out;
 	assign mult_out = a * b;
 	// select bits for 1.17 fixed point
-	assign out = {{mult_out[]}, mult_out[45:23]};
+	assign out = {{mult_out[53], mult_out[48:46]}, mult_out[45:23]};
 endmodule
 //////////////////////////////////////////////////
