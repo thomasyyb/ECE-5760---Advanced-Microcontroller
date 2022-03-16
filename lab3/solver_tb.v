@@ -18,7 +18,6 @@ module solver_tb();
 		#5
 		clk_50  = !clk_50;
 	end
-
     initial begin
         ci = 0;
         cr = 0;
@@ -28,7 +27,7 @@ module solver_tb();
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
-
+      
         #15000;
         ci = 1 << 23;
         cr = 1 << 23; // this is 1

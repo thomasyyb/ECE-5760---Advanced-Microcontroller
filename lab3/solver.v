@@ -22,6 +22,7 @@ module solver (
 
     wire signed [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
 
+    wire [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
     next_zr _next_zr(
         .zr_sqr(zr_sqr_reg), 
         .zi_sqr(zi_sqr_reg),
@@ -91,7 +92,6 @@ module solver (
     //======================================================================
 
     always @ (posedge clk) begin
-  
         //--------------------------------------------------------------------
         // STATE: STATE_INIT
         //--------------------------------------------------------------------
