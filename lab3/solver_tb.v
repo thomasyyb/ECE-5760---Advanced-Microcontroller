@@ -1,3 +1,4 @@
+`timescale 1ns/1ns
 module solver_tb();
 
     reg clk_50, reset;
@@ -14,7 +15,7 @@ module solver_tb();
 
     //Toggle the clocks
 	always begin
-		#10
+		#5
 		clk_50  = !clk_50;
 	end
 
@@ -37,7 +38,7 @@ module solver_tb();
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
-        #1500;
+        #15000;
 
         ci = 1 << 23;
         cr = 1 << 23; // this is 1
@@ -46,7 +47,7 @@ module solver_tb();
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
-        #1500;
+        #15000;
 
         ci = 1 << 22; // 0.5
         cr = 1 << 22;
