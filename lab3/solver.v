@@ -61,6 +61,7 @@ module solver (
     // Only two states/one cycle per iterations for three multipliers
     // STATE_INIT = 2'h0
     // STATE_ONE = 2'h1
+    // STATE_TWO = 2'h2
     
     reg [2:0] state_reg; 
 
