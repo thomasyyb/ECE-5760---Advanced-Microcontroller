@@ -15,20 +15,9 @@ module solver_tb();
 
     //Toggle the clocks
 	always begin
-		#10
+		#5
 		clk_50  = !clk_50;
 	end
-
-    //Intialize and drive signals
-	// initial begin
-	// 	reset  = 1'b0;
-	// 	#10 
-	// 	reset  = 1'b1;
-	// 	#30
-	// 	reset  = 1'b0;
-	// end
-
-
     initial begin
         ci = 0;
         cr = 0;
@@ -38,25 +27,33 @@ module solver_tb();
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
-        // #1500;
+      
+        #15000;
+        ci = 1 << 23;
+        cr = 1 << 23; // this is 1
+        reset  = 1'b0;
+		#10 
+		reset  = 1'b1;
+		#30
+		reset  = 1'b0;
 
-        // ci = 1 << 23;
-        // cr = 1 << 23; // this is 1
-        // reset  = 1'b0;
-		// #10 
-		// reset  = 1'b1;
-		// #30
-		// reset  = 1'b0;
-        // #1500;
+        #15000;
+        ci = 1 << 22; // 0.5
+        cr = 1 << 22;
+        reset  = 1'b0;
+		#10 
+		reset  = 1'b1;
+		#30
+		reset  = 1'b0;
 
-        // ci = 1 << 22; // 0.5
-        // cr = 1 << 22;
-        // reset  = 1'b0;
-		// #10 
-		// reset  = 1'b1;
-		// #30
-		// reset  = 1'b0;
-        // #1500;
+        #15000;
+        ci = 0; // 0.5
+        cr = 3 << 20;
+        reset  = 1'b0;
+		#10 
+		reset  = 1'b1;
+		#30
+		reset  = 1'b0;
     end
 
 
