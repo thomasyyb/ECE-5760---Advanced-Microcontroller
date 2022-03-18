@@ -1,6 +1,5 @@
 
 module solver (
-
     input                clk, reset,
     input signed [26:0]  ci,
     input signed [26:0]  cr,
@@ -15,13 +14,20 @@ module solver (
     // Compute modules
 
     reg signed [26:0]  zr_reg, zi_reg, zr_sqr_reg, zi_sqr_reg;
-    reg                diverge_reg;
     reg         [12:0] counter_reg;
 
+<<<<<<< HEAD
     wire signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_reg_in, zi_sqr_reg_in;
     wire signed [26:0] z_magitude_sqr;
     wire                diverge_reg_in, done_reg_in;
     wire        [12:0] counter_reg_in;
+=======
+    wire signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_in, zi_sqr_in;
+    wire signed [26:0] z_magitude_sqr;
+    wire               diverge_in, done_in, diverge;
+
+    wire signed [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
+>>>>>>> main
 
     wire [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
     next_zr _next_zr(
@@ -40,16 +46,17 @@ module solver (
 
     signed_mult _zr_sqr_mult(
         .out(zr_sqr_wire),
-        .a(zr_reg_in),
-        .b(zr_reg_in)
-    );
+        .a(zr_next_wire),
+        .b(zr_next_wire)
+    );    
 
     signed_mult _zi_sqr_mult(
         .out(zi_sqr_wire),
-        .a(zi_reg_in),
-        .b(zi_reg_in)
+        .a(zi_next_wire),
+        .b(zi_next_wire)
     );
 
+<<<<<<< HEAD
     // always @(zr_next_wire or zi_next_wire or zr_sqr_wire or zi_sqr_wire) begin
     //     zr_reg_in =  zr_next_wire;
     //     zi_reg_in = zi_next_wire;
@@ -58,18 +65,13 @@ module solver (
     // end
 
     assign z_magitude_sqr = zr_sqr_reg_in + zi_sqr_reg_in;
+=======
+    assign z_magitude_sqr = zr_sqr_wire + zi_sqr_wire;
+>>>>>>> main
 
     assign out_iter = counter_reg;
 
-    always @ (posedge clk) begin
-        zr_reg <= zr_reg_in;
-        zi_reg <= zi_reg_in;
-        zr_sqr_reg <= zr_sqr_reg_in;
-        zi_sqr_reg <= zi_sqr_reg_in;
-        diverge_reg <= diverge_reg_in;
-        counter_reg <= counter_reg_in;
-        done_reg <= done_reg_in;
-    end
+    assign diverge = ( zr_next_wire >= 27'sh1000000 || zi_next_wire >= 27'sh1000000 || z_magitude_sqr >=  27'sh2000000 );
 
     //======================================================================
     // State Update
@@ -92,7 +94,7 @@ module solver (
 
                 2'h0   : state_reg <= 2'h1;
                 2'h1   : 
-                    if (counter_reg > in_max_iter || diverge_reg) 
+                    if ( counter_reg >= (in_max_iter - 1) || diverge) 
                         state_reg <= 2'h2;
                     else 
                         state_reg <= 2'h1;
@@ -113,13 +115,12 @@ module solver (
         //--------------------------------------------------------------------
 
         if ( state_reg == 2'h0 ) begin
-            zr_reg_in       = 0; 
-            zi_reg_in       = 0;
-            zr_sqr_reg_in   = 0; 
-            zi_sqr_reg_in   = 0;
-            counter_reg_in  = 0; 
-            diverge_reg_in = 0; 
-            done_reg_in     = 0; 
+            zr_reg       <= 0; 
+            zi_reg       <= 0;
+            zr_sqr_reg   <= 0; 
+            zi_sqr_reg   <= 0;
+            counter_reg  <= 0;
+            done_reg     <= 0; 
         end
 
         //--------------------------------------------------------------------
@@ -128,26 +129,32 @@ module solver (
 
         else if ( state_reg == 2'h1 ) begin
             // zr_reg_in ... are directly outputs of multipliers so no assignment here
-            counter_reg_in = counter_reg + 1;
-            done_reg_in    = 0; 
-            diverge_reg_in = ( zr_reg_in >= 2 || zi_reg_in >=2 || z_magitude_sqr >= 4);
+            counter_reg <= counter_reg + 1;
+            done_reg    <= 0; 
+            zr_reg      <= zr_next_wire;
+            zi_reg      <= zi_next_wire;
+            zr_sqr_reg  <= zr_sqr_wire; 
+            zi_sqr_reg  <= zi_sqr_wire;
         end
 
         //--------------------------------------------------------------------
-        // STATE: STATE_ONE
+        // STATE: STATE_TWO
         //--------------------------------------------------------------------
 
         else if ( state_reg == 2'h2 ) begin 
-            zr_reg_in       = 0; 
-            zi_reg_in       = 0;
-            zr_sqr_reg_in       = 0; 
-            zi_sqr_reg_in       = 0;
-            counter_reg_in      = counter_reg;
-            diverge_reg_in      = diverge_reg; 
-            done_reg_in         = 1;
+            zr_reg       <= 0; 
+            zi_reg       <= 0;
+            zr_sqr_reg   <= 0; 
+            zi_sqr_reg   <= 0;
+            counter_reg  <= counter_reg;
+            done_reg     <= 1;
         end
 
+<<<<<<< HEAD
     end
+=======
+    end // end of state machine 
+>>>>>>> main
 endmodule 
 
 module next_zr (

@@ -7,6 +7,7 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
+<<<<<<< HEAD
 Z0 dC:/Users/brian/OneDrive/Documents/Cornell/advancedmicrocontrollers/lab3
 vnext_zi
 Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
@@ -117,3 +118,106 @@ R9
 !s90 -reportprogress|300|./solver_tb.v|
 !i113 1
 R12
+=======
+dC:/altera/15.0
+vnext_zi
+Z0 !s110 1647470335
+!i10b 1
+!s100 NWE8EYi7J3nGgiN?99bZR1
+ISfa5kJ=De]k:UBb8JmW9A1
+Z1 V`JN@9S9cnhjKRR_L]QIcM3
+Z2 dC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3
+Z3 w1647469963
+Z4 8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v
+Z5 FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v
+L0 148
+Z6 OV;L;10.3d;59
+r1
+!s85 0
+31
+Z7 !s108 1647470335.747000
+Z8 !s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v|
+Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v|
+!i113 1
+Z10 o-work work
+vnext_zr
+R0
+!i10b 1
+!s100 EQ[:VeR?Ag=dPJnn>O@MH0
+I1ZfOGKG86Gl@ej;VRK4PY1
+R1
+R2
+R3
+R4
+R5
+L0 138
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vsigned_mult
+R0
+!i10b 1
+!s100 D4;R]6@7o]e4c8OXNDaSY2
+Ib;2MbYm65HdS_:O>U8he13
+R1
+R2
+w1647280316
+8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
+FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
+L0 6
+R6
+r1
+!s85 0
+31
+!s108 1647470335.589000
+!s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
+!i113 1
+R10
+vsolver
+R0
+!i10b 1
+!s100 J87ZiOeZ^>;=EGiJX^g760
+I54Sln>0hlZ?VLXjJPoUDX1
+R1
+R2
+R3
+R4
+R5
+L0 2
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+vsolver_tb
+R0
+!i10b 1
+!s100 GJo2Lk8IR@U14h]<PJaLa3
+IdNMb;4PB`Rz0j=VTf0nAD1
+R1
+R2
+w1647470328
+8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
+FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
+L0 2
+R6
+r1
+!s85 0
+31
+!s108 1647470335.925000
+!s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
+!i113 1
+R10
+>>>>>>> main
