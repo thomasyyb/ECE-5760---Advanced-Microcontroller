@@ -1,0 +1,97 @@
+# Reading C:/intelFPGA_lite/17.0/modelsim_ase/tcl/vsim/pref.tcl
+do runlab.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 13:57:53 on Mar 18,2022
+# vlog -reportprogress 300 ./solver.sv 
+# -- Compiling module solver
+# -- Compiling module next_zr
+# -- Compiling module next_zi
+# 
+# Top level modules:
+# 	solver
+# End time: 13:57:53 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 13:57:53 on Mar 18,2022
+# vlog -reportprogress 300 ./solver_tb.v 
+# -- Compiling module solver_tb
+# 
+# Top level modules:
+# 	solver_tb
+# End time: 13:57:53 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 13:57:53 on Mar 18,2022
+# vlog -reportprogress 300 ./computation_node.v 
+# -- Compiling module signed_mult
+# 
+# Top level modules:
+# 	signed_mult
+# End time: 13:57:53 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -voptargs=""+acc"" -t 1ps -lib work solver_tb 
+# Start time: 13:57:54 on Mar 18,2022
+# Loading work.solver_tb
+# Loading sv_std.std
+# Loading work.solver
+# Loading work.next_zr
+# Loading work.next_zi
+# Loading work.signed_mult
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: brian  Hostname: BRIAN-HSU-SURFA  ProcessID: 6104
+#           Attempting to use alternate WLF file "./wlftd9x5ta".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlftd9x5ta
+# .main_pane.wave.interior.cs.body.pw.wf
+# .main_pane.structure.interior.cs.body.struct
+# .main_pane.objects.interior.cs.body.tree
+do runlab.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 14:06:27 on Mar 18,2022
+# vlog -reportprogress 300 ./solver.sv 
+# -- Compiling module solver
+# -- Compiling module next_zr
+# -- Compiling module next_zi
+# 
+# Top level modules:
+# 	solver
+# End time: 14:06:27 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 14:06:27 on Mar 18,2022
+# vlog -reportprogress 300 ./solver_tb.v 
+# -- Compiling module solver_tb
+# 
+# Top level modules:
+# 	solver_tb
+# End time: 14:06:27 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+# Start time: 14:06:27 on Mar 18,2022
+# vlog -reportprogress 300 ./computation_node.v 
+# -- Compiling module signed_mult
+# 
+# Top level modules:
+# 	signed_mult
+# End time: 14:06:27 on Mar 18,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# End time: 14:06:29 on Mar 18,2022, Elapsed time: 0:08:35
+# Errors: 0, Warnings: 2
+# vsim -voptargs=""+acc"" -t 1ps -lib work solver_tb 
+# Start time: 14:06:29 on Mar 18,2022
+# Loading work.solver_tb
+# Loading sv_std.std
+# Loading work.solver
+# Loading work.next_zr
+# Loading work.next_zi
+# Loading work.signed_mult
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: brian  Hostname: BRIAN-HSU-SURFA  ProcessID: 6104
+#           Attempting to use alternate WLF file "./wlft1r87zg".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlft1r87zg
+# .main_pane.wave.interior.cs.body.pw.wf
+# .main_pane.structure.interior.cs.body.struct
+# .main_pane.objects.interior.cs.body.tree

@@ -16,11 +16,18 @@ module solver (
     reg signed [26:0]  zr_reg, zi_reg, zr_sqr_reg, zi_sqr_reg;
     reg         [12:0] counter_reg;
 
+<<<<<<< HEAD
+    wire signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_reg_in, zi_sqr_reg_in;
+    wire signed [26:0] z_magitude_sqr;
+    wire                diverge_reg_in, done_reg_in;
+    wire        [12:0] counter_reg_in;
+=======
     wire signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_in, zi_sqr_in;
     wire signed [26:0] z_magitude_sqr;
     wire               diverge_in, done_in, diverge;
 
     wire signed [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
+>>>>>>> main
 
     wire [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
     next_zr _next_zr(
@@ -49,7 +56,18 @@ module solver (
         .b(zi_next_wire)
     );
 
+<<<<<<< HEAD
+    // always @(zr_next_wire or zi_next_wire or zr_sqr_wire or zi_sqr_wire) begin
+    //     zr_reg_in =  zr_next_wire;
+    //     zi_reg_in = zi_next_wire;
+    //     zr_sqr_reg_in = zr_sqr_wire;
+    //     zi_sqr_reg_in = zi_sqr_wire;
+    // end
+
+    assign z_magitude_sqr = zr_sqr_reg_in + zi_sqr_reg_in;
+=======
     assign z_magitude_sqr = zr_sqr_wire + zi_sqr_wire;
+>>>>>>> main
 
     assign out_iter = counter_reg;
 
@@ -132,7 +150,11 @@ module solver (
             done_reg     <= 1;
         end
 
+<<<<<<< HEAD
+    end
+=======
     end // end of state machine 
+>>>>>>> main
 endmodule 
 
 module next_zr (

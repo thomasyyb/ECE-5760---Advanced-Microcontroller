@@ -19,14 +19,27 @@ module solver_tb();
 		clk_50  = !clk_50;
 	end
     initial begin
-        ci = 0;
-        cr = 0;
         in_max_iter = 13'd1000;
+        // ci = 0;
+        // cr = 0;
+        // reset  = 1'b0;
+		// #10 
+		// reset  = 1'b1;
+		// #30
+		// reset  = 1'b0;
+        // #15000;
+
+        ci = 1 << 23;
+        cr = 1 << 23; // this is 1
         reset  = 1'b0;
 		#10 
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
+<<<<<<< HEAD
+        #1500;
+
+=======
       
         #15000;
         ci = 1 << 23;
@@ -38,6 +51,7 @@ module solver_tb();
 		reset  = 1'b0;
 
         #15000;
+>>>>>>> main
         ci = 1 << 22; // 0.5
         cr = 1 << 22;
         reset  = 1'b0;
@@ -45,15 +59,25 @@ module solver_tb();
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
+<<<<<<< HEAD
+        #1500;
+
+        ci = 0 << 22; // 0.5
+=======
 
         #15000;
         ci = 0; // 0.5
+>>>>>>> main
         cr = 3 << 20;
         reset  = 1'b0;
 		#10 
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
+<<<<<<< HEAD
+        #1500;
+=======
+>>>>>>> main
     end
 
 
