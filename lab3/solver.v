@@ -18,10 +18,10 @@ module solver (
     reg                diverge_reg;
     reg         [12:0] counter_reg;
 
-    reg signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_reg_in, zi_sqr_reg_in;
+    wire signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_reg_in, zi_sqr_reg_in;
     wire signed [26:0] z_magitude_sqr;
-    reg                diverge_reg_in, done_reg_in;
-    reg        [12:0] counter_reg_in;
+    wire                diverge_reg_in, done_reg_in;
+    wire        [12:0] counter_reg_in;
 
     wire [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
     next_zr _next_zr(
@@ -50,12 +50,12 @@ module solver (
         .b(zi_reg_in)
     );
 
-    always @(*) begin
-        zr_reg_in =  zr_next_wire;
-        zi_reg_in = zi_next_wire;
-        zr_sqr_reg_in = zr_sqr_wire;
-        zi_sqr_reg_in = zi_sqr_wire;
-    end
+    // always @(zr_next_wire or zi_next_wire or zr_sqr_wire or zi_sqr_wire) begin
+    //     zr_reg_in =  zr_next_wire;
+    //     zi_reg_in = zi_next_wire;
+    //     zr_sqr_reg_in = zr_sqr_wire;
+    //     zi_sqr_reg_in = zi_sqr_wire;
+    // end
 
     assign z_magitude_sqr = zr_sqr_reg_in + zi_sqr_reg_in;
 
@@ -107,10 +107,7 @@ module solver (
     // State Outputs : combinational code
     //======================================================================
 
-    always @ (*)
-    begin
-        
-
+    always @ (posedge clk) begin
         //--------------------------------------------------------------------
         // STATE: STATE_INIT
         //--------------------------------------------------------------------
@@ -150,16 +147,7 @@ module solver (
             done_reg_in         = 1;
         end
 
-    end // end of state machine 
-
-    // always @(posedge clk) begin
-    //     if(reset) begin
-    //         zr_reg <= 0;
-    //         zr_reg <= 0;
-    //     end else begin
-
-    //     end
-    // end
+    end
 endmodule 
 
 module next_zr (

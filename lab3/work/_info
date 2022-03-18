@@ -1,0 +1,119 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/brian/OneDrive/Documents/Cornell/advancedmicrocontrollers/lab3
+vnext_zi
+Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+Z2 !s110 1647626787
+!i10b 1
+!s100 [1Q8UHHalzB7EVzo^G2W93
+IY<MbVTTo5ah:jIWU3P0n]0
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 !s105 solver_sv_unit
+S1
+R0
+Z5 w1647626587
+Z6 8./solver.sv
+Z7 F./solver.sv
+L0 205
+Z8 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z9 !s108 1647626787.000000
+Z10 !s107 ./solver.sv|
+Z11 !s90 -reportprogress|300|./solver.sv|
+!i113 1
+Z12 tCvgOpt 0
+vnext_zr
+R1
+R2
+!i10b 1
+!s100 T3:TelOkE=BAfmYUU2Ni=2
+I=m6=b05a=>iJeSH11EmX53
+R3
+R4
+S1
+R0
+R5
+R6
+R7
+L0 195
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+vsigned_mult
+R2
+!i10b 1
+!s100 D4;R]6@7o]e4c8OXNDaSY2
+Ie5ON8j9CRzTkf;jTTD2T>2
+R3
+R0
+w1647452027
+8./computation_node.v
+F./computation_node.v
+L0 6
+R8
+r1
+!s85 0
+31
+R9
+!s107 ./computation_node.v|
+!s90 -reportprogress|300|./computation_node.v|
+!i113 1
+R12
+vsolver
+R1
+R2
+!i10b 1
+!s100 AkTJBEdOOB]4Nk6Dg2m_B1
+I5ZMY6k>QY0EGf<JQ?ZnzS3
+R3
+R4
+S1
+R0
+R5
+R6
+R7
+L0 2
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+vsolver_tb
+R2
+!i10b 1
+!s100 dlOCCdKdY6AhNakB2>GKV0
+IoN`6c?bMeC67ogJDiGZUa0
+R3
+R0
+w1647470477
+8./solver_tb.v
+F./solver_tb.v
+L0 2
+R8
+r1
+!s85 0
+31
+R9
+!s107 ./solver_tb.v|
+!s90 -reportprogress|300|./solver_tb.v|
+!i113 1
+R12

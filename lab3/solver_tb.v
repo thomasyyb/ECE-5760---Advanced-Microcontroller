@@ -30,33 +30,42 @@ module solver_tb();
 
 
     initial begin
-        ci = 0;
-        cr = 0;
         in_max_iter = 13'd1000;
+        // ci = 0;
+        // cr = 0;
+        // reset  = 1'b0;
+		// #10 
+		// reset  = 1'b1;
+		// #30
+		// reset  = 1'b0;
+        // #15000;
+
+        ci = 1 << 23;
+        cr = 1 << 23; // this is 1
         reset  = 1'b0;
 		#10 
 		reset  = 1'b1;
 		#30
 		reset  = 1'b0;
-        // #1500;
+        #1500;
 
-        // ci = 1 << 23;
-        // cr = 1 << 23; // this is 1
-        // reset  = 1'b0;
-		// #10 
-		// reset  = 1'b1;
-		// #30
-		// reset  = 1'b0;
-        // #1500;
+        ci = 1 << 22; // 0.5
+        cr = 1 << 22;
+        reset  = 1'b0;
+		#10 
+		reset  = 1'b1;
+		#30
+		reset  = 1'b0;
+        #1500;
 
-        // ci = 1 << 22; // 0.5
-        // cr = 1 << 22;
-        // reset  = 1'b0;
-		// #10 
-		// reset  = 1'b1;
-		// #30
-		// reset  = 1'b0;
-        // #1500;
+        ci = 0 << 22; // 0.5
+        cr = 3 << 20;
+        reset  = 1'b0;
+		#10 
+		reset  = 1'b1;
+		#30
+		reset  = 1'b0;
+        #1500;
     end
 
 
