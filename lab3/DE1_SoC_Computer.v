@@ -372,6 +372,9 @@ HexDigit Digit1(HEX1, hex3_hex0[7:4]);
 HexDigit Digit2(HEX2, hex3_hex0[11:8]);
 HexDigit Digit3(HEX3, hex3_hex0[15:12]);
 
+input: 
+output: 
+
 //=======================================================
 // SRAM/VGA state machine
 //=======================================================
@@ -422,6 +425,24 @@ reg [7:0] pixel_color ;
 // compute address
 assign vga_bus_addr = vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0,vga_y_cood}<<10) ; 
 
+wire signed [26:0]  ci, cr;
+wire signed [12:0]  out_iter;
+wire solver_done_1, solver_reset;
+
+module addr_convert
+input VGA x,y  scale, center_x, center_y
+output ci,cr
+
+ solver _s1 (
+				.clk(CLOCK_50),
+				.reset(solver_reset),
+				.ci(ci),
+				.cr(cr),
+				.in_max_iter(1000),
+				.out_iter(out_iter),
+				.done_reg(solver_done_1)
+			); 
+
 //=======================================================
 // do the work outlined above
 always @(posedge CLOCK_50) begin // CLOCK_50
@@ -448,118 +469,145 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 		sram_write <= 1'b0 ;
 		state <= 8'd1 ;
 	end
-	// wait 1 for read
-	if (state == 8'd1) begin
-		state <= 8'd2 ;
-	end
-	// do data-read read
-	if (state == 8'd2) begin
-		data_buffer <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd3 ;
-	end 
+	// // wait 1 for read
+	// if (state == 8'd1) begin
+	// 	state <= 8'd2 ;
+	// end
+	// // do data-read read
+	// if (state == 8'd2) begin
+	// 	data_buffer <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd3 ;
+	// end 
 	
-	// --------------------------------------
-	// --- is there new command? --- 
-	if (state == 8'd3) begin
-		// if (addr 0)==0 try again
-		if (data_buffer==0) state <= 8'd0 ;
-		// if nonzero, do the add
-		else state <= 8'd4 ;
-	end 
+	// // --------------------------------------
+	// // --- is there new command? --- 
+	// if (state == 8'd3) begin
+	// 	// if (addr 0)==0 try again
+	// 	if (data_buffer==0) state <= 8'd0 ;
+	// 	// if nonzero, do the add
+	// 	else state <= 8'd4 ;
+	// end 
 	
-	// --------------------------------------
-	// --- read first Qsys sram: x1 ---
-	if (state == 8'd4) begin
-		sram_address <= 8'd1 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd5 ;
-	end
-	// wait 1
-	if (state == 8'd5) begin
-		state <= 8'd6 ;
-	end
-	// do data-read x1 
-	if (state == 8'd6) begin
-		x1 <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd7 ;
-	end 
+	// // --------------------------------------
+	// // --- read first Qsys sram: x1 ---
+	// if (state == 8'd4) begin
+	// 	sram_address <= 8'd1 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd5 ;
+	// end
+	// // wait 1
+	// if (state == 8'd5) begin
+	// 	state <= 8'd6 ;
+	// end
+	// // do data-read x1 
+	// if (state == 8'd6) begin
+	// 	x1 <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd7 ;
+	// end 
 	
-	// --------------------------------------
-	// --- read second Qsys sram: y1 ---
-	if (state == 8'd7) begin
-		sram_address <= 8'd2 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd8 ;
-	end
-	// wait 1
-	if (state == 8'd8) begin
-		state <= 8'd9 ;
-	end
-	// do data-read y1
-	if (state == 8'd9) begin
-		y1 <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd10 ;
-	end 
+	// // --------------------------------------
+	// // --- read second Qsys sram: y1 ---
+	// if (state == 8'd7) begin
+	// 	sram_address <= 8'd2 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd8 ;
+	// end
+	// // wait 1
+	// if (state == 8'd8) begin
+	// 	state <= 8'd9 ;
+	// end
+	// // do data-read y1
+	// if (state == 8'd9) begin
+	// 	y1 <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd10 ;
+	// end 
 	
-	// --------------------------------------
-	// --- read third Qsys sram: x2 ---
-	if (state == 8'd10) begin
-		sram_address <= 8'd3 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd11 ;
-	end
-	// wait 1
-	if (state == 8'd11) begin
-		state <= 8'd12 ;
-	end
-	// do data-read x2
-	if (state == 8'd12) begin
-		x2 <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd13 ;
-	end 
+	// // --------------------------------------
+	// // --- read third Qsys sram: x2 ---
+	// if (state == 8'd10) begin
+	// 	sram_address <= 8'd3 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd11 ;
+	// end
+	// // wait 1
+	// if (state == 8'd11) begin
+	// 	state <= 8'd12 ;
+	// end
+	// // do data-read x2
+	// if (state == 8'd12) begin
+	// 	x2 <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd13 ;
+	// end 
 	
-	// --------------------------------------
-	// --- read fourth Qsys sram: y2 ---
-	if (state == 8'd13) begin
-		sram_address <= 8'd4 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd14 ;
-	end
-	// wait 1
-	if (state == 8'd14) begin
-		state <= 8'd15 ;
-	end
-	// do data-read y2
-	if (state == 8'd15) begin
-		y2 <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd16 ;
-	end 
+	// // --------------------------------------
+	// // --- read fourth Qsys sram: y2 ---
+	// if (state == 8'd13) begin
+	// 	sram_address <= 8'd4 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd14 ;
+	// end
+	// // wait 1
+	// if (state == 8'd14) begin
+	// 	state <= 8'd15 ;
+	// end
+	// // do data-read y2
+	// if (state == 8'd15) begin
+	// 	y2 <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd16 ;
+	// end 
 	
+	// // --------------------------------------
+	// // --- read fifth Qsys sram: color ---
+	// if (state == 8'd16) begin
+	// 	sram_address <= 8'd5 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd17 ;
+	// end
+	// // wait 1
+	// if (state == 8'd17) begin
+	// 	state <= 8'd18 ;
+	// end
+	// // do data-read y2
+	// if (state == 8'd18) begin
+	// 	pixel_color <= sram_readdata ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd19 ;
+	// 	// initialize pixel state machine
+	// 	// for the next phase of the state machine
+	// 	vga_x_cood <= x1 ;
+	// 	vga_y_cood <= y1 ;
+	// end 
+
 	// --------------------------------------
-	// --- read fifth Qsys sram: color ---
-	if (state == 8'd16) begin
-		sram_address <= 8'd5 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd17 ;
+	// Initial state for the solver and VGA
+	// --------------------------------------
+	if (state == 8'd0) begin
+		 
 	end
-	// wait 1
-	if (state == 8'd17) begin
-		state <= 8'd18 ;
-	end
-	// do data-read y2
+
+	// calculating the address and the color
 	if (state == 8'd18) begin
-		pixel_color <= sram_readdata ;
-		sram_write <= 1'b0 ;
-		state <= 8'd19 ;
+		
+		
 		// initialize pixel state machine
 		// for the next phase of the state machine
-		vga_x_cood <= x1 ;
-		vga_y_cood <= y1 ;
+		vga_x_cood <= vga_x_cood + 1 ;
+		vga_y_cood <= vga_y_cood + 1 ;
+
+		
+
+		solver_reset = 1 0
+
+		pixel_color <= sram_readdata ;
+
+		if(done)
+			sram_write <= 1'b0 ;
+			state <= 8'd19 ;
 	end 
 
 	// --------------------------------------
