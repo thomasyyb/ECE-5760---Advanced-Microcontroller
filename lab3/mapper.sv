@@ -1,9 +1,11 @@
 module mapper (
+    input logic clk, reset,
     input logic [9:0] x,
     input logic [8:0] y,
     input logic [26:0] delta,  
     input logic [3:0] scale,
 
+    input logic sl, sr, su, sd,
     output logic [26:0] ci, cr
 );
     // zoomed out top left coordiantes 
@@ -11,9 +13,25 @@ module mapper (
     logic [8:0] dy;
     logic [26:0] tl_x, tl_y;
     
-    assign tl_x = 13 << 23; // -3 
-    assign tl_y = 3 << 22; // 1.5
+    // assign tl_x = 13 << 23; // -3 
+    // assign tl_y = 3 << 22; // 1.5
     
+
+    always_ff @(posedge clk) begin
+        if(reset) begin
+            tl_x <= 13 << 23;
+            tl_y <= 3  << 22;
+        end else begin // might want a safeguard for over/underflow?
+            if(sl) 
+                tl_x = tl_x - delta;
+            if(sr)
+                tl_x = tl_x + delta;
+            if(su)
+                tl_y = tl_y + delta;
+            if(sd)
+                tl_y = tl_y - delta;
+        end 
+    end
     
     // always_comb 
     // assign d15 = (delta[15] == 1'b1) ? (dx << 15) : 27'd0;
@@ -49,28 +67,30 @@ module mapper (
 endmodule 
 
 module mapper_tb ();
-    logic clock;
+    logic clk, reset;
     logic [9:0] x;
     logic [8:0] y;
+    logic sl, sr, su, sd;
     logic [26:0] delta;  
     logic [3:0] scale;
-    logic signed git [26:0] ci, cr;
+    logic signed [26:0] ci, cr;
 
 	initial begin
-		clock <= 0;
-		forever #(50) clock <= ~clock;
+		clk <= 0;
+		forever #(50) clk <= ~clk;
 	end
 
     mapper DUT (.*);
 
     initial begin 
-        scale <= 0; @(posedge clock);
-        @(posedge clock);
-        x <= 0; y <= 0;    @(posedge clock);
-        x <= 0; y <= 479;    @(posedge clock);
-        x <= 639; y <= 0;    @(posedge clock);
-        x <= 639; y <= 479;    @(posedge clock);
-        @(posedge clock);
+        scale <= 0; delta <= 27'b0000_000_0000_1100_1100_1101_0000; reset <= 1;@(posedge clk);
+        reset <= 0; @(posedge clk);
+        @(posedge clk);
+        x <= 0; y <= 0;    @(posedge clk);
+        x <= 0; y <= 479;    @(posedge clk);
+        x <= 639; y <= 0;    @(posedge clk);
+        x <= 639; y <= 479;    @(posedge clk);
+        @(posedge clk);
 
         $stop;
 
