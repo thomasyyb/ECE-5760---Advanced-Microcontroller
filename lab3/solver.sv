@@ -154,45 +154,7 @@ module solver (
             end
 
         endcase
-        //--------------------------------------------------------------------
-        // STATE: STATE_INIT
-        //--------------------------------------------------------------------
-
-        // if ( state_reg == 2'h0 ) begin
-        //     zr_reg_in       = 0; 
-        //     zi_reg_in       = 0;
-        //     zr_sqr_reg_in   = 0; 
-        //     zi_sqr_reg_in   = 0;
-        //     counter_reg_in  = 0; 
-        //     diverge_reg_in = 0; 
-        //     done_reg_in     = 0; 
-        // end
-
-        // //--------------------------------------------------------------------
-        // // STATE: STATE_ONE
-        // //--------------------------------------------------------------------
-
-        // else if ( state_reg == 2'h1 ) begin
-        //     // zr_reg_in ... are directly outputs of multipliers so no assignment here
-        //     counter_reg_in = counter_reg + 1;
-        //     done_reg_in    = 0; 
-        //     diverge_reg_in = ( zr_reg_in >= 2 || zi_reg_in >=2 || z_magitude_sqr >= 4);
-        // end
-
-        // //--------------------------------------------------------------------
-        // // STATE: STATE_TWO
-        // //--------------------------------------------------------------------
-
-        // else if ( state_reg == 2'h2 ) begin 
-        //     zr_reg_in       = 0; 
-        //     zi_reg_in       = 0;
-        //     zr_sqr_reg_in       = 0; 
-        //     zi_sqr_reg_in       = 0;
-        //     counter_reg_in      = counter_reg;
-        //     diverge_reg_in      = diverge_reg; 
-        //     done_reg_in         = 1;
-        // end
-
+        
     end // end of state machine 
 
 endmodule 
@@ -223,80 +185,46 @@ module next_zi (
 
     assign zi_next = (mult_out << 1) + ci; 
 
-endmodule 
+endmodule
 
-// `timescale 1ns/1ns
-// module solver_tb();
+module counter_to_color ( 
+    input  signed [12:0] counter,
+    input  signed [12:0] max_iterations,
+    output         [7:0] color
+);
+    always_comb begin
 
-//     reg clk_50, reset;
-//     reg [26:0] ci, cr;
-//     reg signed [12:0] in_max_iter;
+        if (counter >= max_iterations) begin
+        color = 8'b_000_000_00 ; // black
+        end
+        else if (counter >= (max_iterations >>> 1)) begin
+        color = 8'b_011_001_00 ; // white
+        end
+        else if (counter >= (max_iterations >>> 2)) begin
+        color = 8'b_011_001_00 ;
+        end
+        else if (counter >= (max_iterations >>> 3)) begin
+        color = 8'b_101_010_01 ;
+        end
+        else if (counter >= (max_iterations >>> 4)) begin
+        color = 8'b_011_001_01 ;
+        end
+        else if (counter >= (max_iterations >>> 5)) begin
+        color = 8'b_001_001_01 ;
+        end
+        else if (counter >= (max_iterations >>> 6)) begin
+        color = 8'b_011_010_10 ;
+        end
+        else if (counter >= (max_iterations >>> 7)) begin
+        color = 8'b_010_100_10 ;
+        end
+        else if (counter >= (max_iterations >>> 8)) begin
+        color = 8'b_010_100_10 ;
+        end
+        else begin
+        color = 8'b_010_100_10 ;
+        end
 
-//     wire [12:0] out_iter;
-//     wire done_reg;
+    end
 
-//     //Initialize clock
-//     initial begin   
-//         clk_50 = 1'b0;
-//     end
-
-//     //Toggle the clocks
-// 	always begin
-// 		#10
-// 		clk_50  = ~clk_50;
-// 	end
-
-//     //Intialize and drive signals
-// 	// initial begin
-// 	// 	reset  = 1'b0;
-// 	// 	#10 
-// 	// 	reset  = 1'b1;
-// 	// 	#30
-// 	// 	reset  = 1'b0;
-// 	// end
-
-
-//     initial begin
-//         ci = 0;
-//         cr = 0;
-//         in_max_iter = 13'd1000;
-//         reset  = 1'b0;
-// 		#10 
-// 		reset  = 1'b1;
-// 		#30
-// 		reset  = 1'b0;
-//         // #1500;
-
-//         // ci = 1 << 23;
-//         // cr = 1 << 23; // this is 1
-//         // reset  = 1'b0;
-// 		// #10 
-// 		// reset  = 1'b1;
-// 		// #30
-// 		// reset  = 1'b0;
-//         // #1500;
-
-//         // ci = 1 << 22; // 0.5
-//         // cr = 1 << 22;
-//         // reset  = 1'b0;
-// 		// #10 
-// 		// reset  = 1'b1;
-// 		// #30
-// 		// reset  = 1'b0;
-//         // #1500;
-//     end
-
-
-//     // Top level function
-
-//     solver DUT (
-//         .clk(clk_50),
-//         .reset(reset),
-//         .ci(ci),       
-//         .cr(cr),      
-//         .in_max_iter(in_max_iter),
-//         .out_iter(out_iter),
-//         .done_reg(done_reg)
-//     );
-
-// endmodule
+endmodule

@@ -427,13 +427,10 @@ assign vga_bus_addr = vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0,vga_y
 
 wire signed [26:0]  ci, cr;
 wire signed [12:0]  out_iter;
+wire        [7:0]   color_out;
 wire solver_done_1, solver_reset;
 
-module addr_convert
-input VGA x,y  scale, center_x, center_y
-output ci,cr
-
- solver _s1 (
+solver _s1 (
 				.clk(CLOCK_50),
 				.reset(solver_reset),
 				.ci(ci),
@@ -442,6 +439,12 @@ output ci,cr
 				.out_iter(out_iter),
 				.done_reg(solver_done_1)
 			); 
+
+counter_to_color _c2c1 ( 
+				.counter(out_iter),
+				.max_iterations(1000),
+				.color(color_out)
+			);
 
 //=======================================================
 // do the work outlined above
@@ -455,6 +458,7 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 		sram_write <= 1'b0 ;
 		timer <= 0;
 		bus_byte_enable <= 4'b0001;
+		solver_reset <= 1 ;
 	end
 	else begin
 		// general purpose tick counter
@@ -464,11 +468,11 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 	// --------------------------------------
 	// did the HPS send a command
 	// --- set up read for HPS data-ready ---
-	if (state == 8'd0) begin
-		sram_address <= 8'd0 ;
-		sram_write <= 1'b0 ;
-		state <= 8'd1 ;
-	end
+	// if (state == 8'd0) begin
+	// 	sram_address <= 8'd0 ;
+	// 	sram_write <= 1'b0 ;
+	// 	state <= 8'd1 ;
+	// end
 	// // wait 1 for read
 	// if (state == 8'd1) begin
 	// 	state <= 8'd2 ;
@@ -583,31 +587,44 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 	// 	vga_y_cood <= y1 ;
 	// end 
 
+wire signed [26:0]  ci, cr;
+wire signed [12:0]  out_iter;
+wire        [7:0]   color_out;
+wire solver_done_1, solver_reset;
+
 	// --------------------------------------
 	// Initial state for the solver and VGA
 	// --------------------------------------
 	if (state == 8'd0) begin
-		 
+		solver_reset <= 1 ;
+		state <= 8'd17 ;
+		vga_x_cood <= 0 ;
+		vga_y_cood <= 0 ;
 	end
 
-	// calculating the address and the color
+	// update the address
 	if (state == 8'd18) begin
-		
-		
-		// initialize pixel state machine
-		// for the next phase of the state machine
-		vga_x_cood <= vga_x_cood + 1 ;
-		vga_y_cood <= vga_y_cood + 1 ;
+		// the next state we will start the solver
+		solver_reset <= 1;
+		// address update
+		if( vga_x_cood < 639 ) begin
+			vga_x_cood <= vga_x_cood + 1 ;
+		end else begin
+			vga_x_cood <= 0;
+			vga_y_cood <= vga_y_cood + 1 ;
+			end
+		end
+		state <= 8'd19 ;
+	end
 
-		
-
-		solver_reset = 1 0
-
-		pixel_color <= sram_readdata ;
-
-		if(done)
-			sram_write <= 1'b0 ;
+	// calculating the color by the solver
+	if (state == 8'd19) begin
+		solver_reset <= 0;
+		if(!done) begin
 			state <= 8'd19 ;
+		end else begin
+			state <= 8'd20 ;
+		end
 	end 
 
 	// --------------------------------------
@@ -616,31 +633,31 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 	// and put in a small delay to avoid bus hogging
 	// timer delay can be set to 2**n-1, so 3, 7, 15, 31
 	// bigger numbers mean slower frame update to VGA
-	if (state==8'd19) begin // && ((timer & 15)==0)
-		// iterate through all x for each y in the list
-		if (vga_x_cood < x2) begin
-			vga_x_cood <= vga_x_cood + 10'd1 ;
-		end
-		else begin
-			vga_x_cood <= x1 ;
-			vga_y_cood <= vga_y_cood + 10'd1 ;	
-		end
-		// write a point
-		state <= 8'd20 ; 
-	end
+	// if (state==8'd19) begin // && ((timer & 15)==0)
+	// 	// iterate through all x for each y in the list
+	// 	if (vga_x_cood < x2) begin
+	// 		vga_x_cood <= vga_x_cood + 10'd1 ;
+	// 	end
+	// 	else begin
+	// 		vga_x_cood <= x1 ;
+	// 		vga_y_cood <= vga_y_cood + 10'd1 ;	
+	// 	end
+	// 	// write a point
+	// 	state <= 8'd20 ; 
+	// end
 	
 	// write a pixel to VGA memory
 	if (state==20) begin
 		state <= 8'd21 ;
 		bus_write <= 1'b1;
 		bus_addr <= vga_bus_addr ;
-		bus_write_data <= pixel_color  ;
+		bus_write_data <= color_out  ;
 	end
 	
 	// and finish write
 	if (state==21 && bus_ack==1) begin
 		bus_write <= 1'b0;
-		if (vga_x_cood>=x2 && vga_y_cood>=y2) state <= 8'd22 ; // ending
+		if (vga_x_cood>=639 && vga_y_cood>=479) state <= 8'd23 ; // ending
 		else begin
 			state  <= 8'd30 ;
 			bus_time <= 0 ;
@@ -662,7 +679,12 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 		sram_writedata <= 32'b0 ;
 		sram_write <= 1'b1 ;
 		state <= 8'd0 ;
-	end  
+	end
+
+	// We're done and stuck into the void of the universe
+	if (state == 8'd23) begin
+		state <= 8'd23 ;
+	end
 	
 end // always @(posedge state_clock)
 
