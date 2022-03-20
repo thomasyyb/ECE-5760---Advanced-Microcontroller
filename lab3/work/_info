@@ -7,37 +7,36 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-<<<<<<< HEAD
-Z0 dC:/Users/brian/OneDrive/Documents/Cornell/advancedmicrocontrollers/lab3
+Z0 dC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3
 vnext_zi
-Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
-Z2 !s110 1647626787
+Z1 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
+Z2 !s110 1647797186
 !i10b 1
-!s100 [1Q8UHHalzB7EVzo^G2W93
-IY<MbVTTo5ah:jIWU3P0n]0
-Z3 VDg1SIo80bB@j0V0VzS_@n1
+!s100 WO9lP1G<=JnkWlJ5<b01V2
+ILDhj@[Ij`MN51Lb`Vj6Oc0
+Z3 V`JN@9S9cnhjKRR_L]QIcM3
 Z4 !s105 solver_sv_unit
 S1
 R0
-Z5 w1647626587
-Z6 8./solver.sv
-Z7 F./solver.sv
-L0 205
-Z8 OV;L;10.5b;63
+Z5 w1647797179
+Z6 8C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv
+Z7 FC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv
+L0 210
+Z8 OV;L;10.3d;59
 r1
 !s85 0
 31
-Z9 !s108 1647626787.000000
-Z10 !s107 ./solver.sv|
-Z11 !s90 -reportprogress|300|./solver.sv|
+Z9 !s108 1647797186.707000
+Z10 !s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv|
+Z11 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv|
 !i113 1
-Z12 tCvgOpt 0
+Z12 o-work work -sv
 vnext_zr
 R1
 R2
 !i10b 1
-!s100 T3:TelOkE=BAfmYUU2Ni=2
-I=m6=b05a=>iJeSH11EmX53
+!s100 JY<D]d3lP[51b8FFGDFmf2
+IPI][>ZT7<NbTGDeGg2=5M3
 R3
 R4
 S1
@@ -45,7 +44,7 @@ R0
 R5
 R6
 R7
-L0 195
+L0 200
 R8
 r1
 !s85 0
@@ -59,28 +58,28 @@ vsigned_mult
 R2
 !i10b 1
 !s100 D4;R]6@7o]e4c8OXNDaSY2
-Ie5ON8j9CRzTkf;jTTD2T>2
+ID:_BhWaM?:KadHDJMal?`3
 R3
 R0
-w1647452027
-8./computation_node.v
-F./computation_node.v
+w1647794407
+8C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
+FC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
 L0 6
 R8
 r1
 !s85 0
 31
-R9
-!s107 ./computation_node.v|
-!s90 -reportprogress|300|./computation_node.v|
+!s108 1647797186.515000
+!s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
 !i113 1
-R12
+Z13 o-work work
 vsolver
 R1
 R2
 !i10b 1
-!s100 AkTJBEdOOB]4Nk6Dg2m_B1
-I5ZMY6k>QY0EGf<JQ?ZnzS3
+!s100 ^2AXBT^62GJS30mWKPfz;1
+IYbJSjGEQ]5Li[LUn98QNI3
 R3
 R4
 S1
@@ -101,123 +100,20 @@ R12
 vsolver_tb
 R2
 !i10b 1
-!s100 dlOCCdKdY6AhNakB2>GKV0
-IoN`6c?bMeC67ogJDiGZUa0
+!s100 h?209KL^P:JFe]9A8E=Sd3
+IJbY0o14=??dU4EIKEK_h]0
 R3
 R0
-w1647470477
-8./solver_tb.v
-F./solver_tb.v
+w1647794972
+8C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
+FC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
 L0 2
 R8
 r1
 !s85 0
 31
-R9
-!s107 ./solver_tb.v|
-!s90 -reportprogress|300|./solver_tb.v|
+!s108 1647797186.878000
+!s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
 !i113 1
-R12
-=======
-dC:/altera/15.0
-vnext_zi
-Z0 !s110 1647470335
-!i10b 1
-!s100 NWE8EYi7J3nGgiN?99bZR1
-ISfa5kJ=De]k:UBb8JmW9A1
-Z1 V`JN@9S9cnhjKRR_L]QIcM3
-Z2 dC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3
-Z3 w1647469963
-Z4 8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v
-Z5 FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v
-L0 148
-Z6 OV;L;10.3d;59
-r1
-!s85 0
-31
-Z7 !s108 1647470335.747000
-Z8 !s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v|
-Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver.v|
-!i113 1
-Z10 o-work work
-vnext_zr
-R0
-!i10b 1
-!s100 EQ[:VeR?Ag=dPJnn>O@MH0
-I1ZfOGKG86Gl@ej;VRK4PY1
-R1
-R2
-R3
-R4
-R5
-L0 138
-R6
-r1
-!s85 0
-31
-R7
-R8
-R9
-!i113 1
-R10
-vsigned_mult
-R0
-!i10b 1
-!s100 D4;R]6@7o]e4c8OXNDaSY2
-Ib;2MbYm65HdS_:O>U8he13
-R1
-R2
-w1647280316
-8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
-FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
-L0 6
-R6
-r1
-!s85 0
-31
-!s108 1647470335.589000
-!s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
-!i113 1
-R10
-vsolver
-R0
-!i10b 1
-!s100 J87ZiOeZ^>;=EGiJX^g760
-I54Sln>0hlZ?VLXjJPoUDX1
-R1
-R2
-R3
-R4
-R5
-L0 2
-R6
-r1
-!s85 0
-31
-R7
-R8
-R9
-!i113 1
-R10
-vsolver_tb
-R0
-!i10b 1
-!s100 GJo2Lk8IR@U14h]<PJaLa3
-IdNMb;4PB`Rz0j=VTf0nAD1
-R1
-R2
-w1647470328
-8C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
-FC:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
-L0 2
-R6
-r1
-!s85 0
-31
-!s108 1647470335.925000
-!s107 C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ja499/Desktop/jasmin_an/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
-!i113 1
-R10
->>>>>>> main
+R13

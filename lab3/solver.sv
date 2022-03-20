@@ -9,44 +9,52 @@ module solver (
     // output signed [26:0] iout,
     // output signed [26:0] rout,
     output signed [12:0] out_iter,
-    output logic           done_reg
+    output logic         done_reg
 ); 
 
-    // Compute modules
-
-    reg signed [26:0]  zr_reg, zi_reg, zr_sqr_reg, zi_sqr_reg;
-    reg                diverge_reg;
-    reg         [12:0] counter_reg;
-
+    // These are the four registers and their input wires
+    logic signed [26:0] zr_reg, zi_reg, zr_sqr_reg, zi_sqr_reg;
     logic signed [26:0] zr_reg_in, zi_reg_in, zr_sqr_reg_in, zi_sqr_reg_in;
-    logic signed [26:0] z_magitude_sqr;
-    logic               diverge_reg_in, done_reg_in;
-    logic        [12:0] counter_reg_in;
 
-    logic signed [26:0] zr_next_wire, zi_next_wire, zr_sqr_wire, zi_sqr_wire;
+    // The next value for the registers during calculation (while reset/complete, the registers should be given 0)
+    logic signed [26:0] zr_next_out, zi_next_out, zr_sqr_out, zi_sqr_out;
+
+    // (zr^2 + zi^2) to check for diverging
+    logic signed [26:0] z_magitude_sqr;
+
+    // Keep the iteration number
+    logic        [12:0] counter_reg;
+    logic        [12:0] counter_reg_in;
+    
+    // Is it diverging?
+    logic               diverge;
+
+    // The input wire for done
+    logic               done_reg_in;
+        
     
     next_zr _next_zr(
         .zr_sqr(zr_sqr_reg), 
         .zi_sqr(zi_sqr_reg),
         .cr(cr),
-        .zr_next(zr_next_wire)
+        .zr_next(zr_next_out)
     );
 
     next_zi _next_zi(
         .zr(zr_reg), 
         .zi(zi_reg), 
         .ci(ci),
-        .zi_next(zi_next_wire)
+        .zi_next(zi_next_out)
     );
 
     signed_mult _zr_sqr_mult(
-        .out(zr_sqr_wire),
+        .out(zr_sqr_out),
         .a(zr_reg_in),
         .b(zr_reg_in)
     );
 
     signed_mult _zi_sqr_mult(
-        .out(zi_sqr_wire),
+        .out(zi_sqr_out),
         .a(zi_reg_in),
         .b(zi_reg_in)
     );
@@ -61,7 +69,6 @@ module solver (
         zi_reg <= zi_reg_in;
         zr_sqr_reg <= zr_sqr_reg_in;
         zi_sqr_reg <= zi_sqr_reg_in;
-        diverge_reg <= diverge_reg_in;
         counter_reg <= counter_reg_in;
         done_reg <= done_reg_in;
     end
@@ -87,10 +94,10 @@ module solver (
 
                 2'h0   : state_reg <= 2'h1;
                 2'h1   : 
-                    if (counter_reg > in_max_iter || diverge_reg_in) 
-                        state_reg <= 2'h2;
-                    else 
-                        state_reg <= 2'h1;
+                        if (counter_reg >= in_max_iter-1 || diverge) 
+                            state_reg <= 2'h2;
+                        else 
+                            state_reg <= 2'h1;
                 2'h2   : state_reg <= 2'h2;
                 default: state_reg <= 2'h0;
 
@@ -101,44 +108,50 @@ module solver (
     //======================================================================
     // State Outputs : combinational code
     //======================================================================
-    // always_comb begin
-    //     zr_reg_in =  zr_next_wire;
-    //     zi_reg_in = zi_next_wire;
-    //     zr_sqr_reg_in = zr_sqr_wire;
-    //     zi_sqr_reg_in = zi_sqr_wire;
-    // end
 
     always_comb begin
+
         case (state_reg) 
+
             0: begin
                 zr_reg_in       = 0; 
                 zi_reg_in       = 0;
                 zr_sqr_reg_in   = 0; 
                 zi_sqr_reg_in   = 0;
                 counter_reg_in  = 0; 
-                diverge_reg_in  = 0; 
+                diverge         = 0; 
                 done_reg_in     = 0; 
             end
+
             1: begin
-                zr_reg_in       = zr_next_wire; 
-                zi_reg_in       = zi_next_wire;
-                zr_sqr_reg_in   = zr_sqr_wire; 
-                zi_sqr_reg_in   = zi_sqr_wire;
+                zr_reg_in       = zr_next_out; 
+                zi_reg_in       = zi_next_out;
+                zr_sqr_reg_in   = zr_sqr_out; 
+                zi_sqr_reg_in   = zi_sqr_out;
                 counter_reg_in  = counter_reg + 1; 
-                diverge_reg_in  = (zr_reg_in >= 27'sh100_0000 || zi_reg_in >= 27'sh100_0000 || z_magitude_sqr >= 27'sh200_0000); 
-                done_reg_in     = (zr_reg_in >= 27'sh100_0000 || zi_reg_in >= 27'sh100_0000 || z_magitude_sqr >= 27'sh200_0000); 
+                diverge         = (zr_reg_in >= 27'sh100_0000 || zi_reg_in >= 27'sh100_0000 || z_magitude_sqr >= 27'sh200_0000); 
+                done_reg_in     = diverge; 
             end
-            
-            default: begin
+
+            2: begin
                 zr_reg_in           = 0; 
                 zi_reg_in           = 0;
                 zr_sqr_reg_in       = 0; 
                 zi_sqr_reg_in       = 0;
                 counter_reg_in      = counter_reg;
-                diverge_reg_in      = diverge_reg; 
+                diverge             = 0; 
                 done_reg_in         = 1;
             end
 
+            default: begin
+                zr_reg_in           = 0; 
+                zi_reg_in           = 0;
+                zr_sqr_reg_in       = 0; 
+                zi_sqr_reg_in       = 0;
+                counter_reg_in      = 0;
+                diverge             = 0; 
+                done_reg_in         = 0;
+            end
 
         endcase
         //--------------------------------------------------------------------
@@ -167,7 +180,7 @@ module solver (
         // end
 
         // //--------------------------------------------------------------------
-        // // STATE: STATE_ONE
+        // // STATE: STATE_TWO
         // //--------------------------------------------------------------------
 
         // else if ( state_reg == 2'h2 ) begin 
@@ -182,14 +195,6 @@ module solver (
 
     end // end of state machine 
 
-    // always @(posedge clk) begin
-    //     if(reset) begin
-    //         zr_reg <= 0;
-    //         zr_reg <= 0;
-    //     end else begin
-
-    //     end
-    // end
 endmodule 
 
 module next_zr (
@@ -215,10 +220,6 @@ module next_zi (
         .a(zr),
         .b(zi)
     );
-
-    // always @(*) begin
-    //     zi_next = (mult_out << 1) + ci;  
-    // end
 
     assign zi_next = (mult_out << 1) + ci; 
 

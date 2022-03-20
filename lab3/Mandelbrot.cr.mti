@@ -15,4 +15,18 @@ Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
 Top level modules:
 	signed_mult
 
+} {} {}} C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v {1 {vlog -work work -stats=none C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module solver_tb
+
+Top level modules:
+	solver_tb
+
+} {} {}} C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v {1 {vlog -work work -stats=none C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module signed_mult
+
+Top level modules:
+	signed_mult
+
 } {} {}}
