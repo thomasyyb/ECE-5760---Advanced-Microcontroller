@@ -3,7 +3,7 @@ module userInput (
     output logic out
 );
     logic ps, ns;
-    
+    logic out_f1, out_f2;
     always_ff @(posedge clk) begin
         if(reset) 
             ps <= 0;
@@ -19,7 +19,19 @@ module userInput (
         endcase
     end 
 
-    assign out = (ps == 0) && (in);
+    assign out_f1 = (ps == 0) && (in);
+    // assign out = out_f2;
+
+    always_ff @(posedge clk) begin
+        if(reset) begin
+            out_f2 <= 0;
+            out <= 0;
+        end else begin
+            out <= out_f2;
+            out_f2 <= out_f1;
+        end
+
+    end
 endmodule
 
 module userInput_tb();
