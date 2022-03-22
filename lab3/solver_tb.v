@@ -7,10 +7,13 @@ module solver_tb();
 
     wire [12:0] out_iter;
     wire done_reg;
+    real rr_val; 
 
     //Initialize clock
     initial begin   
         clk_50 = 1'b0;
+        
+        rr_val = real'({{4'd0}, {23'hCCD0}})/(2.0**23);    // binary version of delta = 0.00625
     end
 
     //Toggle the clocks

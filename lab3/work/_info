@@ -8,35 +8,35 @@ z2
 !i10f 100
 cModel Technology
 Z0 dC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3
-vnext_zi
+vcounter_to_color
 Z1 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
-Z2 !s110 1647797186
+Z2 !s110 1647809013
 !i10b 1
-!s100 WO9lP1G<=JnkWlJ5<b01V2
-ILDhj@[Ij`MN51Lb`Vj6Oc0
+!s100 Wf3AI@37A3QJegn7Si2NQ3
+I15[LSV=jVz7X74fPE7Y8R2
 Z3 V`JN@9S9cnhjKRR_L]QIcM3
 Z4 !s105 solver_sv_unit
 S1
 R0
-Z5 w1647797179
+Z5 w1647808977
 Z6 8C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv
 Z7 FC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv
-L0 210
+L0 190
 Z8 OV;L;10.3d;59
 r1
 !s85 0
 31
-Z9 !s108 1647797186.707000
+Z9 !s108 1647809013.688000
 Z10 !s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv|
 Z11 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver.sv|
 !i113 1
 Z12 o-work work -sv
-vnext_zr
+vnext_zi
 R1
 R2
 !i10b 1
-!s100 JY<D]d3lP[51b8FFGDFmf2
-IPI][>ZT7<NbTGDeGg2=5M3
+!s100 NoXPVLkh_;>RnG2>>K2GX1
+I7@cb8<3V2DaSz@B0FRS9c1
 R3
 R4
 S1
@@ -44,7 +44,30 @@ R0
 R5
 R6
 R7
-L0 200
+L0 172
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+vnext_zr
+R1
+R2
+!i10b 1
+!s100 ddE^I2hTnBTEUeTIJQS7L1
+I0gVjMad`903WTm0`5U1GY2
+R3
+R4
+S1
+R0
+R5
+R6
+R7
+L0 162
 R8
 r1
 !s85 0
@@ -69,7 +92,7 @@ R8
 r1
 !s85 0
 31
-!s108 1647797186.515000
+!s108 1647809013.535000
 !s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/computation_node.v|
 !i113 1
@@ -78,8 +101,8 @@ vsolver
 R1
 R2
 !i10b 1
-!s100 ^2AXBT^62GJS30mWKPfz;1
-IYbJSjGEQ]5Li[LUn98QNI3
+!s100 Sacm:7EQ8_a;2gL]nAfRK3
+I6=i>K[oY`@aW3]]RL[?683
 R3
 R4
 S1
@@ -100,11 +123,11 @@ R12
 vsolver_tb
 R2
 !i10b 1
-!s100 h?209KL^P:JFe]9A8E=Sd3
-IJbY0o14=??dU4EIKEK_h]0
+!s100 >BbCEd_CGQGdzeOMT2^ZQ1
+IHmRk3`[PTkBNUZI6cYJZ[0
 R3
 R0
-w1647794972
+w1647809008
 8C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
 FC:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v
 L0 2
@@ -112,7 +135,7 @@ R8
 r1
 !s85 0
 31
-!s108 1647797186.878000
+!s108 1647809013.856000
 !s107 C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab3/simulation/ECE-5760---Advanced-Microcontroller/lab3/solver_tb.v|
 !i113 1

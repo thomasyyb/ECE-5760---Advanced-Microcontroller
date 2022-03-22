@@ -372,9 +372,6 @@ HexDigit Digit1(HEX1, hex3_hex0[7:4]);
 HexDigit Digit2(HEX2, hex3_hex0[11:8]);
 HexDigit Digit3(HEX3, hex3_hex0[15:12]);
 
-input: 
-output: 
-
 //=======================================================
 // SRAM/VGA state machine
 //=======================================================
@@ -428,8 +425,10 @@ assign vga_bus_addr = vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0,vga_y
 wire signed [26:0]  ci, cr;
 wire signed [12:0]  out_iter;
 wire        [7:0]   color_out;
-wire solver_done_1, solver_reset;
-
+wire solver_done_1;
+reg solver_reset;
+reg [3:0] scale;
+~KEY[]
 solver _s1 (
 				.clk(CLOCK_50),
 				.reset(solver_reset),
@@ -439,6 +438,15 @@ solver _s1 (
 				.out_iter(out_iter),
 				.done_reg(solver_done_1)
 			); 
+
+mapper _mapper(
+				.x(vga_x_cood),
+				.y(vga_y_cood[8:0]),
+				.delta(),  
+				.scale(scale),
+				.ci(ci),
+				.cr(cr)
+			);
 
 counter_to_color _c2c1 ( 
 				.counter(out_iter),
@@ -587,17 +595,12 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 	// 	vga_y_cood <= y1 ;
 	// end 
 
-wire signed [26:0]  ci, cr;
-wire signed [12:0]  out_iter;
-wire        [7:0]   color_out;
-wire solver_done_1, solver_reset;
-
 	// --------------------------------------
 	// Initial state for the solver and VGA
 	// --------------------------------------
 	if (state == 8'd0) begin
 		solver_reset <= 1 ;
-		state <= 8'd17 ;
+		state <= 8'd18 ;
 		vga_x_cood <= 0 ;
 		vga_y_cood <= 0 ;
 	end
@@ -612,7 +615,6 @@ wire solver_done_1, solver_reset;
 		end else begin
 			vga_x_cood <= 0;
 			vga_y_cood <= vga_y_cood + 1 ;
-			end
 		end
 		state <= 8'd19 ;
 	end
@@ -620,7 +622,7 @@ wire solver_done_1, solver_reset;
 	// calculating the color by the solver
 	if (state == 8'd19) begin
 		solver_reset <= 0;
-		if(!done) begin
+		if(!solver_done_1) begin
 			state <= 8'd19 ;
 		end else begin
 			state <= 8'd20 ;
@@ -668,22 +670,23 @@ wire solver_done_1, solver_reset;
 	if (state==30) begin
 		// generate a delay so bus can be used for VGA
 		// 8 cycles works, 7 does not
-		if (bus_time==SW[9:6]) state <= 19 ; //19
+		if (bus_time==SW[9:6]) state <= 18 ; //19
 		else bus_time <= bus_time + 1 ;
 	end
 	
 	// -- finished: --
 	// -- set up done flag to Qsys sram 0 ---
-	if (state == 8'd22) begin
-		sram_address <= 8'd0 ;
-		sram_writedata <= 32'b0 ;
-		sram_write <= 1'b1 ;
-		state <= 8'd0 ;
-	end
+	// if (state == 8'd22) begin
+	// 	sram_address <= 8'd0 ;
+	// 	sram_writedata <= 32'b0 ;
+	// 	sram_write <= 1'b1 ;
+	// 	state <= 8'd0 ;
+	// end
 
 	// We're done and stuck into the void of the universe
 	if (state == 8'd23) begin
-		state <= 8'd23 ;
+		if (bus_time==8'd255) state <= 8'd0 ;
+		else bus_time <= bus_time + 1 ;
 	end
 	
 end // always @(posedge state_clock)
