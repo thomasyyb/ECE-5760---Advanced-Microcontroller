@@ -2,7 +2,7 @@ module mapper (
     input logic clk, reset,
     input logic [9:0] x,
     input logic [8:0] y,
-    input logic [26:0] delta,  
+    // input logic [26:0] delta,  
     input logic [3:0] scale,
 
     input logic sl, sr, su, sd,
@@ -16,20 +16,21 @@ module mapper (
     // assign tl_x = 13 << 23; // -3 
     // assign tl_y = 3 << 22; // 1.5
     
-
+    logic [26:0] delta;
+    assign delta = 27'b0000_000_0000_1100_1100_1101_0000 >> scale;
     always_ff @(posedge clk) begin
         if(reset) begin
             tl_x <= 13 << 23;
             tl_y <= 3  << 22;
         end else begin // might want a safeguard for over/underflow?
             if(sl) 
-                tl_x = tl_x - delta;
+                tl_x = tl_x - delta << 5;
             if(sr)
-                tl_x = tl_x + delta;
+                tl_x = tl_x + delta << 5;
             if(su)
-                tl_y = tl_y + delta;
+                tl_y = tl_y + delta << 5;
             if(sd)
-                tl_y = tl_y - delta;
+                tl_y = tl_y - delta << 5;
         end 
     end
     
