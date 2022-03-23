@@ -358,19 +358,22 @@ output					HPS_USB_STP;
 //=======================================================
 
 wire			[15: 0]	hex3_hex0;
-//wire			[15: 0]	hex5_hex4;
+wire			[15: 0]	hex5_hex4;
 
 //assign HEX0 = ~hex3_hex0[ 6: 0]; // hex3_hex0[ 6: 0]; 
 //assign HEX1 = ~hex3_hex0[14: 8];
 //assign HEX2 = ~hex3_hex0[22:16];
 //assign HEX3 = ~hex3_hex0[30:24];
-assign HEX4 = 7'b1111111;
-assign HEX5 = 7'b1111111;
+//assign HEX4 = 7'b1111111;
+//assign HEX5 = 7'b1111111;
 
 HexDigit Digit0(HEX0, hex3_hex0[3:0]);
 HexDigit Digit1(HEX1, hex3_hex0[7:4]);
 HexDigit Digit2(HEX2, hex3_hex0[11:8]);
 HexDigit Digit3(HEX3, hex3_hex0[15:12]);
+HexDigit Digit4(HEX4, hex5_hex4[3:0]);
+HexDigit Digit5(HEX5, hex5_hex4[7:4]);
+
 
 //=======================================================
 // SRAM/VGA state machine
@@ -428,7 +431,51 @@ wire        [7:0]   color_out;
 wire solver_done_1;
 reg solver_reset;
 reg [3:0] scale;
-~KEY[]
+wire zoom_in, zoom_out, shift_left, shift_right, shift_up, shift_down;
+
+always @(posedge CLOCK_50) begin
+	if(~KEY[0]) begin
+		scale <= 0;
+	end else begin
+		if(zoom_in) begin
+			scale <= scale + 1;
+		end else if (zoom_out) begin
+			scale <= scale - 1;
+		end
+	end
+end
+wire out_1, out_2, out_3;
+assign LEDR[5:0] = {zoom_in, zoom_out, shift_left, shift_right, shift_up, shift_down};
+assign zoom_in = SW[0] & out_1;
+assign zoom_out = ~SW[0] & out_1;
+assign shift_right = SW[1] & out_2; 
+assign shift_up = ~SW[1] & out_2; 
+assign shift_left = SW[1] & out_3; 
+assign shift_down = ~SW[1] & out_3; 
+userInput _key_1 (
+					.clk(CLOCK_50),
+					.reset(reset),
+					.in(~KEY[1]),
+					// .out( SW[0] ? zoom_in : zoom_out )
+					.out(out_1)
+				);
+
+userInput _key_2 (
+					.clk(CLOCK_50),
+					.reset(reset),
+					.in(~KEY[2]),
+					// .out( SW[1] ? shift_right : shift_up )
+					.out(out_2)
+				);
+
+userInput _key_3 (
+					.clk(CLOCK_50),
+					.reset(reset),
+					.in(~KEY[3]),
+					//.out( SW[1] ? shift_left : shift_down )
+					.out(out_3)
+				);						
+
 solver _s1 (
 				.clk(CLOCK_50),
 				.reset(solver_reset),
@@ -438,16 +485,38 @@ solver _s1 (
 				.out_iter(out_iter),
 				.done_reg(solver_done_1)
 			); 
+// module mapper (
+//     input logic clk, reset,
+//     input logic [9:0] x,
+//     input logic [8:0] y,
+//     // input logic [26:0] delta,  
+//     input logic [3:0] scale,
 
+//     input logic sl, sr, su, sd,
+//     output logic [26:0] ci, cr,
+//     output logic [26:0] tl_x, tl_y, // for debugging
+//     output logic [26:0] delta // for debugging 
+// );
 mapper _mapper(
+				.clk(CLOCK_50),
+				.reset(~KEY[0]),
 				.x(vga_x_cood),
 				.y(vga_y_cood[8:0]),
-				.delta(),  
 				.scale(scale),
+				.sl(shift_left),
+				.sr(shift_right),
+				.su(shift_up),
+				.sd(shift_down),
 				.ci(ci),
-				.cr(cr)
+				.cr(cr),
+				.tl_x(tl_x),
+				.tl_y(tl_y),
+				.delta(delta)
 			);
-
+wire [26:0] delta, tl_x, tl_y;
+wire [26:0] light_debug;
+assign {LEDR[9:7],hex5_hex4,hex3_hex0} = light_debug; 
+assign light_debug = (SW[5] == 1'b1) ? delta : (SW[4] == 1'b1) ? tl_x : tl_y;
 counter_to_color _c2c1 ( 
 				.counter(out_iter),
 				.max_iterations(1000),
@@ -670,7 +739,7 @@ always @(posedge CLOCK_50) begin // CLOCK_50
 	if (state==30) begin
 		// generate a delay so bus can be used for VGA
 		// 8 cycles works, 7 does not
-		if (bus_time==SW[9:6]) state <= 18 ; //19
+		if (bus_time==SW[9:6]) state <= 18 ; //18
 		else bus_time <= bus_time + 1 ;
 	end
 	
@@ -696,7 +765,7 @@ end // always @(posedge state_clock)
 //  Structural coding
 //=======================================================
 // From Qsys
-
+wire [26:0]pio_debug_c;
 Computer_System The_System (
 	////////////////////////////////////
 	// FPGA Side
@@ -731,6 +800,9 @@ Computer_System The_System (
 	// 50 MHz clock bridge
 	.clock_bridge_0_in_clk_clk            (CLOCK_50), //(CLOCK_50), 
 	
+	//pio ports
+	
+	.debug_c_external_connection_export (pio_debug_c), 
 	// VGA Subsystem
 	.vga_pll_ref_clk_clk 					(CLOCK2_50),
 	.vga_pll_ref_reset_reset				(1'b0),
