@@ -490,7 +490,7 @@ vga_driver DUT   (	.clock(vga_pll),
 
 wire out_1, out_2, out_3;
 
-always @(posedge CLOCK_50) begin
+always @(posedge M10k_pll) begin
 	if(~KEY[0]) begin
 		scale <= 0;
 	end else begin
@@ -503,7 +503,7 @@ always @(posedge CLOCK_50) begin
 end
 
 userInput _key_1 (
-					.clk(CLOCK_50),
+					.clk(M10k_pll),
 					.reset(solver_reset),
 					.in(~KEY[1]),
 					// .out( SW[0] ? zoom_in : zoom_out )
@@ -511,7 +511,7 @@ userInput _key_1 (
 				);
 
 userInput _key_2 (
-					.clk(CLOCK_50),
+					.clk(M10k_pll),
 					.reset(solver_reset),
 					.in(~KEY[2]),
 					// .out( SW[1] ? shift_right : shift_up )
@@ -519,7 +519,7 @@ userInput _key_2 (
 				);
 
 userInput _key_3 (
-					.clk(CLOCK_50),
+					.clk(M10k_pll),
 					.reset(solver_reset),
 					.in(~KEY[3]),
 					//.out( SW[1] ? shift_left : shift_down )
@@ -532,7 +532,7 @@ wire signed [12:0]  out_iter;
 wire solver_done_1;
 
 solver _s1 (
-				.clk(CLOCK_50),
+				.clk(M10k_pll),
 				.reset(solver_reset),
 				.ci(ci),
 				.cr(cr),
@@ -555,7 +555,7 @@ assign shift_down = ~SW[1] & out_3;
 wire [26:0] delta, tl_x, tl_y;
 
 mapper _mapper(
-				.clk(CLOCK_50),
+				.clk(M10k_pll),
 				.reset(~KEY[0]),
 				.x(x_coord),
 				.y(y_coord[8:0]),
