@@ -420,59 +420,60 @@ always@(posedge M10k_pll) begin
 	// Otherwiser repeatedly write a large checkerboard to memory
 	else begin
 		timer <= timer + 1; 
-	end 
 
-	if (arbiter_state == 8'd_0) begin
-		vga_reset <= 1'b_0 ;
-		solver_reset <= 1; 
-		arbiter_state <= 8'd_1;
-		x_counter <= 10'd_0 ; 
-		y_counter <= 10'd_0 ;  
-	end
-	
-	if (arbiter_state == 8'd_1) begin
-		// the next state we will start the solver
-		solver_reset <= 1;
-		// address update
-		if( x_counter < 639 ) begin
-			x_counter <= x_counter + 1 ; 
-		end else begin
-			y_counter <= y_counter + 1; 
-			x_counter <= 0;
+		if (arbiter_state == 8'd_0) begin
+			vga_reset <= 1'b_0 ;
+			solver_reset <= 1; 
+			arbiter_state <= 8'd_1;
+			x_counter <= 10'd_0 ; 
+			y_counter <= 10'd_0 ;  
 		end
-		arbiter_state <= 8'd2 ;
-	end
+		
+		if (arbiter_state == 8'd_1) begin
+			// the next state we will start the solver
+			solver_reset <= 1;
+			// address update
+			if( x_counter < 639 ) begin
+				x_counter <= x_counter + 1 ; 
+			end else begin
+				y_counter <= y_counter + 1; 
+				x_counter <= 0;
+			end
+			arbiter_state <= 8'd2 ;
+		end
 
-	// We need one more state for the solver_reset to actually reset the done signal
-	// or we will just jump through the current pixel
-	if (arbiter_state == 8'd_2) begin
-		solver_reset <= 0;
-		arbiter_state <= 8'd3 ;
-	end
-
-	if (arbiter_state == 8'd_3) begin
-		if(!(solver_done_1 & solver_done_2)) begin
+		// We need one more state for the solver_reset to actually reset the done signal
+		// or we will just jump through the current pixel
+		if (arbiter_state == 8'd_2) begin
+			solver_reset <= 0;
 			arbiter_state <= 8'd3 ;
-		end else begin
-			arbiter_state <= 8'd4 ;
 		end
-	end
 
-	if (arbiter_state == 8'd_4) begin
-		write_enable <= 1'b_1 ;
-		write_address <= (19'd_640 * y_counter) + x_counter ;
-		write_data_1 <= color_out_1;
-		write_data_2 <= color_out_2;
-		arbiter_state <= 8'd_5 ;
-	end
-
-	if (arbiter_state == 8'd_5) begin
-		write_enable <= 1'b_0 ;
-		if (x_counter>=639 && y_counter>=239) arbiter_state <= 8'd_0 ; // ending
-		else begin
-			arbiter_state  <= 8'd_1 ;
+		if (arbiter_state == 8'd_3) begin
+			if(!(solver_done_1 & solver_done_2)) begin
+				arbiter_state <= 8'd3 ;
+			end else begin
+				arbiter_state <= 8'd4 ;
+			end
 		end
-	end
+
+		if (arbiter_state == 8'd_4) begin
+			write_enable <= 1'b_1 ;
+			write_address <= (19'd_640 * y_counter) + x_counter ;
+			write_data_1 <= color_out_1;
+			write_data_2 <= color_out_2;
+			arbiter_state <= 8'd_5 ;
+		end
+
+		if (arbiter_state == 8'd_5) begin
+			write_enable <= 1'b_0 ;
+			if (x_counter>=639 && y_counter>=239) arbiter_state <= 8'd_0 ; // ending
+			else begin
+				arbiter_state  <= 8'd_1 ;
+			end
+		end
+
+	end 
 
 end
 
@@ -972,5 +973,4 @@ module M10K_512_8(
         q <= mem[read_address]; // q doesn't get d in this clock cycle
     end
 endmodule
-
 
