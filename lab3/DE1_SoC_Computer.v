@@ -380,8 +380,10 @@ wire vga_pll ;
 reg  vga_reset ;
 
 // M10k memory control and data
-wire 		[7:0] 	M10k_out_1, M10k_out_2 ;
-reg 		[7:0] 	write_data_1, write_data_2 ;
+parameter num = 2;
+
+wire 		[7:0] 	M10k_out [num-1:0];
+reg 		[7:0] 	write_data [num-1:0];
 reg 		[18:0] 	write_address ;
 reg 		[18:0] 	read_address ;
 reg 				write_enable ;
@@ -393,119 +395,118 @@ wire 					M10k_pll_locked ;
 // Memory writing control registers
 reg 		[7:0] 	arbiter_state ;
 reg			[9:0]	x_counter, y_counter; 
-wire 		[9:0] 	x_coord_1, x_coord_2 ;
-wire 		[9:0] 	y_coord_1, y_coord_2 ;
+wire 		[9:0] 	x_coord [num-1:0];
+wire 		[9:0] 	y_coord [num-1:0];
 
 // Wires for connecting VGA driver to memory
 wire 		[9:0]	next_x ;
 wire 		[9:0] 	next_y ;
 
-assign x_coord_1 = x_counter;
-assign x_coord_2 = x_counter;
-assign y_coord_1 = y_counter << 1;
-assign y_coord_2 = (y_counter << 1) + 1;
-
 reg [31:0] timer ; // may need to throttle write-rate
 reg flag, timer_flag;
 assign GPIO_0[0] = flag;
 
+integer j;
+wire allDone = &solver_done;
 always@(posedge M10k_pll) begin
 	// Zero everything in reset
-	if (~KEY[0]) begin
-		arbiter_state <= 8'd_0 ;
-		vga_reset <= 1'b_1 ;
-		solver_reset <= 1 ;
-		// timer <= 0; 
-		// flag <= 0;
-		write_data_1 <= 0;
-		write_data_2 <= 0;
-		write_address <= 0;
-		write_enable <= 0;
-		flag <= 0;
-		
-		//timer flag
-		timer_flag <= 0;
-		timer <= 0;
-	end 
-	// Otherwiser repeatedly write a large checkerboard to memory
-	else begin
+	for (j = 0; j < num; j = j + 1) begin: 
 
-		if (arbiter_state == 8'd_0) begin
-			vga_reset <= 1'b_0 ;
-			solver_reset <= 1; 
-			arbiter_state <= 8'd_1;
-			x_counter <= 10'd_0 ; 
-			y_counter <= 10'd_0 ;  
-			flag <= ~flag;
-		end
-		
-		else if (arbiter_state == 8'd_1) begin
-			// the next state we will start the solver
-			solver_reset <= 1;
-			// address update
-			if( x_counter < 639 ) begin
-				x_counter <= x_counter + 1 ; 
-			end else begin
-				y_counter <= y_counter + 1; 
-				x_counter <= 0;
-			end
-			arbiter_state <= 8'd2 ;
-		end
-
-		// We need one more state for the solver_reset to actually reset the done signal
-		// or we will just jump through the current pixel
-		else if (arbiter_state == 8'd_2) begin
-			solver_reset <= 0;
-			arbiter_state <= 8'd3 ;
-		end
-
-		else if (arbiter_state == 8'd_3) begin
-			if(!(solver_done_1 & solver_done_2)) begin
-				arbiter_state <= 8'd3 ;
-			end else begin
-				arbiter_state <= 8'd4 ;
-			end
-		end
-
-		else if (arbiter_state == 8'd_4) begin
-			write_enable <= 1'b_1 ;
-			write_address <= (19'd_640 * y_counter) + x_counter ;
-			write_data_1 <= color_out_1;
-			write_data_2 <= color_out_2;
-			arbiter_state <= 8'd_5 ;
-		end
-
-		else if (arbiter_state == 8'd_5) begin
-			write_enable <= 1'b_0 ;
-			if (x_counter>=639 && y_counter>=239) begin
-				// flag <= 0;
-				// set flag
-				timer_flag <= 1;
-				arbiter_state <= 8'd_0 ; // ending
-			end	else begin
-				arbiter_state  <= 8'd_1 ;
-
-			end
-		end
-
-		else begin // default 
-			// same as arbiter_state == 8'd_0
-			vga_reset <= 1'b_0 ;
-			solver_reset <= 1; 
-			arbiter_state <= 8'd_1;
-			x_counter <= 10'd_0 ; 
-			y_counter <= 10'd_0 ;  
-		end 
-
-		if(out_1 | out_2 | out_3) begin
+		if (~KEY[0]) begin
+			arbiter_state <= 8'd_0 ;
+			vga_reset <= 1'b_1 ;
+			solver_reset <= 1 ;
+			// timer <= 0; 
+			// flag <= 0;
+			write_data[j] <= 0;
+			write_address <= 0;
+			write_enable <= 0;
+			flag <= 0;
+			
+			//timer flag
 			timer_flag <= 0;
 			timer <= 0;
 		end 
+		// Otherwiser repeatedly write a large checkerboard to memory
+		else begin
 
-		if(!timer_flag)
-			timer <= timer + 1; 
-		else
-			timer <= timer;
+			if (arbiter_state == 8'd_0) begin
+				vga_reset <= 1'b_0 ;
+				solver_reset <= 1; 
+				arbiter_state <= 8'd_1;
+				x_counter <= 10'd_0 ; 
+				y_counter <= 10'd_0 ;  
+				flag <= ~flag;
+			end
+			
+			else if (arbiter_state == 8'd_1) begin
+				// the next state we will start the solver
+				solver_reset <= 1;
+				// address update
+				if( x_counter < 639 ) begin
+					x_counter <= x_counter + 1 ; 
+				end else begin
+					y_counter <= y_counter + 1; 
+					x_counter <= 0;
+				end
+				arbiter_state <= 8'd2 ;
+			end
+
+			// We need one more state for the solver_reset to actually reset the done signal
+			// or we will just jump through the current pixel
+			else if (arbiter_state == 8'd_2) begin
+				solver_reset <= 0;
+				arbiter_state <= 8'd3 ;
+			end
+
+			else if (arbiter_state == 8'd_3) begin
+				if(!(allDone)) begin 
+					arbiter_state <= 8'd3 ;
+				end else begin
+					arbiter_state <= 8'd4 ;
+				end
+			end
+
+			else if (arbiter_state == 8'd_4) begin
+				write_enable <= 1'b_1 ;
+				write_address <= (19'd_640 * y_counter) + x_counter ;
+				write_data[j] <= color_out[j];
+				arbiter_state <= 8'd_5 ;
+			end
+
+			else if (arbiter_state == 8'd_5) begin
+				write_enable <= 1'b_0 ;
+				if (x_counter>=639 && y_counter>=239) begin
+					// flag <= 0;
+					// set flag
+					timer_flag <= 1;
+					arbiter_state <= 8'd_0 ; // ending
+				end	else begin
+					arbiter_state  <= 8'd_1 ;
+
+				end
+			end
+
+			else begin // default 
+				// same as arbiter_state == 8'd_0
+				vga_reset <= 1'b_0 ;
+				solver_reset <= 1; 
+				arbiter_state <= 8'd_1;
+				x_counter <= 10'd_0 ; 
+				y_counter <= 10'd_0 ;  
+			end 
+
+			if(out_1 | out_2 | out_3) begin
+				timer_flag <= 0;
+				timer <= 0;
+			end 
+
+			if(!timer_flag)
+				timer <= timer + 1; 
+			else
+				timer <= timer;
+
+		end 
 
 	end 
 
@@ -528,13 +529,90 @@ M10K_512_8 pixel_data_2( .q(M10k_out_2), // contains pixel color (8 bit) for dis
 								.we(write_enable),
 								.clk(M10k_pll)
 );
+// generate
+// 	genvar i;
+// 	for(i = 0; i < WIDTH; i=i+1) begin: d
+
+// 		string_v3 s (
+// 			.clk(clk),
+// 			.reset(reset), // should also be controlled by the C program reset
+// 			.left_wire((i == 0) ? 18'b0 : neighbor_in[i-1]),
+// 			.right_wire((i == WIDTH-1) ? 18'b0 : neighbor_in[i+1]),
+// 			.neighbor_in(neighbor_in[i]),
+// 			.init_en((i == pio_string_init)),
+// 			.pio_d(pio_d),
+// 			.pio_wr_addr(pio_wr_addr),
+// 			.pio_wr_en(pio_wr_en),
+// 			.allDone(allDone),
+// 			.done(done[i]),
+// 			.center(center[i]), // else open port?
+// 			// width and height of drum
+// 			.fifo_empty(fifo_empty),
+// 			.pio_height(pio_height),
+// 			.rho_eff(rho_eff)
+// 		);
+// 	end
+// endgenerate
+
+
+// mux stuff
+assign x_coord[0] = x_counter;
+assign x_coord[1] = x_counter;
+assign y_coord[0] = y_counter << 1;
+assign y_coord[1] = (y_counter << 1) + 1;
+
+// signals 
+//assign read_address = (19'd_640*next_y[9:1]) + next_x
+//wire [7:0] M10K_out [1:0]
+generate
+	genvar i;
+	for(i = 0; i < 2; i = i + 1) begin: 
+		M10K_512_8 pixel_data_1( .q(M10k_out[i]), // contains pixel color (8 bit) for display
+								.d(write_data[i]),
+								.write_address(write_address),
+								.read_address((19'd_640*next_y[9:1]) + next_x),
+								.we(write_enable),
+								.clk(M10k_pll)
+		);
+
+		mapper _mapper_1(
+				.clk(M10k_pll),
+				.reset(~KEY[0]),
+				.x(x_coord[i]),
+				.y(y_coord[i][8:0]),
+				.scale(scale),
+				.sl(shift_left),
+				.sr(shift_right),
+				.su(shift_up),
+				.sd(shift_down),
+				.ci(ci[i]),
+				.cr(cr[i])
+		);
+
+		solver _s1 (
+			.clk(M10k_pll),
+			.reset(solver_reset),
+			.ci(ci[i]),
+			.cr(cr[i]),
+			.in_max_iter(1000),
+			.out_iter(out_iter[i]),
+			.done_reg(solver_done[i])
+		); 
+
+		counter_to_color _c2c1 ( 
+			.counter(out_iter[i]),
+			.max_iterations(1000),
+			.color(color_out[i])
+		);
+	end
+endgenerate
 
 
 // Instantiate VGA driver			
 // runs at 25 MHz 		
 vga_driver DUT   (	.clock(vga_pll), 
 							.reset(vga_reset),
-							.color_in(next_y[0] ? M10k_out_2 : M10k_out_1),	// Pixel color (8-bit) from memory
+							.color_in(next_y[0] ? M10k_out[1] : M10k_out[0]),	// Pixel color (8-bit) from memory
 							.next_x(next_x),		// This (and next_y) used to specify memory read address
 							.next_y(next_y),		// This (and next_x) used to specify memory read address
 							.hsync(VGA_HS),
@@ -588,29 +666,29 @@ userInput _key_3 (
 				);	
 
 reg solver_reset;
-wire signed [26:0]  ci_1, cr_1;
-wire signed [26:0]  ci_2, cr_2;
-wire signed [12:0]  out_iter_1, out_iter_2;
-wire solver_done_1, solver_done_2;
+wire signed [26:0]  ci [num-1:0];
+wire signed [26:0]  cr [num-1:0];
+wire signed [12:0]  out_iter [num-1:0];
+wire solver_done [num-1:0];
 
-solver _s1 (
-				.clk(M10k_pll),
-				.reset(solver_reset),
-				.ci(ci_1),
-				.cr(cr_1),
-				.in_max_iter(1000),
-				.out_iter(out_iter_1),
-				.done_reg(solver_done_1)
-			); 
-solver _s2 (
-				.clk(M10k_pll),
-				.reset(solver_reset),
-				.ci(ci_2),
-				.cr(cr_2),
-				.in_max_iter(1000),
-				.out_iter(out_iter_2),
-				.done_reg(solver_done_2)
-			); 
+// solver _s1 (
+// 				.clk(M10k_pll),
+// 				.reset(solver_reset),
+// 				.ci(ci_1),
+// 				.cr(cr_1),
+// 				.in_max_iter(1000),
+// 				.out_iter(out_iter_1),
+// 				.done_reg(solver_done_1)
+// 			); 
+// solver _s2 (
+// 				.clk(M10k_pll),
+// 				.reset(solver_reset),
+// 				.ci(ci_2),
+// 				.cr(cr_2),
+// 				.in_max_iter(1000),
+// 				.out_iter(out_iter_2),
+// 				.done_reg(solver_done_2)
+// 			); 
 
 // pixel address is
 // reg [9:0] vga_x_cood, vga_y_cood ; --> x_coord, y_coord
@@ -624,50 +702,50 @@ assign shift_up = ~SW[1] & out_2;
 assign shift_left = SW[1] & out_3; 
 assign shift_down = ~SW[1] & out_3;
 
-mapper _mapper_1(
-				.clk(M10k_pll),
-				.reset(~KEY[0]),
-				.x(x_coord_1),
-				.y(y_coord_1[8:0]),
-				.scale(scale),
-				.sl(shift_left),
-				.sr(shift_right),
-				.su(shift_up),
-				.sd(shift_down),
-				.ci(ci_1),
-				.cr(cr_1)
-			);
+// mapper _mapper_1(
+// 				.clk(M10k_pll),
+// 				.reset(~KEY[0]),
+// 				.x(x_coord_1),
+// 				.y(y_coord_1[8:0]),
+// 				.scale(scale),
+// 				.sl(shift_left),
+// 				.sr(shift_right),
+// 				.su(shift_up),
+// 				.sd(shift_down),
+// 				.ci(ci_1),
+// 				.cr(cr_1)
+// 			);
 
-mapper _mapper_2(
-				.clk(M10k_pll),
-				.reset(~KEY[0]),
-				.x(x_coord_2),
-				.y(y_coord_2[8:0]),
-				.scale(scale),
-				.sl(shift_left),
-				.sr(shift_right),
-				.su(shift_up),
-				.sd(shift_down),
-				.ci(ci_2),
-				.cr(cr_2)
-			);
+// mapper _mapper_2(
+// 				.clk(M10k_pll),
+// 				.reset(~KEY[0]),
+// 				.x(x_coord_2),
+// 				.y(y_coord_2[8:0]),
+// 				.scale(scale),
+// 				.sl(shift_left),
+// 				.sr(shift_right),
+// 				.su(shift_up),
+// 				.sd(shift_down),
+// 				.ci(ci_2),
+// 				.cr(cr_2)
+// 			);
 
 // wire [26:0] light_debug;
 // assign {LEDR[9:7],hex5_hex4,hex3_hex0} = light_debug; 
 // assign light_debug = (SW[5] == 1'b1) ? delta : (SW[4] == 1'b1) ? tl_x : tl_y;
-wire        [7:0]   color_out_1, color_out_2;
+wire        [7:0]   color_out [num-1:0];
 
-counter_to_color _c2c1 ( 
-				.counter(out_iter_1),
-				.max_iterations(1000),
-				.color(color_out_1)
-			);
+// counter_to_color _c2c1 ( 
+// 				.counter(out_iter_1),
+// 				.max_iterations(1000),
+// 				.color(color_out_1)
+// 			);
 
-counter_to_color _c2c2 ( 
-				.counter(out_iter_2),
-				.max_iterations(1000),
-				.color(color_out_2)
-			);
+// counter_to_color _c2c2 ( 
+// 				.counter(out_iter_2),
+// 				.max_iterations(1000),
+// 				.color(color_out_2)
+// 			);
 
 //=======================================================
 //  Structural coding
@@ -999,6 +1077,24 @@ module M10K_512_8(
 	 // force M10K ram style
 	 // 307200 words of 8 bits
     reg [7:0] mem [153600:0]  /* synthesis ramstyle = "no_rw_check, M10K" */;
+	 
+    always @ (posedge clk) begin
+        if (we) begin
+            mem[write_address] <= d;
+		  end
+        q <= mem[read_address]; // q doesn't get d in this clock cycle
+    end
+endmodule
+
+module M10K_8_16_solv( 
+    output reg [7:0] q,
+    input [7:0] d,
+    input [18:0] write_address, read_address,
+    input we, clk
+);
+	 // force M10K ram style
+	 // 307200 words of 8 bits
+    reg [7:0] mem [19200:0]  /* synthesis ramstyle = "no_rw_check, M10K" */;
 	 
     always @ (posedge clk) begin
         if (we) begin
