@@ -70,7 +70,7 @@ module solver (
         zr_sqr_reg <= zr_sqr_reg_in;
         zi_sqr_reg <= zi_sqr_reg_in;
         counter_reg <= counter_reg_in;
-        done_reg <= done_reg_in;
+        // done_reg <= done_reg_in;
     end
 
     //======================================================================
@@ -120,7 +120,8 @@ module solver (
                 zi_sqr_reg_in   = 0;
                 counter_reg_in  = 0; 
                 diverge         = 0; 
-                done_reg_in     = 0; 
+                // done_reg_in     = 0; 
+                done_reg        = 0;
             end
 
             1: begin
@@ -130,7 +131,8 @@ module solver (
                 zi_sqr_reg_in   = zi_sqr_out;
                 counter_reg_in  = counter_reg + 1; 
                 diverge         = (zr_reg_in >= 27'sh100_0000 || zi_reg_in >= 27'sh100_0000 || z_magitude_sqr >= 27'sh200_0000); 
-                done_reg_in     = diverge; 
+                // done_reg_in     = diverge; 
+                done_reg        = diverge; 
             end
 
             2: begin
@@ -140,7 +142,8 @@ module solver (
                 zi_sqr_reg_in       = 0;
                 counter_reg_in      = counter_reg;
                 diverge             = 0; 
-                done_reg_in         = 1;
+                // done_reg_in         = 1;
+                done_reg            = 1;
             end
 
             default: begin
@@ -150,7 +153,8 @@ module solver (
                 zi_sqr_reg_in       = 0;
                 counter_reg_in      = 0;
                 diverge             = 0; 
-                done_reg_in         = 0;
+                // done_reg_in         = 0;
+                done_reg            = 0;
             end
 
         endcase
@@ -190,39 +194,39 @@ endmodule
 module counter_to_color ( 
     input  signed [12:0] counter,
     input  signed [12:0] max_iterations,
-    output  logic [7:0] color
+    output         [7:0] color
 );
     always_comb begin
 
         if (counter >= max_iterations) begin
-            color = 8'b_000_000_00 ; // black
+        color = 8'b_000_000_00 ; // black
         end
         else if (counter >= (max_iterations >>> 1)) begin
-            color = 8'b_011_001_00 ; // white
+        color = 8'b_011_001_00 ; // white
         end
         else if (counter >= (max_iterations >>> 2)) begin
-            color = 8'b_011_001_00 ;
+        color = 8'b_011_001_00 ;
         end
         else if (counter >= (max_iterations >>> 3)) begin
-            color = 8'b_101_010_01 ;
+        color = 8'b_101_010_01 ;
         end
         else if (counter >= (max_iterations >>> 4)) begin
-            color = 8'b_011_001_01 ;
+        color = 8'b_011_001_01 ;
         end
         else if (counter >= (max_iterations >>> 5)) begin
-            color = 8'b_001_001_01 ;
+        color = 8'b_001_001_01 ;
         end
         else if (counter >= (max_iterations >>> 6)) begin
-            color = 8'b_011_010_10 ;
+        color = 8'b_011_010_10 ;
         end
         else if (counter >= (max_iterations >>> 7)) begin
-            color = 8'b_010_100_10 ;
+        color = 8'b_010_100_10 ;
         end
         else if (counter >= (max_iterations >>> 8)) begin
-            color = 8'b_010_100_10 ;
+        color = 8'b_010_100_10 ;
         end
         else begin
-            color = 8'b_010_100_10 ;
+        color = 8'b_010_100_10 ;
         end
 
     end
