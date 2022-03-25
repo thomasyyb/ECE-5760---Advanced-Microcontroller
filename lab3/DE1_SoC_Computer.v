@@ -358,19 +358,21 @@ output					HPS_USB_STP;
 //=======================================================
 
 wire			[15: 0]	hex3_hex0;
-//wire			[15: 0]	hex5_hex4;
+wire			[15: 0]	hex5_hex4;
 
 //assign HEX0 = ~hex3_hex0[ 6: 0]; // hex3_hex0[ 6: 0]; 
 //assign HEX1 = ~hex3_hex0[14: 8];
 //assign HEX2 = ~hex3_hex0[22:16];
 //assign HEX3 = ~hex3_hex0[30:24];
-assign HEX4 = 7'b1111111;
-assign HEX5 = 7'b1111111;
+// assign HEX4 = 7'b1111111;
+// assign HEX5 = 7'b1111111;
 
-HexDigit Digit0(HEX0, hex3_hex0[3:0]);
-HexDigit Digit1(HEX1, hex3_hex0[7:4]);
-HexDigit Digit2(HEX2, hex3_hex0[11:8]);
-HexDigit Digit3(HEX3, hex3_hex0[15:12]);
+HexDigit Digit0(HEX0, timer[3:0]);
+HexDigit Digit1(HEX1, timer[7:4]);
+HexDigit Digit2(HEX2, timer[11:8]);
+HexDigit Digit3(HEX3, timer[15:12]);
+HexDigit Digit4(HEX4, timer[19:16]);
+HexDigit Digit5(HEX5, timer[23:20]);
 
 // VGA clock and reset lines
 wire vga_pll_lock ;
@@ -404,6 +406,8 @@ assign y_coord_1 = y_counter << 1;
 assign y_coord_2 = (y_counter << 1) + 1;
 
 reg [31:0] timer ; // may need to throttle write-rate
+reg flag, timer_flag;
+assign GPIO_0[0] = flag;
 
 always@(posedge M10k_pll) begin
 	// Zero everything in reset
@@ -411,15 +415,20 @@ always@(posedge M10k_pll) begin
 		arbiter_state <= 8'd_0 ;
 		vga_reset <= 1'b_1 ;
 		solver_reset <= 1 ;
-		timer <= 0; 
+		// timer <= 0; 
+		// flag <= 0;
 		write_data_1 <= 0;
 		write_data_2 <= 0;
 		write_address <= 0;
 		write_enable <= 0;
+		flag <= 0;
+		
+		//timer flag
+		timer_flag <= 0;
+		timer <= 0;
 	end 
 	// Otherwiser repeatedly write a large checkerboard to memory
 	else begin
-		timer <= timer + 1; 
 
 		if (arbiter_state == 8'd_0) begin
 			vga_reset <= 1'b_0 ;
@@ -427,9 +436,10 @@ always@(posedge M10k_pll) begin
 			arbiter_state <= 8'd_1;
 			x_counter <= 10'd_0 ; 
 			y_counter <= 10'd_0 ;  
+			flag <= ~flag;
 		end
 		
-		if (arbiter_state == 8'd_1) begin
+		else if (arbiter_state == 8'd_1) begin
 			// the next state we will start the solver
 			solver_reset <= 1;
 			// address update
@@ -444,12 +454,12 @@ always@(posedge M10k_pll) begin
 
 		// We need one more state for the solver_reset to actually reset the done signal
 		// or we will just jump through the current pixel
-		if (arbiter_state == 8'd_2) begin
+		else if (arbiter_state == 8'd_2) begin
 			solver_reset <= 0;
 			arbiter_state <= 8'd3 ;
 		end
 
-		if (arbiter_state == 8'd_3) begin
+		else if (arbiter_state == 8'd_3) begin
 			if(!(solver_done_1 & solver_done_2)) begin
 				arbiter_state <= 8'd3 ;
 			end else begin
@@ -457,7 +467,7 @@ always@(posedge M10k_pll) begin
 			end
 		end
 
-		if (arbiter_state == 8'd_4) begin
+		else if (arbiter_state == 8'd_4) begin
 			write_enable <= 1'b_1 ;
 			write_address <= (19'd_640 * y_counter) + x_counter ;
 			write_data_1 <= color_out_1;
@@ -465,13 +475,37 @@ always@(posedge M10k_pll) begin
 			arbiter_state <= 8'd_5 ;
 		end
 
-		if (arbiter_state == 8'd_5) begin
+		else if (arbiter_state == 8'd_5) begin
 			write_enable <= 1'b_0 ;
-			if (x_counter>=639 && y_counter>=239) arbiter_state <= 8'd_0 ; // ending
-			else begin
+			if (x_counter>=639 && y_counter>=239) begin
+				// flag <= 0;
+				// set flag
+				timer_flag <= 1;
+				arbiter_state <= 8'd_0 ; // ending
+			end	else begin
 				arbiter_state  <= 8'd_1 ;
+
 			end
 		end
+
+		else begin // default 
+			// same as arbiter_state == 8'd_0
+			vga_reset <= 1'b_0 ;
+			solver_reset <= 1; 
+			arbiter_state <= 8'd_1;
+			x_counter <= 10'd_0 ; 
+			y_counter <= 10'd_0 ;  
+		end 
+
+		if(out_1 | out_2 | out_3) begin
+			timer_flag <= 0;
+			timer <= 0;
+		end 
+
+		if(!timer_flag)
+			timer <= timer + 1; 
+		else
+			timer <= timer;
 
 	end 
 

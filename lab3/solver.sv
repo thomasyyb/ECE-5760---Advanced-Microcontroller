@@ -202,31 +202,31 @@ module counter_to_color (
         color = 8'b_000_000_00 ; // black
         end
         else if (counter >= (max_iterations >>> 1)) begin
-        color = 8'b_011_001_00 ; // white
+        color = 8'b_001_000_00 ; // brown
         end
         else if (counter >= (max_iterations >>> 2)) begin
-        color = 8'b_011_001_00 ;
+        color = 8'b_010_001_00 ;
         end
         else if (counter >= (max_iterations >>> 3)) begin
-        color = 8'b_101_010_01 ;
+        color = 8'b_100_000_01 ; // same color
         end
         else if (counter >= (max_iterations >>> 4)) begin
-        color = 8'b_011_001_01 ;
+        color = 8'b_100_100_01 ; // same color
         end
         else if (counter >= (max_iterations >>> 5)) begin
-        color = 8'b_001_001_01 ;
+        color = 8'b_100_001_10 ; // pink ?
         end
         else if (counter >= (max_iterations >>> 6)) begin
-        color = 8'b_011_010_10 ;
+        color = 8'b_100_001_10 ; // pink ?
         end
         else if (counter >= (max_iterations >>> 7)) begin
-        color = 8'b_010_100_10 ;
+        color = 8'b_000_100_10 ; // blue
         end
         else if (counter >= (max_iterations >>> 8)) begin
-        color = 8'b_010_100_10 ;
+        color = 8'b_000_100_10 ; // blue
         end
         else begin
-        color = 8'b_010_100_10 ;
+        color = 8'b_000_100_10 ; // blue
         end
 
     end
