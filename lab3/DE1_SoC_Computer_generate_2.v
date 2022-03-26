@@ -402,7 +402,7 @@ wire 		[9:0] 	y_coord [num-1:0];
 wire 		[9:0]	next_x ;
 wire 		[9:0] 	next_y ;
 
-// reg 		[31:0]  timer ; // may need to throttle write-rate
+reg 		[31:0]  timer ; // may need to throttle write-rate
 reg flag; //timer_flag;
 assign GPIO_0[0] = flag;
 
