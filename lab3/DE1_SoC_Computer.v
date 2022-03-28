@@ -380,7 +380,8 @@ wire vga_pll ;
 reg  vga_reset ;
 
 // M10k memory control and data
-parameter num = 2;
+parameter num = 4;
+parameter log_num = 2;
 
 wire 		[7:0] 	M10k_out [num-1:0];
 reg 		[7:0] 	write_data [num-1:0];
@@ -389,8 +390,8 @@ reg 		[18:0] 	read_address ;
 reg 				write_enable ;
 
 // M10k memory clock
-wire 					M10k_pll ;
-wire 					M10k_pll_locked ;
+wire 				M10k_pll ;
+wire 				M10k_pll_locked ;
  
 // Memory writing control registers
 reg 		[7:0] 	arbiter_state ;
@@ -402,34 +403,38 @@ wire 		[9:0] 	y_coord [num-1:0];
 wire 		[9:0]	next_x ;
 wire 		[9:0] 	next_y ;
 
-reg [31:0] timer ; // may need to throttle write-rate
-reg flag, timer_flag;
+reg 		[31:0]  timer ; // may need to throttle write-rate
+reg flag; //timer_flag;
 assign GPIO_0[0] = flag;
 
 integer j;
-wire allDone = &solver_done;
+wire allDone = &solver_done  ;
 always@(posedge M10k_pll) begin
-	// Zero everything in reset
-	for (j = 0; j < num; j = j + 1) begin: 
+	
+	for (j = 0; j < num; j = j + 1) begin
 
-		if (~KEY[0]) begin
+		// Zero everything in reset
+		if (~KEY[0]) begin  
+			
 			arbiter_state <= 8'd_0 ;
 			vga_reset <= 1'b_1 ;
 			solver_reset <= 1 ;
-			// timer <= 0; 
-			// flag <= 0;
 			write_data[j] <= 0;
 			write_address <= 0;
 			write_enable <= 0;
+
+			// Oscilloscope the calculation time
 			flag <= 0;
 			
 			//timer flag
-			timer_flag <= 0;
-			timer <= 0;
+			// timer_flag <= 0;
+			// timer <= 0;
 		end 
-		// Otherwiser repeatedly write a large checkerboard to memory
-		else begin
 
+		// Otherwiser render the mandelbrot set
+		else begin
+			
+			// This state happens at the beginning of each frame
 			if (arbiter_state == 8'd_0) begin
 				vga_reset <= 1'b_0 ;
 				solver_reset <= 1; 
@@ -440,7 +445,7 @@ always@(posedge M10k_pll) begin
 			end
 			
 			else if (arbiter_state == 8'd_1) begin
-				// the next state we will start the solver
+				// we will start the solver in the next state 
 				solver_reset <= 1;
 				// address update
 				if( x_counter < 639 ) begin
@@ -459,6 +464,7 @@ always@(posedge M10k_pll) begin
 				arbiter_state <= 8'd3 ;
 			end
 
+			// Wait for all the solvers to finish
 			else if (arbiter_state == 8'd_3) begin
 				if(!(allDone)) begin 
 					arbiter_state <= 8'd3 ;
@@ -467,6 +473,7 @@ always@(posedge M10k_pll) begin
 				end
 			end
 
+			// Write the output colors to M10K blocks
 			else if (arbiter_state == 8'd_4) begin
 				write_enable <= 1'b_1 ;
 				write_address <= (19'd_640 * y_counter) + x_counter ;
@@ -474,16 +481,16 @@ always@(posedge M10k_pll) begin
 				arbiter_state <= 8'd_5 ;
 			end
 
+			// Write finish! Decide whether to reset the address or go on to the next one
 			else if (arbiter_state == 8'd_5) begin
 				write_enable <= 1'b_0 ;
-				if (x_counter>=639 && y_counter>=239) begin
-					// flag <= 0;
-					// set flag
-					timer_flag <= 1;
-					arbiter_state <= 8'd_0 ; // ending
+				if (x_counter>=639 && y_counter>=(480/num-1)) begin
+					// If we reach the last pixel, we reset the counter by going to the stage 0
+					// timer_flag <= 1;  // set flag
+					arbiter_state <= 8'd_0 ;
 				end	else begin
+					// Otherwise, we move on to the next pixel
 					arbiter_state  <= 8'd_1 ;
-
 				end
 			end
 
@@ -496,15 +503,15 @@ always@(posedge M10k_pll) begin
 				y_counter <= 10'd_0 ;  
 			end 
 
-			if(out_1 | out_2 | out_3) begin
-				timer_flag <= 0;
-				timer <= 0;
-			end 
+			// if(out_1 | out_2 | out_3) begin
+			// 	timer_flag <= 0;
+			// 	timer <= 0;
+			// end 
 
-			if(!timer_flag)
-				timer <= timer + 1; 
-			else
-				timer <= timer;
+			// if(!timer_flag)
+			// 	timer <= timer + 1; 
+			// else
+			// 	timer <= timer;
 
 		end 
 
@@ -512,65 +519,33 @@ always@(posedge M10k_pll) begin
 
 end
 
-// Instantiate memory
-// runs at 100 MHz 
-M10K_512_8 pixel_data_1( .q(M10k_out_1), // contains pixel color (8 bit) for display
-								.d(write_data_1),
-								.write_address(write_address),
-								.read_address((19'd_640*next_y[9:1]) + next_x),
-								.we(write_enable),
-								.clk(M10k_pll)
-);
-
-M10K_512_8 pixel_data_2( .q(M10k_out_2), // contains pixel color (8 bit) for display
-								.d(write_data_2),
-								.write_address(write_address),
-								.read_address((19'd_640*next_y[9:1]) + next_x),
-								.we(write_enable),
-								.clk(M10k_pll)
-);
-// generate
-// 	genvar i;
-// 	for(i = 0; i < WIDTH; i=i+1) begin: d
-
-// 		string_v3 s (
-// 			.clk(clk),
-// 			.reset(reset), // should also be controlled by the C program reset
-// 			.left_wire((i == 0) ? 18'b0 : neighbor_in[i-1]),
-// 			.right_wire((i == WIDTH-1) ? 18'b0 : neighbor_in[i+1]),
-// 			.neighbor_in(neighbor_in[i]),
-// 			.init_en((i == pio_string_init)),
-// 			.pio_d(pio_d),
-// 			.pio_wr_addr(pio_wr_addr),
-// 			.pio_wr_en(pio_wr_en),
-// 			.allDone(allDone),
-// 			.done(done[i]),
-// 			.center(center[i]), // else open port?
-// 			// width and height of drum
-// 			.fifo_empty(fifo_empty),
-// 			.pio_height(pio_height),
-// 			.rho_eff(rho_eff)
-// 		);
-// 	end
-// endgenerate
-
-
 // mux stuff
-assign x_coord[0] = x_counter;
-assign x_coord[1] = x_counter;
-assign y_coord[0] = y_counter << 1;
-assign y_coord[1] = (y_counter << 1) + 1;
+// assign x_coord[0] = x_counter;
+// assign x_coord[1] = x_counter;
+// assign y_coord[0] = y_counter << 1;
+// assign y_coord[1] = (y_counter << 1) + 1;
+
+// counter = 0
+// y_coor  = 0, 1, 2, 3 
+// counter = 1
+// y_coor  = 4, 5, 6, 7
+// counter = 119
+// y_coor  = 476, 477, 478, 479
 
 // signals 
 //assign read_address = (19'd_640*next_y[9:1]) + next_x
 //wire [7:0] M10K_out [1:0]
 generate
 	genvar i;
-	for(i = 0; i < 2; i = i + 1) begin: 
-		M10K_512_8 pixel_data_1( .q(M10k_out[i]), // contains pixel color (8 bit) for display
+	for(i = 0; i < num; i = i + 1) begin: bundle
+
+		assign x_coord[i] = x_counter;
+		assign y_coord[i] = ( y_counter << log_num ) + i;
+
+		M10K_8_bit_4_solv pixel_data_1( .q(M10k_out[i]), // contains pixel color (8 bit) for display
 								.d(write_data[i]),
 								.write_address(write_address),
-								.read_address((19'd_640*next_y[9:1]) + next_x),
+								.read_address((19'd_640*next_y[9:log_num]) + next_x),
 								.we(write_enable),
 								.clk(M10k_pll)
 		);
@@ -589,7 +564,7 @@ generate
 				.cr(cr[i])
 		);
 
-		solver _s1 (
+		solver _s_1 (
 			.clk(M10k_pll),
 			.reset(solver_reset),
 			.ci(ci[i]),
@@ -607,12 +582,23 @@ generate
 	end
 endgenerate
 
+// next_y[0] ? M10k_out[1] : M10k_out[0]
+reg [7:0] vga_color_in;
+always @(*) begin
+	case(next_y[log_num-1:0]) // change this base on scheme. Even for x and y we could do {x[1:0], y[1:0]}
+		2'b00: vga_color_in = M10k_out[0];
+		2'b01: vga_color_in = M10k_out[1];
+		2'b10: vga_color_in = M10k_out[2];
+		2'b11: vga_color_in = M10k_out[3];
+	    default: vga_color_in = M10k_out[0]; //should never enter
+	endcase
+end
 
 // Instantiate VGA driver			
 // runs at 25 MHz 		
 vga_driver DUT   (	.clock(vga_pll), 
 							.reset(vga_reset),
-							.color_in(next_y[0] ? M10k_out[1] : M10k_out[0]),	// Pixel color (8-bit) from memory
+							.color_in(vga_color_in),	// Pixel color (8-bit) from memory
 							.next_x(next_x),		// This (and next_y) used to specify memory read address
 							.next_y(next_y),		// This (and next_x) used to specify memory read address
 							.hsync(VGA_HS),
@@ -669,7 +655,7 @@ reg solver_reset;
 wire signed [26:0]  ci [num-1:0];
 wire signed [26:0]  cr [num-1:0];
 wire signed [12:0]  out_iter [num-1:0];
-wire solver_done [num-1:0];
+wire [num-1:0] solver_done ; // used packed array better
 
 // solver _s1 (
 // 				.clk(M10k_pll),
@@ -1103,4 +1089,23 @@ module M10K_8_16_solv(
         q <= mem[read_address]; // q doesn't get d in this clock cycle
     end
 endmodule
+
+module M10K_8_bit_4_solv( 
+    output reg [7:0] q,
+    input [7:0] d,
+    input [18:0] write_address, read_address,
+    input we, clk
+);
+	 // force M10K ram style
+	 // 307200 words of 8 bits
+    reg [7:0] mem [76800:0]  /* synthesis ramstyle = "no_rw_check, M10K" */;
+	 
+    always @ (posedge clk) begin
+        if (we) begin
+            mem[write_address] <= d;
+		  end
+        q <= mem[read_address]; // q doesn't get d in this clock cycle
+    end
+endmodule
+
 
