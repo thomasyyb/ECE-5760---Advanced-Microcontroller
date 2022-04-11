@@ -512,15 +512,13 @@ always@(posedge M10k_pll) begin
 			end
 
 			else begin // default 
-				vga_reset 		<= vga_reset 		;
+				vga_reset 	<= vga_reset 		;
 				solver_reset 	<= solver_reset 	;
-				arbiter_state 	<= 3'd3			 	;
-				x_counter 		<= x_counter 		;
-				y_counter 		<= y_counter 		;
+				arbiter_state 	<= 3'd3			;
+				x_counter 	<= x_counter 		;
+				y_counter 	<= y_counter 		;
 				write_enable	<= write_enable		;
-				signal_tap[0] 	<= signal_tap[0] 	;
-				signal_tap[1] 	<= signal_tap[1] 	;
-				stuck_reg		<= stuck_reg		;
+				stuck_reg	<= stuck_reg		;
 			end 
 
 			// if(out_1 | out_2 | out_3) begin
