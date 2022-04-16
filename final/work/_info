@@ -1,0 +1,125 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/brian/OneDrive/Documents/Cornell/advancedmicrocontrollers/ECE-5760---Advanced-Microcontroller/final
+vphasor
+Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+Z2 !s110 1650137334
+!i10b 1
+!s100 fcc]_gdo3iaF6NXIKJ2`?2
+IFb^L:_zM]KOhbBk:;U5302
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+Z4 !s105 phasor_sv_unit
+S1
+R0
+Z5 w1650133537
+Z6 8./phasor.sv
+Z7 F./phasor.sv
+L0 3
+Z8 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z9 !s108 1650137334.000000
+Z10 !s107 ./phasor.sv|
+Z11 !s90 -reportprogress|300|./phasor.sv|
+!i113 1
+Z12 tCvgOpt 0
+vphasor_tb
+R1
+R2
+!i10b 1
+!s100 md[mnUoCZL<;5iN?VK:OK3
+I7FaZTh=FA3<EgL7HBUe=91
+R3
+R4
+S1
+R0
+R5
+R6
+R7
+L0 26
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+vpseudo_top_level
+R1
+R2
+!i10b 1
+!s100 EP^Z=bKIJUCLQ=51W>:0;3
+IHf6I<XcGfzP2YRi?o>4@o0
+R3
+Z13 !s105 pseudo_top_level_sv_unit
+S1
+R0
+Z14 w1650137324
+Z15 8./pseudo_top_level.sv
+Z16 F./pseudo_top_level.sv
+L0 1
+R8
+r1
+!s85 0
+31
+R9
+Z17 !s107 ./pseudo_top_level.sv|
+Z18 !s90 -reportprogress|300|./pseudo_top_level.sv|
+!i113 1
+R12
+vpseudo_top_level_tb
+R1
+R2
+!i10b 1
+!s100 V?cl@QammACCP]W8Un?<L2
+IB]nVdVJ<^[71XC:@i9zfI0
+R3
+R13
+S1
+R0
+R14
+R15
+R16
+L0 16
+R8
+r1
+!s85 0
+31
+R9
+R17
+R18
+!i113 1
+R12
+vsync_rom
+R1
+R2
+!i10b 1
+!s100 Ji<V5LjdEU7dk[4f@6>G@1
+I4Be?GAV:?iRVeh<6D1=Am2
+R3
+!s105 sine_sv_unit
+S1
+R0
+w1649955667
+8./sine.sv
+F./sine.sv
+L0 7
+R8
+r1
+!s85 0
+31
+R9
+!s107 ./sine.sv|
+!s90 -reportprogress|300|./sine.sv|
+!i113 1
+R12
