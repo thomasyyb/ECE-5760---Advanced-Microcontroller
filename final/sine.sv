@@ -141,6 +141,7 @@ module sync_rom (clock, address, sine);
 					8'h7e: sine = 16'h0323 ;
 					8'h7f: sine = 16'h0192 ;
 					8'h80: sine = 16'h0000 ;
+					// half way
 					8'h81: sine = 16'hfe6e ;
 					8'h82: sine = 16'hfcdd ;
 					8'h83: sine = 16'hfb4b ;
