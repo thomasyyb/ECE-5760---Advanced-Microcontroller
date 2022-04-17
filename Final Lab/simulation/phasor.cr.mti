@@ -1,0 +1,17 @@
+{C:/Users/hh543/Documents/Final Lab/simulation/phasor.sv} {1 {vlog -work work -sv -stats=none {C:/Users/hh543/Documents/Final Lab/simulation/phasor.sv}
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module phasor
+-- Compiling module phasor_tb
+
+Top level modules:
+	phasor_tb
+
+} {} {}} {C:/Users/hh543/Documents/Final Lab/simulation/pseudo_top_level.sv} {1 {vlog -work work -sv -stats=none {C:\Users\hh543\Documents\Final Lab\simulation\pseudo_top_level.sv}
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module pseudo_top_level
+-- Compiling module pseudo_top_level_tb
+
+Top level modules:
+	pseudo_top_level_tb
+
+} {} {}}

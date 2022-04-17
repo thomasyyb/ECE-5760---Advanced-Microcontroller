@@ -2,9 +2,9 @@
 // 4.23 fixed point 
 module phasor (
     input  logic clk, reset, 
-    input  logic signed [3:0] mag, 
+    input  logic signed [3:0] sine_mag, cosine_mag,
     input  logic [3:0] freq, //up to 15th harmonic 
-    output logic signed [19:0] out
+    output logic signed [19:0] s_out, c_out
 );
     logic [7:0] address; // step 
     // logic [15:0] out;
@@ -15,19 +15,19 @@ module phasor (
             address <= address + freq;
         end
     end
-    logic signed [15:0] sine_out;
-    sync_rom s (.clock(clk), .address, .sine(sine_out));
+    logic signed [15:0] sine_out, cosine_out;
+    sync_rom s (.clock(clk), .address, .sine(sine_out), .cosine(cosine_out));
 
-    
-    assign out = sine_out * mag;
+    assign s_out = sine_out * sine_mag;
+    assign c_out = cosine_out * cosine_mag;
     
 endmodule 
 
 module phasor_tb();
     logic clk, reset;
-    logic signed [3:0] mag; 
+    logic signed [3:0] sine_mag, cosine_mag; 
     logic [3:0] freq; //up to 15th harmonic
-    logic signed [19:0] out;
+    logic signed [19:0] s_out, c_out;
 
     initial begin
 		clk <= 0;
@@ -37,12 +37,12 @@ module phasor_tb();
     phasor DUT (.*);
     
     initial begin
-        reset <= 1; freq <= 1; mag <= 1; @(posedge clk);                    
+        reset <= 1; freq <= 1; sine_mag <= 1; cosine_mag <= 1; @(posedge clk);                    
         reset <= 0;     @(posedge clk);                    
         repeat(1000)    @(posedge clk);                    
-        mag <= 3;       @(posedge clk);                    
+        sine_mag <= 3;       @(posedge clk);                    
         repeat(1000)    @(posedge clk);                    
-        mag <= -3;      @(posedge clk);                    
+        cosine_mag <= -3;      @(posedge clk);                    
         repeat(1000)    @(posedge clk);                    
         $stop;
     end
