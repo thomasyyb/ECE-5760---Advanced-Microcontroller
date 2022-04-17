@@ -1,0 +1,166 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/altera/15.0
+vM10K_phasor
+Z0 !s110 1650207991
+!i10b 1
+!s100 YW@@OF7Y79k=UgK0L8e=R2
+ID0dcWf1HV]h420c8Sl`Rm3
+Z1 V`JN@9S9cnhjKRR_L]QIcM3
+Z2 dC:/Users/hh543/Documents/Final Lab/simulation
+Z3 w1650207991
+Z4 8C:/Users/hh543/Documents/Final Lab/simulation/DE1_SoC_Computer.v
+Z5 FC:/Users/hh543/Documents/Final Lab/simulation/DE1_SoC_Computer.v
+L0 1145
+Z6 OV;L;10.3d;59
+r1
+!s85 0
+31
+Z7 !s108 1650207991.796000
+Z8 !s107 C:/Users/hh543/Documents/Final Lab/simulation/DE1_SoC_Computer.v|
+Z9 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/Final Lab/simulation/DE1_SoC_Computer.v|
+!i113 1
+Z10 o-work work
+n@m10@k_phasor
+vphasor
+Z11 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
+Z12 !s110 1650231058
+!i10b 1
+!s100 ]726^gFY2UgTgeQ?n_4VO3
+I87[P@V:iB<`0:h>MWAgFL2
+R1
+Z13 !s105 phasor_sv_unit
+S1
+R2
+Z14 w1650230846
+Z15 8C:/Users/hh543/Documents/Final Lab/simulation/phasor.sv
+Z16 FC:/Users/hh543/Documents/Final Lab/simulation/phasor.sv
+L0 3
+R6
+r1
+!s85 0
+31
+Z17 !s108 1650231058.241000
+Z18 !s107 C:/Users/hh543/Documents/Final Lab/simulation/phasor.sv|
+Z19 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Documents/Final Lab/simulation/phasor.sv|
+!i113 1
+Z20 o-work work -sv
+vphasor_tb
+R11
+R12
+!i10b 1
+!s100 1fRN2RkVc>Z26^ofn3dUD0
+Ik36<^;o0PaR0J_:bAH1:P2
+R1
+R13
+S1
+R2
+R14
+R15
+R16
+L0 26
+R6
+r1
+!s85 0
+31
+R17
+R18
+R19
+!i113 1
+R20
+vpseudo_top_level
+R11
+R12
+!i10b 1
+!s100 EP^Z=bKIJUCLQ=51W>:0;3
+I<OM[M]@ee1U5g>A1aUXXJ2
+R1
+Z21 !s105 pseudo_top_level_sv_unit
+S1
+R2
+Z22 w1650210886
+Z23 8C:\Users\hh543\Documents\Final Lab\simulation\pseudo_top_level.sv
+Z24 FC:\Users\hh543\Documents\Final Lab\simulation\pseudo_top_level.sv
+L0 1
+R6
+r1
+!s85 0
+31
+Z25 !s108 1650231058.412000
+Z26 !s107 C:\Users\hh543\Documents\Final Lab\simulation\pseudo_top_level.sv|
+Z27 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:\Users\hh543\Documents\Final Lab\simulation\pseudo_top_level.sv|
+!i113 1
+R20
+vpseudo_top_level_tb
+R11
+R12
+!i10b 1
+!s100 zzH6ch=0OWY8eYmYfC97^1
+I01kO]W[7GfAKUzohCgDe<1
+R1
+R21
+S1
+R2
+R22
+R23
+R24
+L0 16
+R6
+r1
+!s85 0
+31
+R25
+R26
+R27
+!i113 1
+R20
+vsync_rom
+R11
+R12
+!i10b 1
+!s100 :UDUXlho0;4z3P@dS^dUb3
+IN3;_RmIW`jWE5fh4[=LkU3
+R1
+!s105 sine_sv_unit
+S1
+R2
+w1650231052
+8C:/Users/hh543/Documents/Final Lab/simulation/sine.sv
+FC:/Users/hh543/Documents/Final Lab/simulation/sine.sv
+L0 7
+R6
+r1
+!s85 0
+31
+!s108 1650231058.573000
+!s107 C:/Users/hh543/Documents/Final Lab/simulation/sine.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Documents/Final Lab/simulation/sine.sv|
+!i113 1
+R20
+vvga_driver
+R0
+!i10b 1
+!s100 U43<D[S[:h^BRkQ5o7E^33
+I0oib`z05o9TI`c8z[zb6g1
+R1
+R2
+R3
+R4
+R5
+L0 950
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
