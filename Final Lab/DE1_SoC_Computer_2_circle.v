@@ -375,30 +375,37 @@ HexDigit Digit3(HEX3, hex3_hex0[15:12]);
 //=======================================================
 //  PIO state machine
 //=======================================================
-wire [31:0] pio_x, pio_y, pio_z, pio_x0, pio_y0, pio_z0, pio_sigma, pio_beta, pio_rho, pio_dt;
+// wire [31:0] pio_x, pio_y, pio_z, pio_x0, pio_y0, pio_z0, pio_sigma, pio_beta, pio_rho, pio_dt;
+
+
+
+// assign en = SW[0];
+// assign hex3_hex0[3:0] = SW[0]&pio_lorenz_clk;
+// assign hex3_hex0[7:4] = SW[1];
+// assign hex3_hex0[11:8] = SW[2];
+// assign hex3_hex0[15:12] = SW[3]&pio_lorenz_reset;
+// wire signed [26:0] sigma, beta, rho, dt ,x0, y0, z0, x, y, z;
+// assign sigma = 10 << 20;
+// assign beta = {7'h2, 20'hAAAAA}; //7d'2
+// assign rho = 28 << 20;
+// assign dt = {7'h0, 20'h01000};
+// assign x0 = {7'h7F, 20'h00000};
+// assign y0 = {7'h0, 20'h19999};
+// assign z0 = 25 << 20;
+// lorenz l (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset), .en(1'b1), .sigma(pio_sigma), .beta(pio_beta), .rho(pio_rho), .dt(pio_dt), .x0(pio_x0), .y0(pio_y0), .z0(pio_z0), 
+// 				.x(pio_x), .y(pio_y), .z(pio_z));
+
 wire pio_lorenz_clk, pio_lorenz_reset; 
 
-
-assign en = SW[0];
-assign hex3_hex0[3:0] = SW[0]&pio_lorenz_clk;
-assign hex3_hex0[7:4] = SW[1];
-assign hex3_hex0[11:8] = SW[2];
-assign hex3_hex0[15:12] = SW[3]&pio_lorenz_reset;
-wire signed [26:0] sigma, beta, rho, dt ,x0, y0, z0, x, y, z;
-assign sigma = 10 << 20;
-assign beta = {7'h2, 20'hAAAAA}; //7d'2
-assign rho = 28 << 20;
-assign dt = {7'h0, 20'h01000};
-assign x0 = {7'h7F, 20'h00000};
-assign y0 = {7'h0, 20'h19999};
-assign z0 = 25 << 20;
-lorenz l (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset), .en(1'b1), .sigma(pio_sigma), .beta(pio_beta), .rho(pio_rho), .dt(pio_dt), .x0(pio_x0), .y0(pio_y0), .z0(pio_z0), 
-				.x(pio_x), .y(pio_y), .z(pio_z));
-				
-wire [19:0] pio_phasor_out[1:0];
+wire [19:0] pio_phasor_sin_out[1:0];
+wire [19:0] pio_phasor_cos_out[1:0];
 wire [3:0]  pio_mag_cos[1:0], pio_mag_sin[1:0], pio_freq[1:0];
-phasor p_1 (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset), .sine_mag(pio_mag_sin[0]), .cosine_mag(pio_mag_cos[0]), .freq(pio_freq[0]), .out(pio_phasor_out[0]));
-phasor p_2 (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset), .sine_mag(pio_mag_sin[1]), .cosine_mag(pio_mag_cos[1]), .freq(pio_freq[1]), .out(pio_phasor_out[1]));
+phasor p_1 (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset),
+			.sine_mag(pio_mag_sin[0]), .cosine_mag(pio_mag_cos[0]), .freq(pio_freq[0]),
+			.sin_out(pio_phasor_sin_out[0]), .cos_out(pio_phasor_cos_out[0]));
+phasor p_2 (.clk(pio_lorenz_clk), .reset(pio_lorenz_reset),
+			.sine_mag(pio_mag_sin[1]), .cosine_mag(pio_mag_cos[1]), .freq(pio_freq[1]),
+			.sin_out(pio_phasor_sin_out[1]), .cos_out(pio_phasor_cos_out[1]));
 
 
 //=======================================================
@@ -467,21 +474,16 @@ Computer_System The_System (
 
 	.pio_freq_external_connection_export ({pio_freq[0], pio_freq[1]}),    
 	.pio_mag_cos_external_connection_export ({pio_mag_cos[0], pio_mag_cos[1]}),       
-	.pio_mag_sin_external_connection_export ({pio_mag_sin[0], pio_mag_sin[1]}),       
-	.pio_phasor_out_1_external_connection_export (pio_phasor_out[0]),
-	.pio_phasor_out_2_external_connection_export (pio_phasor_out[1]),
-	.pio_x_external_connection_export (pio_x),
-	.pio_y_external_connection_export (pio_y),
-	.pio_z_external_connection_export (pio_z),
-	.pio_beta_external_connection_export (pio_beta),
-	.pio_dt_external_connection_export (pio_dt),
+	.pio_mag_sin_external_connection_export ({pio_mag_sin[0], pio_mag_sin[1]}),
+
+	.pio_phasor_cos_out_1_external_connection_export (pio_phasor_cos_out[0]),
+	.pio_phasor_cos_out_2_external_connection_export (pio_phasor_cos_out[1]),
+	.pio_phasor_sin_out_1_external_connection_export (pio_phasor_sin_out[0]),
+	.pio_phasor_sin_out_2_external_connection_export (pio_phasor_sin_out[1]),
+	
 	.pio_lorenz_clk_external_connection_export (pio_lorenz_clk),
 	.pio_lorenz_reset_external_connection_export (pio_lorenz_reset),
-	.pio_rho_external_connection_export (pio_rho),
-	.pio_sigma_external_connection_export(pio_sigma),
-	.pio_x0_external_connection_export(pio_x0),
-	.pio_y0_external_connection_export(pio_y0),
-	.pio_z0_external_connection_export(pio_z0),
+	
 	
 	// Ethernet
 	.hps_io_hps_io_gpio_inst_GPIO35	(HPS_ENET_INT_N),
