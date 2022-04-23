@@ -45,12 +45,7 @@
 #define PIO_FREQ_OFFSET           0x80
 
 // Fourier primitives
-void analysis(float*, float*, int, int, float**, float**, float*);
-struct Mouse_Input {
-	int x, y; 
-}; 
-#define N				 5 		// number of mouse inputs (n in Fourier analysis)
-#define th_harmonic 	 2			// starts from 0th harmonic
+float* analysis(float*, float*, int, int);
 
 // graphics primitives
 void VGA_text (int, int, char *);
@@ -191,11 +186,22 @@ void *write_status() {
 
 			pause_flag = 1;
 
+			// printf("Enter x0: ");
+			// scanf("%s", input_buffer);
+			// *pio_x0_write_ptr = convert720(input_buffer);
+
 			// clear the screen
 			VGA_box (0, 0, 639, 479, 0x0000);
 			// clear the text
 			VGA_text_clear();
 			// write text
+			// VGA_text (10, 1, text_top_row);
+			// VGA_text (10, 2, text_bottom_row);
+			// VGA_text (10, 3, text_next);
+
+			// VGA_text (16, 32, text_xy);
+			// VGA_text (56, 32, text_xz);
+			// VGA_text (36, 55, text_yz);
 
 			pause_flag = 0;
 
@@ -213,12 +219,20 @@ int convert720(char* str) {
 	return d_fixed;
 }
 
+// int convert720(char* str) {
+// 	double d = atof(str);
+// 	int d_fixed = (int)(round(d*(1<<20)));
+// 	return d_fixed;
+// }
+
 int main(void)
 {
+	// === need to mmap: =======================
+	// FPGA_CHAR_BASE
+	// FPGA_ONCHIP_BASE      
+	// HW_REGS_BASE    
+	// PIO_BASE
   
-	// for-loop counters
-	int i, j, k; 
-
 	// === get FPGA addresses ==================
     // Open /dev/mem
 	if( ( fd = open( "/dev/mem", ( O_RDWR | O_SYNC ) ) ) == -1 ) 	{
@@ -300,20 +314,60 @@ int main(void)
 	// position of horizontal line primitive
 	int Hline_y = 250;
 
+	//VGA_text (34, 1, text_top_row);
+	//VGA_text (34, 2, text_bottom_row);
 	// clear the screen
 	VGA_box (0, 0, 639, 479, 0x0000);
 	// clear the text
 	VGA_text_clear();
+	// write text
+	// VGA_text (10, 1, text_top_row);
+	// VGA_text (10, 2, text_bottom_row);
+	// VGA_text (10, 3, text_next);
+
+	// VGA_text (16, 32, text_xy);
+	// VGA_text (56, 32, text_xz);
+	// VGA_text (36, 55, text_yz);
+
+	
+	// R bits 11-15 mask 0xf800
+	// G bits 5-10  mask 0x07e0
+	// B bits 0-4   mask 0x001f
+	// so color = B+(G<<5)+(R<<11);
+	
+
+	// int x_value, y_value, z_value;
+	// int x_old, y_old, z_old;
+
+	// *pio_sigma_write_ptr = (10 << 20);
+	// *pio_beta_write_ptr = 0x2AAAAA;
+	// *pio_rho_write_ptr = 28 << 20;
+
+	// *pio_x0_write_ptr = 0x7F00000;
+	// *pio_y0_write_ptr= 0x19999;
+	// *pio_z0_write_ptr = 25 << 20;
 
 	printf("Default? (y/n)");
 	scanf("%s", input_buffer);
 	if(!strcmp(input_buffer, "y")) {
+		// *pio_sigma_write_ptr = (10 << 20);
+		// *pio_beta_write_ptr = 0x2AAAAA;
+		// *pio_rho_write_ptr = 28 << 20;
+
+		// *pio_x0_write_ptr = 0x7F00000;
+		// *pio_y0_write_ptr= 0x19999;
+		// *pio_z0_write_ptr = 25 << 20;
+		// *pio_dt_write_ptr = -8;
 
 		*pio_cos_mag_write_ptr = 0x23;	
 		*pio_sin_mag_write_ptr = 0x56;	
 		*pio_freq_write_ptr	  = 0x27;		
 
-	} else {		
+	} else {	
+		// printf("Enter sigma: ");
+		// scanf("%s", input_buffer);
+		// sigma = atof(input_buffer);
+		// *pio_sigma_write_ptr = convert720(input_buffer); 	
 
 		printf("Enter cos mag1: ");
 		scanf("%s", input_buffer);
@@ -351,6 +405,15 @@ int main(void)
 	// drive the clk and reset
 	*pio_lclock_write_ptr = 1;
 	*pio_lclock_write_ptr = 0;
+
+	// // This is Lorenz reset, which is triggered low
+	// *pio_lreset_write_ptr = 0;
+	// usleep(17000);
+	// // make a posedge of the clk to trigger the reset
+	// *pio_lclock_write_ptr = 0;
+	// *pio_lclock_write_ptr = 1;
+	// usleep(17000);
+	// *pio_lreset_write_ptr = 1;
 
 	// This is the phasor reset, which is triggered high
 	*pio_lreset_write_ptr = 1;
@@ -391,7 +454,7 @@ int main(void)
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
 // create threads
-	// pthread_create(&thread_r, &attr, read_input, NULL);
+	pthread_create(&thread_r, &attr, read_input, NULL);
 	pthread_create(&thread_w, &attr, write_status, NULL);
 
 	int x_coordinate = 0;
@@ -403,25 +466,11 @@ int main(void)
 	center_x = 320;
 	center_y = 240;
 
-
-	//==============================================================
 	//===================== MOUSE ==================================
-	//==============================================================
-
 	int fd_mouse, bytes;
     unsigned char data[3];
-    int mouse_x = 320, mouse_y = 240, mouse_x_old = 320, mouse_y_old = 240;
-	int click_x_new=0, click_y_new=0, click_x_old=0, click_y_old=0;
-    int left = 0; 
-	int right = 0; 
-	int middle;
-    signed char mouse_x_tmp, mouse_y_tmp;
-	// int first_click = 1;
-	const char *pDevice = "/dev/input/mice";
-	struct Mouse_Input mi[N];
-	int mi_count = 0; 
-	int debounce_left = 1; 
-	// TODO
+
+    const char *pDevice = "/dev/input/mice";
 
     // Open Mouse
     fd_mouse = open(pDevice, O_RDWR);
@@ -431,22 +480,155 @@ int main(void)
         return -1;
     }
 
-	// initialize Mouse_Input
-	for (i = 0; i < N; i++) {
-		mi[i].x = -1; mi[i].y = -1;
-	}
+    int mouse_x = 320, mouse_y = 240, mouse_x_old = 320, mouse_y_old = 240;
+	int click_x_new=0, click_y_new=0, click_x_old=0, click_y_old=0;
+    int left, middle, right;
+    signed char mouse_x_tmp, mouse_y_tmp;
+	int first_click = 1;
 
 	// draw the mouse starting point
 	VGA_circle(320, 240, 2, colors[7]);
 
-	while (right < 2) { // right == 2 when clicked (signals end of inputs for analysis)
+	// end of MOUSE ================================================
 
-		printf("Receiving mouse inputs..\n");
+	while(1) 
+	{
+		// if( x_coordinate++ == 600 ) {
+		// 	x_coordinate = 40;
+		// }
+
+		x_old = x;
+		y_old = y;
+
+		x = (int)(*pio_phasor_out_1_read_ptr) ;
+		y = (int)(*pio_phasor_out_2_read_ptr) ;
+
+		x = x << 12;
+		y = y << 12;
+
+		x = x >> 22;
+		y = y >> 22;
+
+		printf("x = 0x%x, y = 0x%x\n", x, y);
+
+		// phasor_sum_sin_old = phasor_1_sin_old + phasor_2_sin_old;
+		// phasor_sum_cos_old = phasor_1_cos_old + phasor_2_cos_old;
+		// phasor_sum_sin = phasor_1_sin + phasor_2_sin;
+		// phasor_sum_cos = phasor_1_cos + phasor_2_cos;
+
+		// ==========================================
+		// // Delete the previous arrow by recoloring with black line (sum of the arrows; single arrow)
+		// VGA_line(center_x, 					    center_y, 
+		// 		 center_x + phasor_sum_sin_old,  phasor_sum_cos_old + center_y, colors[10]);
+		// // Draw a new arrow (sum of the arrows; single arrow)
+		// VGA_line(center_x, 					    center_y, 
+		// 		 center_x + phasor_sum_sin,  phasor_sum_cos + center_y, colors[11]);
+		// ==========================================
+
+		// Delete the previous arrow by recoloring with black line 
+		VGA_line(center_x, 					    center_y, 
+				 center_x + x_old,   			center_y + y_old, colors[10]);
+		// VGA_line(center_x + phasor_1_sin_old, 	center_y + phasor_1_cos_old, 
+		// 		center_x + phasor_1_sin_old + phasor_2_sin_old,  center_y + phasor_1_cos_old + phasor_2_cos_old, colors[10]);
+		// Draw a new arrow 
+		VGA_line(center_x, 					    center_y, 
+				 center_x + x, 					center_y + y, colors[7]); // inner arrow (cyan)
+		// VGA_line(center_x + phasor_1_cos, 		center_y + phasor_1_cos, // outer arrow (magenta)
+		// 		center_x + phasor_1_sin + phasor_2_sin, center_y + phasor_1_cos + phasor_2_cos, colors[8]);
+		// Draw the shape 
+		VGA_line(center_x + x_old, 				center_y + y_old,
+				 center_x + x, 					center_y + y, colors[6]); // yellow 
+
+		// sum up
+		// VGA_line(phasor_1_sin_old+phasor_1_cos_old+320, phasor_2_sin_old+phasor_2_cos_old+240,
+		// 		 phasor_1_sin+phasor_1_cos+320, phasor_2_sin+phasor_2_cos+240, colors[2]);
+
+		// VGA_line(x_coordinate, phasor_1_old+160, x_coordinate, phasor_1+160, colors[1]);
+		// VGA_line(x_coordinate, phasor_2_old+320, x_coordinate, phasor_2+320, colors[1]);
+
+		//void VGA_circle(int x, int y, int r, short pixel_color)
+		// VGA_circle(320, 240, cos_mag[0] * 10, colors[4]);
+
+		if(pause_flag) {
+			*pio_lclock_write_ptr = 0;
+		} else {
+			*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
+			*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
+		}
+		usleep(sleep_time);
+
+		if(reset_flag) {
+			*pio_lreset_write_ptr = 0;
+			// make a posedge of the clk to trigger the reset
+			*pio_lclock_write_ptr = 0;
+			*pio_lclock_write_ptr = 1;
+			usleep(10000);
+			*pio_lreset_write_ptr = 1;
+			// clear the screen
+			VGA_box (0, 0, 639, 479, 0x0000);
+
+			// initial values
+			// x_value = (int)(*pio_x_read_ptr);
+			// y_value = (int)(*pio_y_read_ptr);
+			// z_value = (int)(*pio_z_read_ptr);
+
+			// // printf("value_x = 0x%x, value_y = 0x%x, value_z = 0x%x\n", x_value, y_value, z_value);
+
+			// x_value = x_value << 5;
+			// y_value = y_value << 5;
+			// z_value = z_value << 5;
+
+			// x_value = x_value >> 23;
+			// y_value = y_value >> 23;
+			// z_value = z_value >> 23;
+
+			// x_old = x_value;
+			// y_old = y_value;
+			// z_old = z_value;
+
+			sleep_time = 10000;
+
+			// clear the screen
+			VGA_box (0, 0, 639, 479, 0x0000);
+			// clear the text
+			VGA_text_clear();
+			// write text
+			// VGA_text (10, 1, text_top_row);
+			// VGA_text (10, 2, text_bottom_row);
+			// VGA_text (10, 3, text_next);
+
+			// VGA_text (16, 32, text_xy);
+			// VGA_text (56, 32, text_xz);
+			// VGA_text (36, 55, text_yz);
+
+			reset_flag = 0;
+			pause_flag = 0;
+		}
+
+		// start timer
+		gettimeofday(&t1, NULL);
+		
+		// stop timer
+		gettimeofday(&t2, NULL);
+
+		char str_buffer[36];
+		// sprintf(str_buffer, "sigma = %3.3f", sigma);
+		// VGA_text (10, 4, str_buffer);
+		// sprintf(str_buffer, "rho = %3.3f", rho);
+		// VGA_text (10, 5, str_buffer);
+		// sprintf(str_buffer, "beta = %3.3f", beta);
+		// VGA_text (10, 6, str_buffer);
+		// sprintf(str_buffer, "dt's power = %d", dt_power);
+		// VGA_text (10, 7, str_buffer);
+		// set frame rate
+		// usleep(17000);
+		
+		//===================== MOUSE ==================================
 
 		// Read Mouse     
         bytes = read(fd_mouse, data, sizeof(data));
 
-        if (bytes > 0)
+        if(bytes > 0)
         {
             left = data[0] & 0x1;
             right = data[0] & 0x2;
@@ -454,7 +636,7 @@ int main(void)
 
             mouse_x_tmp = data[1];
             mouse_y_tmp = data[2];
-            // printf("mouse_x_tmp=%d, mouse_y_tmp=%d, left=%d, middle=%d, right=%d, ", mouse_x_tmp, mouse_y_tmp, left, middle, right);
+            printf("mouse_x_tmp=%d, mouse_y_tmp=%d, left=%d, middle=%d, right=%d, ", mouse_x_tmp, mouse_y_tmp, left, middle, right);
 
 			mouse_x_old = mouse_x;
 			mouse_y_old = mouse_y;
@@ -473,223 +655,39 @@ int main(void)
             if(mouse_y < 0) {
                 mouse_y = 0;
             }
-			printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
-
-            // printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
+            printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
 
 			VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
 			VGA_circle(mouse_x, mouse_y, 1, colors[7]);
 			
-			if (left && debounce_left) {
-				debounce_left = 0; 
-
+			if(left) {
 				click_x_old = click_x_new;
 				click_y_old = click_y_new;
 				click_x_new = mouse_x;
 				click_y_new = mouse_y;
-
-				mi[mi_count].x = mouse_x;
-				mi[mi_count].y = mouse_y; 
-				mi_count++;
-
-				printf("mi_count: %d\n", mi_count);
-
-				if(mi_count == 1) {
-					;
-				} else { // red lines 
-					VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
-					if (mi_count == N) {
-						VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
-					}
+				if(first_click) {
+					first_click = 0;
+				} else {
+					VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[7]);
 				}
-
-				if (mi_count == N) break; 
-			} else if (!left) {
-				debounce_left = 1; 
 			}
         }
-	}
+		// end of MOUSE ================================================
 
-	//==============================================================
-	// end of MOUSE ================================================
-	//==============================================================
+		// ========================= Analysis ==========================
 
-	//==============================================================
-	//===================== ANALYSIS ===============================
-	//==============================================================
-	
-	float* analysis_x = (float*) malloc((N+1) * sizeof(float));
-	float* analysis_y = (float*) malloc((N+1) * sizeof(float));
-	int analysis_count = 0; 
-
-	for (i = 0; i < N; i++) {
-		if (mi[i].x < 0) break;
-		analysis_x[i] = (float) mi[i].x;
-		analysis_y[i] = (float) mi[i].y;
-		analysis_count++; 
-	}
-	analysis_x[analysis_count] = (float) mi[0].x;
-	analysis_y[analysis_count] = (float) mi[0].y;
-
-	float x_L = 0.0;
-	float y_L = 0.0;
-
-	float* analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-	float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
-	float* analysis_out_x_L 	= &x_L; 
-	float* analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-	float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
-	float* analysis_out_y_L 	= &y_L;
-
-	// th_harmonic = analysis_count;
-	analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_x_L);
-	analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_y_L);
-
-	// sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
-	float threshold = ((*analysis_out_x_L) * 0.01);
-	float error = (*analysis_out_x_L) - (*analysis_out_x_L);
-	if (error < 0) {
-		if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
-			printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-			return -1; 
-		} 
-	} else {
-		if (threshold < error) {
-			printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-			return -1;
-		}
-	}
-
-	free(analysis_x); free(analysis_y);
-
-	for (i = 0; i < (2 * th_harmonic + 1); i++) {
-		printf("analysis_out_x_coeff[%d]: %f\n", i, analysis_out_x_coeff[i]);
-	}
-
-	for (i = 0; i < (2 * th_harmonic + 1); i++) {
-		printf("analysis_out_y_coeff[%d]: %f\n", i, analysis_out_y_coeff[i]);
-	}
-
-	for (i = 0; i < analysis_count; i++) {
-		printf("analysis_out_x_l[%d]: %f\n", i, analysis_out_x_l[i]);
-	}
-
-	for (i = 0; i < analysis_count; i++) {
-		printf("analysis_out_y_l[%d]: %f\n", i, analysis_out_y_l[i]);
-	}
-
-	printf("analysis_out_x_L: %f\n", *analysis_out_x_L);
-	printf("analysis_out_y_L: %f\n", *analysis_out_x_L);
-
-	sleep(100); // TODO: remove later; debugging purpose 
-
-	//==============================================================
-	// end of ANALYSIS =============================================
-	//==============================================================
-
-	//==============================================================
-	//===================== SYNTHESIS ==============================
-	//==============================================================
-
-	// int x, y; 
-
-	// while (1) {
-
-
-
-	// 	// FPGA clock
-	// 	if(pause_flag) {
-	// 		*pio_lclock_write_ptr = 0;
-	// 	} else {
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 	}
-	// 	usleep(sleep_time);
-
-	// }
-
-
-	//==============================================================
-	// end of SYNTHESIS ============================================
-	//==============================================================
-
-	// while(1) 
-	// {
-	// 	// if( x_coordinate++ == 600 ) {
-	// 	// 	x_coordinate = 40;
-	// 	// }
-
-	// 	x_old = x;
-	// 	y_old = y;
-
-	// 	x = (int)(*pio_phasor_out_1_read_ptr) ;
-	// 	y = (int)(*pio_phasor_out_2_read_ptr) ;
-
-	// 	x = x << 12;
-	// 	y = y << 12;
-
-	// 	x = x >> 22;
-	// 	y = y >> 22;
-
-	// 	printf("x = 0x%x, y = 0x%x\n", x, y);
-
-	// 	// Delete the previous arrow by recoloring with black line 
-	// 	VGA_line(center_x, 					    center_y, 
-	// 			 center_x + x_old,   			center_y + y_old, colors[10]);
-	// 	// VGA_line(center_x + phasor_1_sin_old, 	center_y + phasor_1_cos_old, 
-	// 	// 		center_x + phasor_1_sin_old + phasor_2_sin_old,  center_y + phasor_1_cos_old + phasor_2_cos_old, colors[10]);
-	// 	// Draw a new arrow 
-	// 	VGA_line(center_x, 					    center_y, 
-	// 			 center_x + x, 					center_y + y, colors[7]); // inner arrow (cyan)
-	// 	// VGA_line(center_x + phasor_1_cos, 		center_y + phasor_1_cos, // outer arrow (magenta)
-	// 	// 		center_x + phasor_1_sin + phasor_2_sin, center_y + phasor_1_cos + phasor_2_cos, colors[8]);
-	// 	// Draw the shape 
-	// 	VGA_line(center_x + x_old, 				center_y + y_old,
-	// 			 center_x + x, 					center_y + y, colors[6]); // yellow 
-
-	// 	if(pause_flag) {
-	// 		*pio_lclock_write_ptr = 0;
-	// 	} else {
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 	}
-	// 	usleep(sleep_time);
-
-	// 	if(reset_flag) {
-	// 		*pio_lreset_write_ptr = 0;
-	// 		// make a posedge of the clk to trigger the reset
-	// 		*pio_lclock_write_ptr = 0;
-	// 		*pio_lclock_write_ptr = 1;
-	// 		usleep(10000);
-	// 		*pio_lreset_write_ptr = 1;
-	// 		// clear the screen
-	// 		VGA_box (0, 0, 639, 479, 0x0000);
-	// 		sleep_time = 10000;
-
-	// 		// clear the screen
-	// 		VGA_box (0, 0, 639, 479, 0x0000);
-	// 		// clear the text
-	// 		VGA_text_clear();
-	// 		// write text
-
-	// 		reset_flag = 0;
-	// 		pause_flag = 0;
-	// 	}
-
-	// 	// start timer
-	// 	gettimeofday(&t1, NULL);
-		
-	// 	// stop timer
-	// 	gettimeofday(&t2, NULL);
-
-	// 	char str_buffer[36];
 		
 
-	// } // end while(1)
+		// end of Analysis ================================================
+
+
+
+
+	} // end while(1)
 } // end main
 
 // Fourier analysis 
-void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_l, float* out_L) {
+float* analysis (float* x, float* y, int K, int n) {
     float L = 0;
     float* x_j = (float*)malloc(K*sizeof(float));
     float* l_j = (float*)malloc(K*sizeof(float));
@@ -768,13 +766,9 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
     for(i = 0; i < n; i++) {
         coeff[i+1] = a_n[i];
         coeff[i+1+n] = b_n[i];
-		printf("a_n[%d] = %f\n", i, a_n[i]);
-		printf("b_n[%d] = %f\n", i, b_n[i]);
     }
-    
-    *out_coeff = coeff; 
-    *out_l = l_j; 
-    *out_L = L;
+    return coeff;
+
 }
 
 /****************************************************************************************
