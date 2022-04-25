@@ -46,11 +46,12 @@
 
 // Fourier primitives
 void analysis(float*, float*, int, int, float**, float**, float*);
+void synthesis (float L, float* coeff, float* l, int K, int n, float out);
 struct Mouse_Input {
 	int x, y; 
 }; 
 #define N				 5 		// number of mouse inputs (n in Fourier analysis)
-#define th_harmonic 	 2			// starts from 0th harmonic
+#define th_harmonic 	 25			// starts from 0th harmonic
 
 // graphics primitives
 void VGA_text (int, int, char *);
@@ -148,7 +149,10 @@ void * read_input() {
 		pthread_mutex_lock(&print_lock);
 		pthread_cond_wait(&print_cond, &print_lock);
 		printf("Enter command: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		
 		pthread_mutex_unlock(&print_lock);
 		pthread_cond_signal(&enter_cond); 
@@ -306,7 +310,11 @@ int main(void)
 	VGA_text_clear();
 
 	printf("Default? (y/n)");
-	scanf("%s", input_buffer);
+	if(scanf("%s", input_buffer) == 0) {
+		printf("input is wrong!\n");
+		exit(1);
+	}
+	// scanf("%s", input_buffer);
 	if(!strcmp(input_buffer, "y")) {
 
 		*pio_cos_mag_write_ptr = 0x23;	
@@ -316,29 +324,47 @@ int main(void)
 	} else {		
 
 		printf("Enter cos mag1: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		cos_mag[0] = atoi(input_buffer);
 
 		printf("Enter sin mag1: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		sin_mag[0] = atoi(input_buffer);
 		
 		printf("Enter freq1: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		freq[0] = atoi(input_buffer);
 
 		printf("Enter cos mag2: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		cos_mag[1] = atoi(input_buffer);
 		*pio_cos_mag_write_ptr = (cos_mag[0] << 4) + cos_mag[1];
 
 		printf("Enter sin mag2: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		sin_mag[1] = atoi(input_buffer);
 		*pio_sin_mag_write_ptr = (sin_mag[0] << 4) + sin_mag[1];
 
 		printf("Enter freq2: ");
-		scanf("%s", input_buffer);
+		if(scanf("%s", input_buffer) == 0) {
+			printf("input is wrong!\n");
+			exit(1);
+		}
 		freq[1] = atoi(input_buffer);
 		*pio_freq_write_ptr = (freq[0] << 4) + freq[1];
 
@@ -488,6 +514,14 @@ int main(void)
 				click_x_new = mouse_x;
 				click_y_new = mouse_y;
 
+				printf("mouse_x = %d, mouse_y = %d\n", mouse_x, mouse_y);
+
+				// if (mi_count > 0) {
+				// 	if ((mi[mi_count-1].x == mi[mi_count].x) && (mi[mi_count-1].y == mi[mi_count].y)) {
+				// 		mi[mi_count].x = mi[mi_count-1].x++;
+				// 	}
+				// }
+
 				mi[mi_count].x = mouse_x;
 				mi[mi_count].y = mouse_y; 
 				mi_count++;
@@ -507,6 +541,9 @@ int main(void)
 			} else if (!left) {
 				debounce_left = 1; 
 			}
+
+			// TODO: less than N clicks
+
         }
 	}
 
@@ -526,39 +563,40 @@ int main(void)
 		if (mi[i].x < 0) break;
 		analysis_x[i] = (float) mi[i].x;
 		analysis_y[i] = (float) mi[i].y;
+		printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
 		analysis_count++; 
 	}
 	analysis_x[analysis_count] = (float) mi[0].x;
 	analysis_y[analysis_count] = (float) mi[0].y;
 
-	float x_L = 0.0;
-	float y_L = 0.0;
+	float L = 0.0;
 
 	float* analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
 	float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
-	float* analysis_out_x_L 	= &x_L; 
+	
 	float* analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
 	float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
-	float* analysis_out_y_L 	= &y_L;
+
+	float* analysis_out_L 		= &L; 
 
 	// th_harmonic = analysis_count;
-	analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_x_L);
-	analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_y_L);
+	analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
+	analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
 
 	// sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
-	float threshold = ((*analysis_out_x_L) * 0.01);
-	float error = (*analysis_out_x_L) - (*analysis_out_x_L);
-	if (error < 0) {
-		if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
-			printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-			return -1; 
-		} 
-	} else {
-		if (threshold < error) {
-			printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-			return -1;
-		}
-	}
+	// float threshold = ((*analysis_out_L) * 0.01);
+	// float error = (*analysis_out_L) - (*analysis_out_L);
+	// if (error < 0) {
+	// 	if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
+	// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+	// 		return -1; 
+	// 	} 
+	// } else {
+	// 	if (threshold < error) {
+	// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+	// 		return -1;
+	// 	}
+	// }
 
 	free(analysis_x); free(analysis_y);
 
@@ -570,122 +608,73 @@ int main(void)
 		printf("analysis_out_y_coeff[%d]: %f\n", i, analysis_out_y_coeff[i]);
 	}
 
-	for (i = 0; i < analysis_count; i++) {
-		printf("analysis_out_x_l[%d]: %f\n", i, analysis_out_x_l[i]);
-	}
-
-	for (i = 0; i < analysis_count; i++) {
-		printf("analysis_out_y_l[%d]: %f\n", i, analysis_out_y_l[i]);
-	}
-
-	printf("analysis_out_x_L: %f\n", *analysis_out_x_L);
-	printf("analysis_out_y_L: %f\n", *analysis_out_x_L);
-
-	sleep(100); // TODO: remove later; debugging purpose 
+	printf("analysis_out_L: %f\n", L);
 
 	//==============================================================
 	// end of ANALYSIS =============================================
 	//==============================================================
 
+	printf("===============================================\n");
+	printf("======================Testing==================\n");
+	printf("===============================================\n");
+
 	//==============================================================
 	//===================== SYNTHESIS ==============================
 	//==============================================================
 
-	// int x, y; 
+	float syn_t = 0.0;
+	float syn_x = 0.0, syn_y = 0.0;
+	float syn_x_old = 0.0, syn_y_old = 0.0;
 
-	// while (1) {
+	// syn_x = (float) mi[0].x;
+	// syn_y = (float) mi[0].y;
+	syn_x = 0;
+	syn_y = 0;
+	syn_x += analysis_out_x_coeff[0];
+	syn_y += analysis_out_y_coeff[0];
+	for (i = 1; i <= th_harmonic; i++) {
+		syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
+		syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
+		syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
+		syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
+	}
 
+	while(1) 
+	{
+		syn_x_old = syn_x;
+		syn_y_old = syn_y;
 
+		// syn_x = (float) mi[0].x;
+		// syn_y = (float) mi[0].y;
+		syn_x = 0;
+		syn_y = 0;	
+		syn_x += analysis_out_x_coeff[0];
+		syn_y += analysis_out_y_coeff[0];
+		for (i = 1; i <= th_harmonic; i++) {
+			syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
+			syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
+			syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
+			syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
+		}
 
-	// 	// FPGA clock
-	// 	if(pause_flag) {
-	// 		*pio_lclock_write_ptr = 0;
-	// 	} else {
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 	}
-	// 	usleep(sleep_time);
+		syn_t += 5;
+		if(syn_t > L) {
+			syn_t = 0.0;
+		}
 
-	// }
+		// printf("syn_x = %f, syn_y = %f\n", syn_x, syn_y);
 
+		VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[6]); // yellow 
+
+		// usleep(200);
+	}
+
+	sleep(1000);
 
 	//==============================================================
 	// end of SYNTHESIS ============================================
 	//==============================================================
 
-	// while(1) 
-	// {
-	// 	// if( x_coordinate++ == 600 ) {
-	// 	// 	x_coordinate = 40;
-	// 	// }
-
-	// 	x_old = x;
-	// 	y_old = y;
-
-	// 	x = (int)(*pio_phasor_out_1_read_ptr) ;
-	// 	y = (int)(*pio_phasor_out_2_read_ptr) ;
-
-	// 	x = x << 12;
-	// 	y = y << 12;
-
-	// 	x = x >> 22;
-	// 	y = y >> 22;
-
-	// 	printf("x = 0x%x, y = 0x%x\n", x, y);
-
-	// 	// Delete the previous arrow by recoloring with black line 
-	// 	VGA_line(center_x, 					    center_y, 
-	// 			 center_x + x_old,   			center_y + y_old, colors[10]);
-	// 	// VGA_line(center_x + phasor_1_sin_old, 	center_y + phasor_1_cos_old, 
-	// 	// 		center_x + phasor_1_sin_old + phasor_2_sin_old,  center_y + phasor_1_cos_old + phasor_2_cos_old, colors[10]);
-	// 	// Draw a new arrow 
-	// 	VGA_line(center_x, 					    center_y, 
-	// 			 center_x + x, 					center_y + y, colors[7]); // inner arrow (cyan)
-	// 	// VGA_line(center_x + phasor_1_cos, 		center_y + phasor_1_cos, // outer arrow (magenta)
-	// 	// 		center_x + phasor_1_sin + phasor_2_sin, center_y + phasor_1_cos + phasor_2_cos, colors[8]);
-	// 	// Draw the shape 
-	// 	VGA_line(center_x + x_old, 				center_y + y_old,
-	// 			 center_x + x, 					center_y + y, colors[6]); // yellow 
-
-	// 	if(pause_flag) {
-	// 		*pio_lclock_write_ptr = 0;
-	// 	} else {
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 		*pio_lclock_write_ptr = !(*pio_lclock_write_ptr);
-	// 	}
-	// 	usleep(sleep_time);
-
-	// 	if(reset_flag) {
-	// 		*pio_lreset_write_ptr = 0;
-	// 		// make a posedge of the clk to trigger the reset
-	// 		*pio_lclock_write_ptr = 0;
-	// 		*pio_lclock_write_ptr = 1;
-	// 		usleep(10000);
-	// 		*pio_lreset_write_ptr = 1;
-	// 		// clear the screen
-	// 		VGA_box (0, 0, 639, 479, 0x0000);
-	// 		sleep_time = 10000;
-
-	// 		// clear the screen
-	// 		VGA_box (0, 0, 639, 479, 0x0000);
-	// 		// clear the text
-	// 		VGA_text_clear();
-	// 		// write text
-
-	// 		reset_flag = 0;
-	// 		pause_flag = 0;
-	// 	}
-
-	// 	// start timer
-	// 	gettimeofday(&t1, NULL);
-		
-	// 	// stop timer
-	// 	gettimeofday(&t2, NULL);
-
-	// 	char str_buffer[36];
-		
-
-	// } // end while(1)
 } // end main
 
 // Fourier analysis 
@@ -723,16 +712,16 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
 
     // print all parameters 
     printf("L = %f\n", L);
-    for(i = 0; i < K; i++) {
-        printf("dx[%d] = %f\n", i, x_j[i]);
+    // for(i = 0; i < K; i++) {
+    //     printf("dx[%d] = %f\n", i, x_j[i]);
 
-    }
+    // }
     for(i = 0; i < K; i++) {
         printf("dl[%d] = %f\n", i, l_j[i]);
     }
-    for(i = 0; i < K; i++) {
-        printf("al[%d] = %f\n", i, al_j[i]);
-    }   
+    // for(i = 0; i < K; i++) {
+    //     printf("al[%d] = %f\n", i, al_j[i]);
+    // }   
         
 
     // compute offset a0
@@ -740,7 +729,7 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
     for(i = 1; i < K; i++) {
         float sum = (x[i]-(x_j[i]*al_j[i-1]/l_j[i]))*(al_j[i]-al_j[i-1]) + ((x_j[i]/l_j[i])*(al_j[i]*al_j[i] - al_j[i-1]*al_j[i-1])) / 2;
         // printf("sum = %f\n", sum);
-        a_n[0] += sum;        
+        a0 += sum;        
     }
     a0 = a0/L;
 
@@ -759,8 +748,8 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
 
         a_n[harm-1] = tempa * L / (2*M_PI*M_PI*harm*harm);
         b_n[harm-1] = tempb * L / (2*M_PI*M_PI*harm*harm);
-        printf("a%d = %f\n", harm, a_n[harm-1]);
-        printf("b%d = %f\n", harm, b_n[harm-1]);
+        // printf("a%d = %f\n", harm, a_n[harm-1]);
+        // printf("b%d = %f\n", harm, b_n[harm-1]);
     }
 
     float* coeff = (float*) malloc ((2*n+1)*sizeof(float));
@@ -772,8 +761,8 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
 		printf("b_n[%d] = %f\n", i, b_n[i]);
     }
     
-    *out_coeff = coeff; 
-    *out_l = l_j; 
+    *out_coeff = coeff;
+    *out_l = l_j;
     *out_L = L;
 }
 

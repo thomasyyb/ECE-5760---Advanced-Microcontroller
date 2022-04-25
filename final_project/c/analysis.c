@@ -14,7 +14,7 @@
 #include <math.h>
 
 // convert float to integer 
-void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_l, float** out_L) {
+void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_l, float* out_L) {
     float L = 0;
     float* x_j = (float*)malloc(K*sizeof(float));
     float* l_j = (float*)malloc(K*sizeof(float));
@@ -99,7 +99,7 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
     
     *out_coeff = coeff; 
     *out_l = l_j; 
-    *out_L = &L;
+    *out_L = L;
 }
 
 int main(int argc, char*argv[]) {
