@@ -3,7 +3,7 @@
 /// This code will segfault the original
 /// DE1 computer
 /// compile with
-/// gcc vga_to_audio.c -o c_hps -O3 -lm -lpthread
+/// gcc vga_to_audio_with_drum_FPGA.c -o c_hps_test -O3 -lm -lpthread
 ///
 ///////////////////////////////////////
 #include <stdio.h>
@@ -17,12 +17,6 @@
 #include <sys/time.h> 
 #include <math.h>
 #include <pthread.h>
-#include <time.h>
-#include <string.h>
-// network stuff
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h> 
 #include "address_map_arm_brl4.h"
 
 // video display
@@ -68,65 +62,7 @@ struct Mouse_Input {
 	int x, y; 
 }; 
 #define N				 5 		// number of mouse inputs (n in Fourier analysis)
-#define th_harmonic 	 5			// starts from 0th harmonic
-
-/*************** Drum stuff *****************/
-// drum-specific multiply macros simulated by shifts
-#define times0pt5(a) ((a)>>1) 
-#define times0pt25(a) ((a)>>2) 
-#define times2pt0(a) ((a)<<1) 
-#define times4pt0(a) ((a)<<2) 
-#define times0pt9998(a) ((a)-((a)>>12)) //>>10
-#define times0pt9999(a) ((a)-((a)>>13)) //>>10
-#define times0pt999(a) ((a)-((a)>>10)) //>>10
-// #define times_rho(a) (((a)>>4)) //>>2
-
-inline signed int times_rho(signed int a, signed int u_center) {
-	double rho = ( 0.49 > (0.25+((u_center*u_center)>>8)) ) ? (0.25+(u_center*u_center>>8)) : 0.49;
-	// signed int rho = 1>>4;
-	// printf("a>>4 = %d, (signed int)(0.0625*a) = %d\n", a>>4, (signed int)(0.0625 * a));
-	return (signed int)(a >> 4);
-}
-
-// drum size paramenters
-// drum will FAIL if size is too big
-#define drum_size 30
-#define drum_middle 15
-int copy_size = drum_size*drum_size*4 ;
-
-// fixed pt macros suitable for 32-bit sound
-typedef signed int fix28 ;
-//multiply two fixed 4:28
-#define multfix28(a,b) ((fix28)(((( signed long long)(a))*(( signed long long)(b)))>>28)) 
-//#define multfix28(a,b) ((fix28)((( ((short)((a)>>17)) * ((short)((b)>>17)) )))) 
-#define float2fix28(a) ((fix28)((a)*268435456.0f)) // 2^28
-#define fix2float28(a) ((float)(a)/268435456.0f) 
-#define int2fix28(a) ((a)<<28)
-#define fix2int28(a) ((a)>>28)
-// shift fraction to 32-bit sound
-#define fix2audio28(a) (a<<4)
-// shift fraction to 16-bit sound
-#define fix2audio16(a) (a>>12)
-
-// some fixed point values
-#define FOURfix28 0x40000000 
-#define SIXTEENTHfix28 0x01000000
-#define ONEfix28 0x10000000
-
-// drum state variable arrays
-fix28 drum_n[drum_size][drum_size] ;
-// drup amp at last time
-fix28 drum_n_1[drum_size][drum_size] ;
-// drum updata
-fix28 new_drum[drum_size][drum_size] ;
-fix28 new_drum_temp ;
-
-clock_t note_time ;
-
-// width of gaussian initial condition
-float alpha = 64;
-/*************** Drum stuff *****************/
-
+#define th_harmonic 	 5	    // starts from 0th harmonic
 
 // graphics primitives
 void VGA_text (int, int, char *);
@@ -332,31 +268,47 @@ int main(void)
 		close( fd );
 		return(1);
 	}
+
+	printf("vga_char_virtual_base initialization finished\n");
     
     // Get the address that maps to the FPGA LED control 
 	vga_char_ptr =(unsigned int *)(vga_char_virtual_base);
+	printf("vga_char_ptr initialization finished\n");
 
 	// === get VGA pixel addr ====================
 	// get virtual addr that maps to physical
-	vga_pixel_virtual_base = mmap( NULL, SDRAM_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, SDRAM_BASE);	
+	// vga_pixel_virtual_base = mmap( NULL, SDRAM_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, SDRAM_BASE);	
+	// if( vga_pixel_virtual_base == MAP_FAILED ) {
+	// 	printf( "ERROR: mmap3() failed...\n" );
+	// 	close( fd );
+	// 	return(1);
+	// }
+	// === get VGA pixel addr ====================
+	// get virtual addr that maps to physical
+	vga_pixel_virtual_base = mmap( NULL, FPGA_ONCHIP_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, FPGA_ONCHIP_BASE);	
 	if( vga_pixel_virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap3() failed...\n" );
 		close( fd );
 		return(1);
 	}
+
+	printf("vga_pixel_virtual_base initialization finished\n");
     
     // Get the address that maps to the FPGA pixel buffer
 	vga_pixel_ptr =(unsigned int *)(vga_pixel_virtual_base);
+	printf("vga_pixel_ptr initialization finished\n");
 
 
 	// === get PIO addr ====================
 	// get virtual addr that maps to physical
-	h2p_pio_virtual_base = mmap( NULL, PIO_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, PIO_BASE);	
-	if( h2p_pio_virtual_base == MAP_FAILED ) {
-		printf( "ERROR: mmap4() failed...\n" );
-		close( fd );
-		return(1);
-	}
+	// h2p_pio_virtual_base = mmap( NULL, PIO_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, PIO_BASE);	
+	// if( h2p_pio_virtual_base == MAP_FAILED ) {
+	// 	printf( "ERROR: mmap4() failed...\n" );
+	// 	close( fd );
+	// 	return(1);
+	// }
+
+	h2p_pio_virtual_base = malloc(100*sizeof(int));
     
     // Get the address that maps to the FPGA pixel buffer
 	pio_lclock_write_ptr 	      =(unsigned int *)(h2p_pio_virtual_base+PIO_LCLOCK_OFFSET);
@@ -391,10 +343,11 @@ int main(void)
 	int Hline_y = 250;
 
 	printf("About to clear VGA screen\n");
+
 	// clear the screen
-	VGA_box (0, 0, 639, 479, 0x0000);
+	// VGA_box (0, 0, 639, 479, 0x0000);
 	// clear the text
-	VGA_text_clear();
+	// VGA_text_clear();
 
 	printf("Default? (y/n)");
 	if(scanf("%s", input_buffer) == 0) {
@@ -550,13 +503,11 @@ int main(void)
 	}
 
 	// draw the mouse starting point
-	VGA_circle(320, 240, 2, colors[7]);
-
-	printf("Receiving mouse inputs..\n");
+	// VGA_circle(320, 240, 2, colors[7]);
 
 	while (right < 2) { // right == 2 when clicked (signals end of inputs for analysis)
 
-		// printf("Receiving mouse inputs..\n");
+		printf("Receiving mouse inputs..\n");
 
 		// Read Mouse     
         bytes = read(fd_mouse, data, sizeof(data));
@@ -588,12 +539,12 @@ int main(void)
             if(mouse_y < 0) {
                 mouse_y = 0;
             }
-			// printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
+			printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
 
             // printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
 
-			VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
-			VGA_circle(mouse_x, mouse_y, 1, colors[7]);
+			// VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
+			// VGA_circle(mouse_x, mouse_y, 1, colors[7]);
 			
 			if (left && debounce_left) {
 				debounce_left = 0; 
@@ -620,9 +571,9 @@ int main(void)
 				if(mi_count == 1) {
 					;
 				} else { // red lines 
-					VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
+					// VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
 					if (mi_count == N) {
-						VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
+						// VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
 					}
 				}
 
@@ -727,104 +678,42 @@ int main(void)
 		syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
 		syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
 	}
-	// int counter = 0;
-	int left_audio = 0xFFFF, right_audio = 0x6FFF;
-	// while(1) {
-	// 	counter = 0;
-	// 	while (((*audio_fifo_data_ptr>>24) & 0xff) > 1) {
-	// 		// syn_x_old = syn_x;
-	// 		// syn_y_old = syn_y;
-			
-	// 		// syn_x = 0;
-	// 		// syn_y = 0;	
-	// 		// syn_x += analysis_out_x_coeff[0];
-	// 		// syn_y += analysis_out_y_coeff[0];
-	// 		// for (i = 1; i <= th_harmonic; i++) {
-	// 		// 	syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
-	// 		// 	syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
-	// 		// 	syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
-	// 		// 	syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
-	// 		// }
-
-	// 		// syn_t += 5;
-	// 		// if(syn_t > L) {
-	// 		// 	syn_t = 0.0;
-	// 		// }
-
-	// 		// // printf("syn_x = %d, syn_y = %d\n", (int)syn_x, (int)syn_y);
-
-	// 		// VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[6]); // yellow 
-	// 		// *audio_left_data_ptr = (int)syn_x - 320;//fix2audio16(drum_n[drum_middle][drum_middle]);
-	// 		// *audio_right_data_ptr = (int)syn_y - 240;//fix2audio16(drum_n[drum_middle][drum_middle]);
-	// 		// *audio_left_data_ptr  = 0x43214321;
-	// 		// *audio_right_data_ptr = 0xF321F321;
-	// 		left_audio  += 0xFF;
-	// 		right_audio -= 0xFFF;
-	// 		if(left_audio  > 0x6FFF) left_audio  = 0xFFFF;
-	// 		if(right_audio < 0x8FFF) right_audio = 0x6FFF;
-	// 		*audio_left_data_ptr  = left_audio;
-	// 		*audio_right_data_ptr = right_audio;
-	// 		printf("%d\n", counter++);
-	// 	}
-	// } // end while(1)
-
-	// Try with the drum synthesis
-	int dist2;
 	int counter = 0;
-
-	note_time = clock() - 2800000;
-	
-	while(1){	
+	while(1) {
 		counter = 0;
-		// generate a drum simulation
-		// load the FIFO until it is full
 		while (((*audio_fifo_data_ptr>>24) & 0xff) > 1) {
-			// do drum time sample
-			// equation 2.18 
-			// from http://people.ece.cornell.edu/land/courses/ece5760/LABS/s2018/WaveFDsoln.pdf
-			for (i=1; i<drum_size-1; i++){
-				for (j=1; j<drum_size-1; j++){
-					new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]), drum_n[drum_middle][drum_middle]);
-					// new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]));
-					new_drum[i][j] = times0pt9999(new_drum_temp + times2pt0(drum_n[i][j]) - times0pt9998(drum_n_1[i][j])) ;
-				}
+		// while(1) 
+		// {
+			syn_x_old = syn_x;
+			syn_y_old = syn_y;
+			
+			syn_x = 0;
+			syn_y = 0;	
+			syn_x += analysis_out_x_coeff[0];
+			syn_y += analysis_out_y_coeff[0];
+			for (i = 1; i <= th_harmonic; i++) {
+				syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
+				syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
+				syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
+				syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
 			}
 
+			syn_t += 5;
+			if(syn_t > L) {
+				syn_t = 0.0;
+			}
+
+			// printf("syn_x = %d, syn_y = %d\n", (int)syn_x, (int)syn_y);
+
+			// VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[6]); // yellow 
+			*audio_left_data_ptr = (int)syn_x - 320;//fix2audio16(drum_n[drum_middle][drum_middle]);
+			*audio_right_data_ptr = (int)syn_y - 240;//fix2audio16(drum_n[drum_middle][drum_middle]);
+			// *audio_left_data_ptr = 0x4321;
+			// *audio_right_data_ptr = 0xF321;
 			printf("Updated %d!\n", counter++);
-			
-			// update the state arrays
-			memcpy((void*)drum_n_1, (void*)drum_n, copy_size); 
-			memcpy((void*)drum_n, (void*)new_drum, copy_size);
-			
-			// send time sample to the audio FiFOs
-			*audio_left_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			*audio_right_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			printf("%x\n", fix2audio16(drum_n[drum_middle][drum_middle]));
-			// shared memory for possible graphics
-			//*(shared_ptr+1) = fix2audio28(drum_n[drum_middle][drum_middle]);
-			// share the audio sample time with video process
-			//audio_time++ ;
-			//*shared_ptr = audio_time/48000 ;
-		} // end while (((*audio	
-		
-		if (clock()- note_time > 3000000) {
-			// strike the drum
-			// this is a set up for zero initial displacement with
-			// the strike as a velocity
-			for (i=1; i<drum_size-1; i++){
-				for (j=1; j<drum_size-1; j++){
-					dist2 = (i-drum_middle)*(i-drum_middle)+(j-drum_middle)*(j-drum_middle);
-					drum_n_1[i][j] = float2fix28(0.01*exp(-(float)dist2/alpha));
-					drum_n[i][j] = 0 ;
-				}
-			}
-			
-			// read LINUX time for the next drum strike
-			note_time = clock();
-			
+			// usleep(200);
 		}
-
-	} // end while(1)
+	}
 
 	sleep(1000);
 
