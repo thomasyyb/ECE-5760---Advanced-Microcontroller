@@ -3,7 +3,7 @@
 /// This code will segfault the original
 /// DE1 computer
 /// compile with
-/// gcc vga_to_audio.c -o c_hps -O3 -lm -lpthread
+/// gcc vga_to_audio.c -o c_hps -O3 -lm -lpthread -lrt
 ///
 ///////////////////////////////////////
 #include <stdio.h>
@@ -24,6 +24,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 #include "address_map_arm_brl4.h"
+// timing analysis
+#include <time.h>
 
 // video display
 #define SDRAM_BASE            0xC0000000
@@ -90,8 +92,8 @@ inline signed int times_rho(signed int a, signed int u_center) {
 
 // drum size paramenters
 // drum will FAIL if size is too big
-#define drum_size 30
-#define drum_middle 15
+#define drum_size 20
+#define drum_middle 10
 int copy_size = drum_size*drum_size*4 ;
 
 // fixed pt macros suitable for 32-bit sound
@@ -773,12 +775,29 @@ int main(void)
 	int counter = 0;
 
 	note_time = clock() - 2800000;
-	
+
+	// set some value for timing analysis
+    double diff;
+    struct timespec start, end; 
+	fix28 drum_middle_value;
+
+	for (i=1; i<drum_size-1; i++){
+		for (j=1; j<drum_size-1; j++){
+			dist2 = (i-drum_middle)*(i-drum_middle)+(j-drum_middle)*(j-drum_middle);
+			drum_n_1[i][j] = float2fix28(0.01*exp(-(float)dist2/alpha));
+			printf("drum_n_1[%d][%d] = 0x%x\n", i, j, drum_n_1[i][j]);
+			drum_n[i][j] = 0 ;
+		}
+	}
+
 	while(1){	
 		counter = 0;
 		// generate a drum simulation
 		// load the FIFO until it is full
 		while (((*audio_fifo_data_ptr>>24) & 0xff) > 1) {
+			// start timer
+            // clock_gettime(CLOCK_MONOTONIC, &start);
+			
 			// do drum time sample
 			// equation 2.18 
 			// from http://people.ece.cornell.edu/land/courses/ece5760/LABS/s2018/WaveFDsoln.pdf
@@ -787,27 +806,35 @@ int main(void)
 					new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]), drum_n[drum_middle][drum_middle]);
 					// new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]));
 					new_drum[i][j] = times0pt9999(new_drum_temp + times2pt0(drum_n[i][j]) - times0pt9998(drum_n_1[i][j])) ;
+					// printf("new_drum[%d][%d] = 0x%x\n", i, j, new_drum[i][j]);
 				}
 			}
+			// This statement affects the writing time, especially "\n"
+			printf(" %d ", counter++);
+			drum_middle_value = fix2audio16(drum_n[drum_middle][drum_middle]);
+			printf(" %x ", drum_middle_value);
 
-			printf("Updated %d!\n", counter++);
+			// stop timer
+            // clock_gettime(CLOCK_MONOTONIC, &end);
+			// diff = (end.tv_sec - start.tv_sec) + ((double)(end.tv_nsec - start.tv_nsec))*1e-9;
+            // printf("time = %lf\n", diff);
 			
 			// update the state arrays
 			memcpy((void*)drum_n_1, (void*)drum_n, copy_size); 
 			memcpy((void*)drum_n, (void*)new_drum, copy_size);
-			
 			// send time sample to the audio FiFOs
-			*audio_left_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			*audio_right_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			printf("%x\n", fix2audio16(drum_n[drum_middle][drum_middle]));
-			// shared memory for possible graphics
-			//*(shared_ptr+1) = fix2audio28(drum_n[drum_middle][drum_middle]);
-			// share the audio sample time with video process
-			//audio_time++ ;
-			//*shared_ptr = audio_time/48000 ;
+			*audio_left_data_ptr = fix2audio16(drum_middle_value);
+			*audio_right_data_ptr = fix2audio16(drum_middle_value);
+			// *audio_left_data_ptr  = 0;
+			// *audio_right_data_ptr = 0;
 		} // end while (((*audio	
 		
 		if (clock()- note_time > 3000000) {
+
+			// check out the time interval
+            diff = (end.tv_sec - start.tv_sec) + ((double)(end.tv_nsec - start.tv_nsec))*1e-9;
+            printf("time = %lf\n", diff);
+
 			// strike the drum
 			// this is a set up for zero initial displacement with
 			// the strike as a velocity
@@ -815,15 +842,14 @@ int main(void)
 				for (j=1; j<drum_size-1; j++){
 					dist2 = (i-drum_middle)*(i-drum_middle)+(j-drum_middle)*(j-drum_middle);
 					drum_n_1[i][j] = float2fix28(0.01*exp(-(float)dist2/alpha));
+					printf("drum_n_1[%d][%d] = 0x%x\n", i, j, drum_n_1[i][j]);
 					drum_n[i][j] = 0 ;
 				}
 			}
-			
+			printf("clock()- note_time = %d\n", (int)(clock()- note_time));
 			// read LINUX time for the next drum strike
 			note_time = clock();
-			
 		}
-
 	} // end while(1)
 
 	sleep(1000);

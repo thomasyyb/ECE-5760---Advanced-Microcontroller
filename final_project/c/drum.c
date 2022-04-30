@@ -1,7 +1,7 @@
 ///////////////////////////////////////
 /// Audio
 /// compile with
-/// gcc lab2.c -o lab2 -lm -O3
+/// gcc drum.c -o drum -lm -O3 -lrt
 /// works up to about drum size 30 or so for NO multiplies case
 /// 
 ///////////////////////////////////////
@@ -21,6 +21,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+// timing analysis
+#include <time.h>
 
 #include "address_map_arm_brl4.h"
 
@@ -54,19 +56,12 @@ volatile unsigned int * audio_right_data_ptr = NULL ; //12bytes
 #define times0pt9998(a) ((a)-((a)>>12)) //>>10
 #define times0pt9999(a) ((a)-((a)>>13)) //>>10
 #define times0pt999(a) ((a)-((a)>>10)) //>>10
-// #define times_rho(a) (((a)>>4)) //>>2
-
-inline signed int times_rho(signed int a, signed int u_center) {
-	double rho = ( 0.49 > (0.25+((u_center*u_center)>>8)) ) ? (0.25+(u_center*u_center>>8)) : 0.49;
-	// signed int rho = 1>>4;
-	// printf("a>>4 = %d, (signed int)(0.0625*a) = %d\n", a>>4, (signed int)(0.0625 * a));
-	return (signed int)(a >> 4);
-}
+#define times_rho(a) (((a)>>5)) //>>2
 
 // drum size paramenters
 // drum will FAIL if size is too big
-#define drum_size 30
-#define drum_middle 15
+#define drum_size 34
+#define drum_middle 17
 int copy_size = drum_size*drum_size*4 ;
 
 // fixed pt macros suitable for 32-bit sound
@@ -123,6 +118,7 @@ float alpha = 64;
  
 int main(void)
 {
+    printf("drum size = %d\n", drum_size);
 	// Declare volatile pointers to I/O registers (volatile 	// means that IO load and store instructions will be used 	// to access these pointer locations, 
 	// instead of regular memory loads and stores) 
 
@@ -145,7 +141,6 @@ int main(void)
     
     // get virtual addr that maps to physical
 	h2p_lw_virtual_base = mmap( NULL, HW_REGS_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, HW_REGS_BASE );	
-	printf("h2p_lw_virtual_base = %p\n", h2p_lw_virtual_base);
 	if( h2p_lw_virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap1() failed...\n" );
 		close( fd );
@@ -153,7 +148,7 @@ int main(void)
 	}
     
     // Get the address that maps to the FPGA LED control 
-	red_LED_ptr =(unsigned int *)(h2p_lw_virtual_base + LEDR_BASE);
+	red_LED_ptr =(unsigned int *)(h2p_lw_virtual_base +  	 			LEDR_BASE);
 
 	// address to resolution register
 	//res_reg_ptr =(unsigned int *)(h2p_lw_virtual_base +  	 	//		resOffset);
@@ -163,14 +158,10 @@ int main(void)
 
 	// audio addresses
 	// base address is control register
-	audio_base_ptr = (unsigned int *)(h2p_lw_virtual_base + AUDIO_BASE);
+	audio_base_ptr = (unsigned int *)(h2p_lw_virtual_base +  	 			AUDIO_BASE);
 	audio_fifo_data_ptr  = audio_base_ptr  + 1 ; // word
 	audio_left_data_ptr = audio_base_ptr  + 2 ; // words
 	audio_right_data_ptr = audio_base_ptr  + 3 ; // words
-	printf("audio_base_ptr       = %p\n", audio_base_ptr      );
-	printf("audio_fifo_data_ptr  = %p\n", audio_fifo_data_ptr );
-	printf("audio_left_data_ptr  = %p\n", audio_left_data_ptr );
-	printf("audio_right_data_ptr = %p\n\n", audio_right_data_ptr);
 
 	// === get VGA char addr =====================
 	// get virtual addr that maps to physical
@@ -186,7 +177,7 @@ int main(void)
 
 	// === get VGA pixel addr ====================
 	// get virtual addr that maps to physical
-	vga_pixel_virtual_base = mmap( NULL, FPGA_ONCHIP_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, FPGA_ONCHIP_BASE);	
+	vga_pixel_virtual_base = mmap( NULL, FPGA_ONCHIP_SPAN, ( 	PROT_READ | PROT_WRITE ), MAP_SHARED, fd, 			FPGA_ONCHIP_BASE);	
 	if( vga_pixel_virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap3() failed...\n" );
 		close( fd );
@@ -203,52 +194,107 @@ int main(void)
 	// read the LINUX clock (microSec)
 	// and set the time so that a not plays soon
 	note_time = clock() - 2800000;
-	
+
+    // set some value for timing analysis
+    double diff;
+    struct timespec start, end;
+
+	// This is for cos/sin evaluation
+	float syn_x = 0.0, syn_y = 0.0;
+	int num_of_coeff = 1;
+	printf("num_of_coeff = %d\n", num_of_coeff);
+	float analysis_out_x_coeff[num_of_coeff];
+	float analysis_out_y_coeff[num_of_coeff];
+
+	int freq_div_x = 100;
+	int freq_div_y = 120;
+	printf("freq_div_x = %d\n", freq_div_x);
+	printf("freq_div_y = %d\n", freq_div_y);
+	float dt_x = 1.0 / freq_div_x;
+	float dt_y = 1.0 / freq_div_y;
+	float omega_x = 0.0, omega_y = 0.0;
+	printf("dt_x = %f, dt_y = %f\n", dt_x, dt_y);
+	printf("dt_x = %f, dt_y = %f\n", dt_x, dt_y);
+
+	for(i = num_of_coeff; i > 0; i--) {
+		analysis_out_x_coeff[i-1] = (float)i * 0xFFF;
+		analysis_out_y_coeff[i-1] = (float)i * 0xFFF;
+	}
 	int counter = 0;
 	while(1){	
 		counter = 0;
 		// generate a drum simulation
 		// load the FIFO until it is full
-		while (((*audio_fifo_data_ptr>>24) & 0xff) > 1) {
+		while (((*audio_fifo_data_ptr>>24)& 0xff) > 1) {
+            // start timer
+            clock_gettime(CLOCK_MONOTONIC, &start);
+
 			// do drum time sample
 			// equation 2.18 
 			// from http://people.ece.cornell.edu/land/courses/ece5760/LABS/s2018/WaveFDsoln.pdf
-			for (i=1; i<drum_size-1; i++){
-				for (j=1; j<drum_size-1; j++){
-					new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]), drum_n[drum_middle][drum_middle]);
-					// new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]));
-					new_drum[i][j] = times0pt9999(new_drum_temp + times2pt0(drum_n[i][j]) - times0pt9998(drum_n_1[i][j])) ;
-					// printf("new_drum[%d][%d] = 0x%x\n", i, j, new_drum[i][j]);
-				}
-			}
+			// for (i=1; i<drum_size-1; i++){
+			// 	for (j=1; j<drum_size-1; j++){
+			// 		new_drum_temp = times_rho(drum_n[i-1][j] + drum_n[i+1][j] + drum_n[i][j-1] + drum_n[i][j+1] - times4pt0(drum_n[i][j]));
+			// 		new_drum[i][j] = times0pt9999(new_drum_temp + times2pt0(drum_n[i][j]) - times0pt9998(drum_n_1[i][j])) ;
+			// 	}
+			// }
 
 			// This statement affects the writing time
 			printf("%d", counter++);
+
+			// This is for cos/sin evaluation
+			syn_x = analysis_out_x_coeff[0] * cos(2.0 * M_PI * omega_x);
+			syn_y = analysis_out_y_coeff[0] * sin(2.0 * M_PI * omega_y);
+			// printf("syn_x = %f, syn_y = %f\n", syn_x, syn_y );
+			omega_x += dt_x;
+			omega_y += dt_y;
+			if(omega_x > 1.0) {
+				omega_x = 0.0;
+			}
+			if(omega_y > 1.0) {
+				omega_y = 0.0;
+			}
+			// printf("dt_x = %f, dt_y = %f\n", dt_x, dt_y);
+
+            // stop timer
+            clock_gettime(CLOCK_MONOTONIC, &end);
+
+			// diff = (end.tv_sec - start.tv_sec) + ((double)(end.tv_nsec - start.tv_nsec))*1e-9;
+            // printf("time = %lf\n", diff);
 			
 			// update the state arrays
-			memcpy((void*)drum_n_1, (void*)drum_n, copy_size);
-			memcpy((void*)drum_n, (void*)new_drum, copy_size);
+			// memcpy((void*)drum_n_1, (void*)drum_n, copy_size);
+			// memcpy((void*)drum_n, (void*)new_drum, copy_size);
 			
 			// send time sample to the audio FiFOs
-			*audio_left_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			*audio_right_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
-			// printf("%x\n", fix2audio16(drum_n[drum_middle][drum_middle]));
+			*audio_left_data_ptr = syn_y;
+			*audio_right_data_ptr = syn_x;
+			// *audio_left_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
+			// *audio_right_data_ptr = fix2audio16(drum_n[drum_middle][drum_middle]);
+
+            // // stop timer
+            // clock_gettime(CLOCK_MONOTONIC, &end);
+
 			// shared memory for possible graphics
 			//*(shared_ptr+1) = fix2audio28(drum_n[drum_middle][drum_middle]);
 			// share the audio sample time with video process
 			//audio_time++ ;
 			//*shared_ptr = audio_time/48000 ;
-		} // end while (((*audio	
+		} // end while (((*audio
+
+        // printf("\n");
 		
-		if (clock() - note_time > 3000000) {
+		if (clock()- note_time > 3000000) {
+            // check out the time interval
+            diff = (end.tv_sec - start.tv_sec) + ((double)(end.tv_nsec - start.tv_nsec))*1e-9;
+            printf("time = %lf\n", diff);
 			// strike the drum
-			// this is a set up for zero initial displacement with
+			// this is a set up for zero initial displacment with
 			// the strike as a velocity
 			for (i=1; i<drum_size-1; i++){
 				for (j=1; j<drum_size-1; j++){
 					dist2 = (i-drum_middle)*(i-drum_middle)+(j-drum_middle)*(j-drum_middle);
 					drum_n_1[i][j] = float2fix28(0.01*exp(-(float)dist2/alpha));
-					printf("drum_n_1[%d][%d] = 0x%x\n", i, j, drum_n_1[i][j]);
 					drum_n[i][j] = 0 ;
 				}
 			}
