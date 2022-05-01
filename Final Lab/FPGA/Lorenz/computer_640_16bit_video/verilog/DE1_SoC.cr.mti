@@ -1,0 +1,14 @@
+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v {1 {vlog -work work -stats=none C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module integrator
+-- Compiling module signed_mult
+
+Top level modules:
+	integrator
+	signed_mult
+
+} {} {}} C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/Computer_System/Computer_System_inst.v {0 {vlog -work work -stats=none C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/Computer_System/Computer_System_inst.v
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+** Error: C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/Computer_System/Computer_System_inst.v(1): near "Computer_System": syntax error, unexpected IDENTIFIER, expecting class
+
+} {3.0 4.0} {}}

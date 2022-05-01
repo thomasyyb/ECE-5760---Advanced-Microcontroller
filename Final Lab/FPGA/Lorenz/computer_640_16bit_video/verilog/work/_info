@@ -1,0 +1,91 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/simulation/modelsim
+vDE1_SoC_Computer
+Z0 !s110 1644595789
+!i10b 1
+!s100 U_N6feYOJhH<K_P6MGm][2
+IZ88PBc]HFFm<1edCY<^L53
+Z1 V`JN@9S9cnhjKRR_L]QIcM3
+Z2 dC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog
+w1644595583
+8C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v
+FC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v
+L0 3
+Z3 OV;L;10.3d;59
+r1
+!s85 0
+31
+!s108 1644595789.182000
+!s107 C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v|
+!i113 1
+Z4 o-work work
+n@d@e1_@so@c_@computer
+vintegrator
+Z5 !s110 1644595788
+!i10b 1
+!s100 0WkbOGe=c[lP^BjfD@d0G0
+IiClW;>2bnULH2bTMTB[FB1
+R1
+R2
+Z6 w1643485942
+Z7 8C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v
+Z8 FC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v
+L0 17
+R3
+r1
+!s85 0
+31
+Z9 !s108 1644595788.877000
+Z10 !s107 C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v|
+Z11 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v|
+!i113 1
+R4
+vlorenz
+R0
+!i10b 1
+!s100 5QN9YM@P7>5`3<2fD8VaA0
+IP3V[6TVYFeC2AndLN0BN01
+R1
+R2
+w1644592540
+8C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/lorenz.v
+FC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/lorenz.v
+L0 1
+R3
+r1
+!s85 0
+31
+!s108 1644595789.030000
+!s107 C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/lorenz.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/lorenz.v|
+!i113 1
+R4
+vsigned_mult
+R5
+!i10b 1
+!s100 ML;cF8j2heKT>A]_Cl9EV0
+IO:kc3OWY6oXg8n>D[L1?j2
+R1
+R2
+R6
+R7
+R8
+L0 41
+R3
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R4
