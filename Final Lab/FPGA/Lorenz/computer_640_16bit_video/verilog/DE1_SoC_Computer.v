@@ -472,13 +472,24 @@ reg [31:0] dds_accum ;
 wire [15:0] sine_out ;
 // update phase accumulator
 // sync to audio data rate (48kHz) using audio_input_ready signal
-always @(posedge CLOCK_50) begin //CLOCK_50
-	// Fout = (sample_rate)/(2^32)*{SW[9:0], 16'b0}
-	// then Fout=48000/(2^32)*(2^25) = 375 Hz
-	if (audio_input_ready) dds_accum <= dds_accum + {SW[9:0], 16'b0} ;	
-end
+// always @(posedge CLOCK_50) begin //CLOCK_50
+// 	// Fout = (sample_rate)/(2^32)*{SW[9:0], 16'b0}
+// 	// then Fout=48000/(2^32)*(2^25) = 375 Hz
+// 	if (audio_input_ready) dds_accum <= dds_accum + {SW[9:0], 16'b0} ;	
+// end
 // DDS sine wave ROM
-sync_rom sineTable(CLOCK_50, dds_accum[31:24], sine_out);
+// sync_rom sineTable(CLOCK_50, dds_accum[31:24], sine_out);
+
+reg  		phasor_clk;
+reg  [3:0]  mag_cos, mag_sin;
+wire [7:0]  freq;
+wire [19:0] phasor_out;
+
+assign freq = SW[7:0];
+
+phasor p_test (.clk(phasor_clk), .reset(reset),
+			.sine_mag(mag_sin), .cosine_mag(mag_cos), .freq(freq),
+			.out(phasor_out));
 
 // get some signals exposed
 // connect bus master signals to i/o for probes
@@ -497,18 +508,18 @@ wire [15:0] left_decimation_out, decimated_filter_300_out ;
 // 2-pole butterworth
 // filter definition are from matlab pgm at bottom of this file
 // Compare to decimated filter below
-IIR2_18bit_fixed filter_right( 
-     .audio_out (right_filter_output), 
-     .audio_in (right_audio_input),  
-     .b1 (18'sd426), 
-     .b2 (18'sd0), 
-     .b3 (-18'sd426), 
-     .a2 (18'sd130122), 
-     .a3 (-18'sd64683), 
-     .state_clk(CLOCK_50), 
-     .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
-) ; //end filter 
+// IIR2_18bit_fixed filter_right( 
+//      .audio_out (right_filter_output), 
+//      .audio_in (right_audio_input),  
+//      .b1 (18'sd426), 
+//      .b2 (18'sd0), 
+//      .b3 (-18'sd426), 
+//      .a2 (18'sd130122), 
+//      .a3 (-18'sd64683), 
+//      .state_clk(CLOCK_50), 
+//      .audio_input_ready(audio_input_ready), 
+//      .reset(reset) 
+// ) ; //end filter 
 
 // === 6:1 decimator filters =====================
 // First stage decimation filter
@@ -521,47 +532,47 @@ IIR2_18bit_fixed filter_right(
 // slower 8KHz filters
 // The slower data-ready signal will come from the
 // bus-master state machine
-IIR2_18bit_fixed filter_decimation1( 
-     .audio_out (left_filter_output), 
-     .audio_in (left_audio_input), 
-     .b1 (18'sd885), 
-     .b2 (18'sd1771), 
-     .b3 (18'sd885), 
-     .a2 (18'sd112357), 
-     .a3 (-18'sd56805),  
-     .state_clk(CLOCK_50), 
-     .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
-) ; //end filter 
+// IIR2_18bit_fixed filter_decimation1( 
+//      .audio_out (left_filter_output), 
+//      .audio_in (left_audio_input), 
+//      .b1 (18'sd885), 
+//      .b2 (18'sd1771), 
+//      .b3 (18'sd885), 
+//      .a2 (18'sd112357), 
+//      .a3 (-18'sd56805),  
+//      .state_clk(CLOCK_50), 
+//      .audio_input_ready(audio_input_ready), 
+//      .reset(reset) 
+// ) ; //end filter 
 //Filter: frequency=0.083333 2KHz butterworth
 // second stage decimation filter
-IIR2_18bit_fixed filter_decimation2( 
-     .audio_out (left_decimation_out), 
-     .audio_in (left_filter_output), 
-     .b1 (18'sd943), 
-     .b2 (18'sd1887), 
-     .b3 (18'sd943), 
-     .a2 (18'sd107019), 
-     .a3 (-18'sd45259), 
-     .state_clk(CLOCK_50), 
-     .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
-) ; //end filter 
+// IIR2_18bit_fixed filter_decimation2( 
+//      .audio_out (left_decimation_out), 
+//      .audio_in (left_filter_output), 
+//      .b1 (18'sd943), 
+//      .b2 (18'sd1887), 
+//      .b3 (18'sd943), 
+//      .a2 (18'sd107019), 
+//      .a3 (-18'sd45259), 
+//      .state_clk(CLOCK_50), 
+//      .audio_input_ready(audio_input_ready), 
+//      .reset(reset) 
+// ) ; //end filter 
 // === 6:1 decimator filters end==================
 
 // decimated bandpass 300 Hz, BW 100 Hz filter running at 8KHz
-IIR2_18bit_fixed dec_filter_300( 
-     .audio_out (decimated_filter_300_out), 
-     .audio_in (left_decimation_out<<1),  //lose amp in decimator
-     .b1 (18'sd2477), 
-     .b2 (18'sd0), 
-     .b3 (-18'sd2477), 
-     .a2 (18'sd122726), 
-     .a3 (-18'sd60580), 
-     .state_clk(CLOCK_50), 
-     .audio_input_ready(decimated_audio_ready), 
-     .reset(reset) 
-) ; //end filter 
+// IIR2_18bit_fixed dec_filter_300( 
+//      .audio_out (decimated_filter_300_out), 
+//      .audio_in (left_decimation_out<<1),  //lose amp in decimator
+//      .b1 (18'sd2477), 
+//      .b2 (18'sd0), 
+//      .b3 (-18'sd2477), 
+//      .a2 (18'sd122726), 
+//      .a3 (-18'sd60580), 
+//      .state_clk(CLOCK_50), 
+//      .audio_input_ready(decimated_audio_ready), 
+//      .reset(reset) 
+// ) ; //end filter 
 
 // ===============================================
 // === Audio bus master state machine ============
@@ -590,7 +601,9 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		bus_read <= 0 ; // set to one if a read opeation from bus
 		bus_write <= 0 ; // set to one if a write operation to bus
 		timer <= 0;
-		decimated_audio_clk_counter <= 0 ;
+		phasor_clk <= 0;
+		mag_cos <= 2;
+		mag_sin <= 3;
 	end
 	else begin
 		// timer just for deubgging
@@ -617,12 +630,19 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	end
 	
 	// When there is room in the FIFO
+	// -- compute next DDS sine sample
 	// -- start write to fifo for each channel
 	// -- first the left channel
-	if (state==4'd2 && fifo_space>8'd2) begin // 
+	if (state==4'd2 && fifo_space>8'd2) begin
 		state <= 4'd3;	
-		bus_write_data <= left_audio_output ;
-		bus_addr <= audio_data_left_address ;
+		// IF SW=10'h200 
+		// and Fout = (sample_rate)/(2^32)*{SW[9:0], 16'b0}
+		// then Fout=48000/(2^32)*(2^25) = 375 Hz
+		// dds_accum <= dds_accum + {SW[9:0], 16'b0};
+		// convert 16-bit table to 32-bit format
+		bus_write_data <= (phasor_out << 12);
+		// bus_write_data <= (sine_out << 16) ;
+		bus_addr <= audio_data_right_address ;
 		bus_byte_enable <= 4'b1111;
 		bus_write <= 1'b1 ;
 	end	
@@ -642,22 +662,29 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	
 	// -- now the right channel
 	if (state==4'd4) begin // 
-		state <= 4'd5;	
-		// loop back audio input data
-		bus_write_data <= right_audio_output ;
-		bus_addr <= audio_data_right_address ;
+		state <= 4'd5;
+		bus_write_data <= (phasor_out << 12);
+		// bus_write_data <= (sine_out << 16) ;
+		bus_addr <= audio_data_left_address ;
 		bus_write <= 1'b1 ;
+
+		// To synchronize the phasor and the audio codec
+		phasor_clk <= 1;
 	end	
 	
 	// detect bus-transaction-complete ACK
 	// for right channel write
 	// You MUST do this check
 	if (state==4'd5 && bus_ack==1) begin
-		// state <= 4'd0 ; // for write only function
-		state <= 4'd6 ; // for read/write  function
+		state <= 4'd0 ; // for write only function
+		// state <= 4'd6 ; // for read/write  function
 		bus_write <= 0;
+
+		// To synchronize the phasor and the audio codec
+		phasor_clk <= 0;
 	end
 	
+	// NOT USING THIS PART
 	// === reading stereo from the audio FIFO ==========
 	// set up read FIFO for available read values
 	if (state==4'd6 ) begin
@@ -830,7 +857,7 @@ Computer_System The_System (
 	.memory_mem_dm			(HPS_DDR3_DM),
 	.memory_oct_rzqin		(HPS_DDR3_RZQ),
 	
-	//PIO ports
+	// PIO ports
 
 	// .pio_freq_external_connection_export ({pio_freq[0], pio_freq[1]}),    
 	// .pio_mag_cos_external_connection_export ({pio_mag_cos[0], pio_mag_cos[1]}),       

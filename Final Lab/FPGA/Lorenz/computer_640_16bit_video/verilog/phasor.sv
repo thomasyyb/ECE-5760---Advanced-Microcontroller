@@ -3,7 +3,7 @@
 module phasor (
     input  logic clk, reset, 
     input  logic signed [3:0] sine_mag, cosine_mag,
-    input  logic [3:0] freq, //up to 15th harmonic 
+    input  logic [7:0] freq, //up to 15th harmonic 
     // output logic signed [19:0] sin_out, cos_out
     output logic signed [19:0] out
 );
