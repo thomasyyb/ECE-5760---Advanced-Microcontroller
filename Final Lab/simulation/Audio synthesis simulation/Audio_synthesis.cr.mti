@@ -1,0 +1,22 @@
+{C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv} {1 {vlog -work work -sv -stats=none {C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv}
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module phasor
+
+Top level modules:
+	phasor
+
+} {} {}} {C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv} {1 {vlog -work work -sv -stats=none {C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv}
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module sync_rom
+
+Top level modules:
+	sync_rom
+
+} {} {}} {C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v} {1 {vlog -work work -stats=none {C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v}
+Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+-- Compiling module signed_mult
+
+Top level modules:
+	signed_mult
+
+} {} {}}
