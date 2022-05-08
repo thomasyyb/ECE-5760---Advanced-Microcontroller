@@ -9,6 +9,7 @@
    <inputclock preferredWidth="151" />
   </columns>
  </systemtable>
- <library expandedCategories="Library,Project" />
+ <library
+   expandedCategories="Library/Processors and Peripherals,Library,Project,Library/Processors and Peripherals/Peripherals" />
  <window width="1296" height="1000" x="-8" y="-8" />
 </preferences>

@@ -89,6 +89,13 @@
 			memory_mem_odt                                  : out   std_logic;                                        -- mem_odt
 			memory_mem_dm                                   : out   std_logic_vector(3 downto 0);                     -- mem_dm
 			memory_oct_rzqin                                : in    std_logic                     := 'X';             -- oct_rzqin
+			pio_a_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_b_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_c_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_d_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_reset_external_connection_export            : out   std_logic;                                        -- export
+			pio_wr_addr_external_connection_export          : out   std_logic_vector(4 downto 0);                     -- export
+			pio_wr_en_external_connection_export            : out   std_logic;                                        -- export
 			sdram_addr                                      : out   std_logic_vector(12 downto 0);                    -- addr
 			sdram_ba                                        : out   std_logic_vector(1 downto 0);                     -- ba
 			sdram_cas_n                                     : out   std_logic;                                        -- cas_n

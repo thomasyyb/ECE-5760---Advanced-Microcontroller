@@ -1,5 +1,5 @@
 Flow report for DE1_SoC_Computer
-Mon May 02 14:35:27 2022
+Sat May 07 21:05:27 2022
 Quartus II 64-Bit Version 15.0.0 Build 145 04/22/2015 SJ Full Version
 
 
@@ -41,25 +41,25 @@ agreement for further details.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Mon May 02 14:35:27 2022       ;
+; Flow Status                     ; Successful - Sat May 07 21:05:27 2022       ;
 ; Quartus II 64-Bit Version       ; 15.0.0 Build 145 04/22/2015 SJ Full Version ;
 ; Revision Name                   ; DE1_SoC_Computer                            ;
 ; Top-level Entity Name           ; DE1_SoC_Computer                            ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA5F31C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 4,512 / 32,070 ( 14 % )                     ;
-; Total registers                 ; 5526                                        ;
+; Logic utilization (in ALMs)     ; 7,896 / 32,070 ( 25 % )                     ;
+; Total registers                 ; 9577                                        ;
 ; Total pins                      ; 368 / 457 ( 81 % )                          ;
 ; Total virtual pins              ; 0                                           ;
-; Total block memory bits         ; 2,367,232 / 4,065,280 ( 58 % )              ;
-; Total PLLs                      ; 3 / 6 ( 50 % )                              ;
-; Total DLLs                      ; 1 / 4 ( 25 % )                              ;
-; Total DSP Blocks                ; 7 / 87 ( 8 % )                              ;
+; Total block memory bits         ; 1,563,648 / 4,065,280 ( 38 % )              ;
+; Total DSP Blocks                ; 87 / 87 ( 100 % )                           ;
 ; Total HSSI RX PCSs              ; 0                                           ;
 ; Total HSSI PMA RX Deserializers ; 0                                           ;
 ; Total HSSI TX PCSs              ; 0                                           ;
 ; Total HSSI PMA TX Serializers   ; 0                                           ;
+; Total PLLs                      ; 3 / 6 ( 50 % )                              ;
+; Total DLLs                      ; 1 / 4 ( 25 % )                              ;
 +---------------------------------+---------------------------------------------+
 
 
@@ -750,7 +750,99 @@ agreement for further details.
 ; Assembler                 ; 00:00:18     ; 1.0                     ; 5040 MB             ; 00:00:19                           ;
 ; TimeQuest Timing Analyzer ; 00:01:02     ; 1.6                     ; 6007 MB             ; 00:01:30                           ;
 ; EDA Netlist Writer        ; 00:00:08     ; 1.0                     ; 5130 MB             ; 00:00:08                           ;
-; Total                     ; 11:14:24     ; --                      ; --                  ; 16:48:09                           ;
+; Analysis & Synthesis      ; 00:01:23     ; 2.0                     ; 5331 MB             ; 00:02:27                           ;
+; Partition Merge           ; 00:00:12     ; 1.0                     ; 4951 MB             ; 00:00:12                           ;
+; Fitter                    ; 00:03:05     ; 1.7                     ; 7785 MB             ; 00:05:09                           ;
+; Assembler                 ; 00:00:19     ; 1.0                     ; 5038 MB             ; 00:00:19                           ;
+; TimeQuest Timing Analyzer ; 00:01:04     ; 1.7                     ; 6008 MB             ; 00:01:32                           ;
+; EDA Netlist Writer        ; 00:00:08     ; 1.0                     ; 5136 MB             ; 00:00:08                           ;
+; Analysis & Synthesis      ; 00:01:24     ; 2.0                     ; 5332 MB             ; 00:02:34                           ;
+; Partition Merge           ; 00:00:12     ; 1.0                     ; 4953 MB             ; 00:00:12                           ;
+; Fitter                    ; 00:03:07     ; 1.8                     ; 7785 MB             ; 00:05:12                           ;
+; Assembler                 ; 00:00:19     ; 1.0                     ; 5037 MB             ; 00:00:19                           ;
+; TimeQuest Timing Analyzer ; 00:01:03     ; 1.5                     ; 6007 MB             ; 00:01:32                           ;
+; EDA Netlist Writer        ; 00:00:08     ; 1.0                     ; 5136 MB             ; 00:00:08                           ;
+; Analysis & Synthesis      ; 00:01:20     ; 1.9                     ; 5296 MB             ; 00:02:39                           ;
+; Partition Merge           ; 00:00:15     ; 1.0                     ; 5137 MB             ; 00:00:15                           ;
+; Fitter                    ; 00:02:45     ; 1.6                     ; 7771 MB             ; 00:04:14                           ;
+; Assembler                 ; 00:00:18     ; 1.0                     ; 5033 MB             ; 00:00:18                           ;
+; TimeQuest Timing Analyzer ; 00:01:03     ; 1.6                     ; 6006 MB             ; 00:01:31                           ;
+; EDA Netlist Writer        ; 00:00:08     ; 1.0                     ; 5127 MB             ; 00:00:08                           ;
+; Analysis & Elaboration    ; 00:00:21     ; 1.0                     ; 4938 MB             ; 00:00:31                           ;
+; Analysis & Elaboration    ; 00:00:51     ; 1.0                     ; 5383 MB             ; 00:01:12                           ;
+; Analysis & Synthesis      ; 00:01:47     ; 2.0                     ; 5459 MB             ; 00:03:02                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4966 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:01:22     ; 1.1                     ; 6882 MB             ; 00:01:33                           ;
+; Analysis & Synthesis      ; 00:01:48     ; 1.9                     ; 5468 MB             ; 00:03:02                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4964 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:03:55     ; 1.8                     ; 7832 MB             ; 00:06:54                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5070 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:10     ; 1.6                     ; 6074 MB             ; 00:01:47                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5188 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:45     ; 1.9                     ; 5462 MB             ; 00:02:59                           ;
+; Partition Merge           ; 00:00:14     ; 1.0                     ; 4972 MB             ; 00:00:14                           ;
+; Fitter                    ; 00:04:06     ; 1.9                     ; 7830 MB             ; 00:06:59                           ;
+; Assembler                 ; 00:00:21     ; 1.0                     ; 5074 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:11     ; 1.7                     ; 6072 MB             ; 00:01:48                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5190 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:42     ; 2.0                     ; 5460 MB             ; 00:02:57                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4971 MB             ; 00:00:14                           ;
+; Fitter                    ; 00:04:08     ; 1.9                     ; 7809 MB             ; 00:07:02                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5074 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:12     ; 1.7                     ; 6072 MB             ; 00:01:50                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5185 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:56     ; 2.0                     ; 5469 MB             ; 00:03:23                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4968 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:03:58     ; 1.8                     ; 7862 MB             ; 00:06:47                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5073 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:09     ; 1.7                     ; 6076 MB             ; 00:01:48                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5186 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:46     ; 2.0                     ; 5473 MB             ; 00:03:01                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4970 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:04:12     ; 1.9                     ; 7832 MB             ; 00:07:16                           ;
+; Assembler                 ; 00:00:22     ; 1.0                     ; 5077 MB             ; 00:00:22                           ;
+; TimeQuest Timing Analyzer ; 00:01:14     ; 1.7                     ; 6075 MB             ; 00:01:54                           ;
+; EDA Netlist Writer        ; 00:00:10     ; 1.0                     ; 5190 MB             ; 00:00:10                           ;
+; Analysis & Synthesis      ; 00:01:41     ; 1.9                     ; 5471 MB             ; 00:02:49                           ;
+; Partition Merge           ; 00:00:14     ; 1.0                     ; 4971 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:03:59     ; 1.9                     ; 7839 MB             ; 00:06:51                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5077 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:10     ; 1.7                     ; 6074 MB             ; 00:01:49                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5189 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:40     ; 2.0                     ; 5468 MB             ; 00:02:49                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4973 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:03:57     ; 1.8                     ; 7839 MB             ; 00:06:53                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5074 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:10     ; 1.8                     ; 6075 MB             ; 00:01:48                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5183 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:38     ; 2.0                     ; 5467 MB             ; 00:02:48                           ;
+; Partition Merge           ; 00:00:13     ; 1.0                     ; 4970 MB             ; 00:00:13                           ;
+; Fitter                    ; 00:03:58     ; 1.8                     ; 7844 MB             ; 00:06:50                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5077 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:11     ; 1.7                     ; 6074 MB             ; 00:01:49                           ;
+; EDA Netlist Writer        ; 00:00:10     ; 1.0                     ; 5190 MB             ; 00:00:09                           ;
+; Analysis & Synthesis      ; 00:01:47     ; 1.9                     ; 5513 MB             ; 00:02:58                           ;
+; Partition Merge           ; 00:00:14     ; 1.0                     ; 4980 MB             ; 00:00:14                           ;
+; Fitter                    ; 00:04:06     ; 1.9                     ; 7873 MB             ; 00:07:04                           ;
+; Assembler                 ; 00:00:20     ; 1.0                     ; 5092 MB             ; 00:00:20                           ;
+; TimeQuest Timing Analyzer ; 00:01:11     ; 1.8                     ; 6093 MB             ; 00:01:53                           ;
+; EDA Netlist Writer        ; 00:00:09     ; 1.0                     ; 5205 MB             ; 00:00:10                           ;
+; Analysis & Elaboration    ; 00:00:52     ; 1.0                     ; 5431 MB             ; 00:01:13                           ;
+; Analysis & Synthesis      ; 00:01:51     ; 1.9                     ; 5513 MB             ; 00:03:07                           ;
+; Partition Merge           ; 00:00:14     ; 1.0                     ; 4994 MB             ; 00:00:14                           ;
+; Fitter                    ; 00:04:20     ; 1.9                     ; 7867 MB             ; 00:07:38                           ;
+; Assembler                 ; 00:00:26     ; 1.0                     ; 5104 MB             ; 00:00:26                           ;
+; TimeQuest Timing Analyzer ; 00:01:27     ; 1.9                     ; 6109 MB             ; 00:02:22                           ;
+; EDA Netlist Writer        ; 00:00:11     ; 1.0                     ; 5227 MB             ; 00:00:11                           ;
+; Analysis & Elaboration    ; 00:00:20     ; 1.0                     ; 4970 MB             ; 00:00:33                           ;
+; Analysis & Elaboration    ; 00:00:49     ; 1.0                     ; 5453 MB             ; 00:01:14                           ;
+; Analysis & Synthesis      ; 00:01:54     ; 1.8                     ; 5528 MB             ; 00:03:06                           ;
+; Partition Merge           ; 00:00:15     ; 1.0                     ; 5006 MB             ; 00:00:15                           ;
+; Fitter                    ; 00:05:02     ; 2.0                     ; 7942 MB             ; 00:08:51                           ;
+; Assembler                 ; 00:00:25     ; 1.0                     ; 5143 MB             ; 00:00:24                           ;
+; TimeQuest Timing Analyzer ; 00:01:25     ; 1.9                     ; 6165 MB             ; 00:02:23                           ;
+; EDA Netlist Writer        ; 00:00:12     ; 1.0                     ; 5273 MB             ; 00:00:12                           ;
+; Total                     ; 13:06:00     ; --                      ; --                  ; 19:47:51                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
@@ -1362,6 +1454,98 @@ agreement for further details.
 ; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
 ; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
 ; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Elaboration    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Elaboration    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Elaboration    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Assembler                 ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; TimeQuest Timing Analyzer ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; EDA Netlist Writer        ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Elaboration    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
+; Analysis & Elaboration    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
 ; Analysis & Synthesis      ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
 ; Partition Merge           ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
 ; Fitter                    ; EN-EC-LPH238-11  ; Windows 7 ; 6.2        ; x86_64         ;
@@ -1992,6 +2176,99 @@ quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Compute
 quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
 quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
 quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sh --restore -output "C:\Users\hh543\Desktop\New_branch_final_lab\ECE-5760---Advanced-Microcontroller\Final Lab\FPGA\Lorenz\computer_640_16bit_video\verilog/" -no_overwrite "C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/DE1_SoC_Computer_640_480.qar"
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --analysis_and_elaboration
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --analysis_and_elaboration
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --analysis_and_elaboration
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
+quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_asm --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_sta DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_eda --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --analysis_and_elaboration
+quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --analysis_and_elaboration
 quartus_map --read_settings_files=on --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer
 quartus_cdb --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer --merge=on
 quartus_fit --read_settings_files=off --write_settings_files=off DE1_SoC_Computer -c DE1_SoC_Computer

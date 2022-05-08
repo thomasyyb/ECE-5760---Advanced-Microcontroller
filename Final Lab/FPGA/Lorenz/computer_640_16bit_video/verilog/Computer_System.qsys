@@ -53,7 +53,7 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "7";
          type = "int";
       }
    }
@@ -82,7 +82,7 @@
    {
       datum _sortIndex
       {
-         value = "15";
+         value = "8";
          type = "int";
       }
    }
@@ -192,97 +192,7 @@
          type = "boolean";
       }
    }
-   element pio_freq
-   {
-      datum _sortIndex
-      {
-         value = "13";
-         type = "int";
-      }
-   }
-   element pio_freq.s1
-   {
-      datum baseAddress
-      {
-         value = "67108992";
-         type = "String";
-      }
-   }
-   element pio_lorenz_clk
-   {
-      datum _sortIndex
-      {
-         value = "7";
-         type = "int";
-      }
-      datum sopceditor_expanded
-      {
-         value = "1";
-         type = "boolean";
-      }
-   }
-   element pio_lorenz_clk.s1
-   {
-      datum _lockedAddress
-      {
-         value = "0";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "67108864";
-         type = "String";
-      }
-   }
-   element pio_lorenz_reset
-   {
-      datum _sortIndex
-      {
-         value = "8";
-         type = "int";
-      }
-   }
-   element pio_lorenz_reset.s1
-   {
-      datum baseAddress
-      {
-         value = "67108880";
-         type = "String";
-      }
-   }
-   element pio_mag_cos
-   {
-      datum _sortIndex
-      {
-         value = "11";
-         type = "int";
-      }
-   }
-   element pio_mag_cos.s1
-   {
-      datum baseAddress
-      {
-         value = "67108960";
-         type = "String";
-      }
-   }
-   element pio_mag_sin
-   {
-      datum _sortIndex
-      {
-         value = "12";
-         type = "int";
-      }
-   }
-   element pio_mag_sin.s1
-   {
-      datum baseAddress
-      {
-         value = "67108976";
-         type = "String";
-      }
-   }
-   element pio_phasor_out_1
+   element pio_a
    {
       datum _sortIndex
       {
@@ -290,15 +200,15 @@
          type = "int";
       }
    }
-   element pio_phasor_out_1.s1
+   element pio_a.s1
    {
       datum baseAddress
       {
-         value = "67108896";
+         value = "67108864";
          type = "String";
       }
    }
-   element pio_phasor_out_2
+   element pio_b
    {
       datum _sortIndex
       {
@@ -306,11 +216,91 @@
          type = "int";
       }
    }
-   element pio_phasor_out_2.s1
+   element pio_b.s1
+   {
+      datum baseAddress
+      {
+         value = "67108880";
+         type = "String";
+      }
+   }
+   element pio_c
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element pio_c.s1
+   {
+      datum baseAddress
+      {
+         value = "67108896";
+         type = "String";
+      }
+   }
+   element pio_d
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
+      }
+   }
+   element pio_d.s1
    {
       datum baseAddress
       {
          value = "67108912";
+         type = "String";
+      }
+   }
+   element pio_reset
+   {
+      datum _sortIndex
+      {
+         value = "13";
+         type = "int";
+      }
+   }
+   element pio_reset.s1
+   {
+      datum baseAddress
+      {
+         value = "67108928";
+         type = "String";
+      }
+   }
+   element pio_wr_addr
+   {
+      datum _sortIndex
+      {
+         value = "15";
+         type = "int";
+      }
+   }
+   element pio_wr_addr.s1
+   {
+      datum baseAddress
+      {
+         value = "67108960";
+         type = "String";
+      }
+   }
+   element pio_wr_en
+   {
+      datum _sortIndex
+      {
+         value = "14";
+         type = "int";
+      }
+   }
+   element pio_wr_en.s1
+   {
+      datum baseAddress
+      {
+         value = "67108944";
          type = "String";
       }
    }
@@ -368,26 +358,40 @@
  <interface name="hps_io" internal="ARM_A9_HPS.hps_io" type="conduit" dir="end" />
  <interface name="memory" internal="ARM_A9_HPS.memory" type="conduit" dir="end" />
  <interface
-   name="pio_freq_external_connection"
-   internal="pio_freq.external_connection" />
+   name="pio_a_external_connection"
+   internal="pio_a.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_lorenz_clk_external_connection"
-   internal="pio_lorenz_clk.external_connection" />
+   name="pio_b_external_connection"
+   internal="pio_b.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_lorenz_reset_external_connection"
-   internal="pio_lorenz_reset.external_connection" />
+   name="pio_c_external_connection"
+   internal="pio_c.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_mag_cos_external_connection"
-   internal="pio_mag_cos.external_connection" />
+   name="pio_d_external_connection"
+   internal="pio_d.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_mag_sin_external_connection"
-   internal="pio_mag_sin.external_connection" />
+   name="pio_reset_external_connection"
+   internal="pio_reset.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_phasor_out_1_external_connection"
-   internal="pio_phasor_out_1.external_connection" />
+   name="pio_wr_addr_external_connection"
+   internal="pio_wr_addr.external_connection"
+   type="conduit"
+   dir="end" />
  <interface
-   name="pio_phasor_out_2_external_connection"
-   internal="pio_phasor_out_2.external_connection" />
+   name="pio_wr_en_external_connection"
+   internal="pio_wr_en.external_connection"
+   type="conduit"
+   dir="end" />
  <interface name="sdram" internal="SDRAM.wire" type="conduit" dir="end" />
  <interface
    name="sdram_clk"
@@ -1077,7 +1081,7 @@
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
   <parameter name="AUTO_PIXEL_DMA_MASTER_ADDRESS_MAP"><![CDATA[<address-map><slave name='SDRAM.s1' start='0x0' end='0x4000000' /></address-map>]]></parameter>
-  <parameter name="AUTO_PIXEL_DMA_MASTER_ADDRESS_WIDTH">com.altera.entityinterfaces.moduleext.AddressWidthType@101079d</parameter>
+  <parameter name="AUTO_PIXEL_DMA_MASTER_ADDRESS_WIDTH">com.altera.entityinterfaces.moduleext.AddressWidthType@12393b26</parameter>
   <parameter name="AUTO_SYS_CLK_CLOCK_DOMAIN" value="11" />
   <parameter name="AUTO_SYS_CLK_CLOCK_RATE" value="100000000" />
   <parameter name="AUTO_SYS_CLK_RESET_DOMAIN" value="11" />
@@ -1086,7 +1090,7 @@
   <parameter name="AUTO_VGA_PLL_REF_CLK_CLOCK_RATE" value="0" />
   <parameter name="AUTO_VGA_PLL_REF_CLK_RESET_DOMAIN" value="7" />
  </module>
- <module name="pio_freq" kind="altera_avalon_pio" version="15.0" enabled="0">
+ <module name="pio_a" kind="altera_avalon_pio" version="15.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1098,13 +1102,51 @@
   <parameter name="resetValue" value="0" />
   <parameter name="simDoTestBenchWiring" value="false" />
   <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="8" />
+  <parameter name="width" value="27" />
  </module>
- <module
-   name="pio_lorenz_clk"
-   kind="altera_avalon_pio"
-   version="15.0"
-   enabled="0">
+ <module name="pio_b" kind="altera_avalon_pio" version="15.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="100000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="27" />
+ </module>
+ <module name="pio_c" kind="altera_avalon_pio" version="15.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="100000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="27" />
+ </module>
+ <module name="pio_d" kind="altera_avalon_pio" version="15.0" enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="100000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="27" />
+ </module>
+ <module name="pio_reset" kind="altera_avalon_pio" version="15.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1119,10 +1161,24 @@
   <parameter name="width" value="1" />
  </module>
  <module
-   name="pio_lorenz_reset"
+   name="pio_wr_addr"
    kind="altera_avalon_pio"
    version="15.0"
-   enabled="0">
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="100000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="5" />
+ </module>
+ <module name="pio_wr_en" kind="altera_avalon_pio" version="15.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1136,78 +1192,15 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="1" />
  </module>
- <module
-   name="pio_mag_cos"
-   kind="altera_avalon_pio"
+ <connection
+   kind="avalon"
    version="15.0"
-   enabled="0">
-  <parameter name="bitClearingEdgeCapReg" value="false" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="false" />
-  <parameter name="clockRate" value="100000000" />
-  <parameter name="direction" value="Output" />
-  <parameter name="edgeType" value="RISING" />
-  <parameter name="generateIRQ" value="false" />
-  <parameter name="irqType" value="LEVEL" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="false" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="8" />
- </module>
- <module
-   name="pio_mag_sin"
-   kind="altera_avalon_pio"
-   version="15.0"
-   enabled="0">
-  <parameter name="bitClearingEdgeCapReg" value="false" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="false" />
-  <parameter name="clockRate" value="100000000" />
-  <parameter name="direction" value="Output" />
-  <parameter name="edgeType" value="RISING" />
-  <parameter name="generateIRQ" value="false" />
-  <parameter name="irqType" value="LEVEL" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="false" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="8" />
- </module>
- <module
-   name="pio_phasor_out_1"
-   kind="altera_avalon_pio"
-   version="15.0"
-   enabled="0">
-  <parameter name="bitClearingEdgeCapReg" value="false" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="false" />
-  <parameter name="clockRate" value="100000000" />
-  <parameter name="direction" value="Input" />
-  <parameter name="edgeType" value="RISING" />
-  <parameter name="generateIRQ" value="false" />
-  <parameter name="irqType" value="LEVEL" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="false" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="20" />
- </module>
- <module
-   name="pio_phasor_out_2"
-   kind="altera_avalon_pio"
-   version="15.0"
-   enabled="0">
-  <parameter name="bitClearingEdgeCapReg" value="false" />
-  <parameter name="bitModifyingOutReg" value="false" />
-  <parameter name="captureEdge" value="false" />
-  <parameter name="clockRate" value="100000000" />
-  <parameter name="direction" value="Input" />
-  <parameter name="edgeType" value="RISING" />
-  <parameter name="generateIRQ" value="false" />
-  <parameter name="irqType" value="LEVEL" />
-  <parameter name="resetValue" value="0" />
-  <parameter name="simDoTestBenchWiring" value="false" />
-  <parameter name="simDrivenValue" value="0" />
-  <parameter name="width" value="20" />
- </module>
+   start="Bus_master_audio.avalon_master"
+   end="Audio_Subsystem.audio_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x3040" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <connection
    kind="avalon"
    version="15.0"
@@ -1230,7 +1223,7 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_lorenz_clk.s1">
+   end="pio_a.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000000" />
   <parameter name="defaultConnection" value="false" />
@@ -1239,7 +1232,7 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_lorenz_reset.s1">
+   end="pio_b.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000010" />
   <parameter name="defaultConnection" value="false" />
@@ -1248,7 +1241,7 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_phasor_out_1.s1">
+   end="pio_c.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000020" />
   <parameter name="defaultConnection" value="false" />
@@ -1257,7 +1250,7 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_phasor_out_2.s1">
+   end="pio_d.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000030" />
   <parameter name="defaultConnection" value="false" />
@@ -1266,27 +1259,27 @@
    kind="avalon"
    version="15.0"
    start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_mag_cos.s1">
+   end="pio_reset.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04000040" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_axi_master"
+   end="pio_wr_en.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04000050" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_axi_master"
+   end="pio_wr_addr.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000060" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_mag_sin.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04000070" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_axi_master"
-   end="pio_freq.s1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04000080" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1371,37 +1364,37 @@
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_freq.clk" />
+   end="pio_a.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_mag_sin.clk" />
+   end="pio_b.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_mag_cos.clk" />
+   end="pio_c.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_phasor_out_2.clk" />
+   end="pio_d.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_phasor_out_1.clk" />
+   end="pio_reset.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_lorenz_reset.clk" />
+   end="pio_wr_en.clk" />
  <connection
    kind="clock"
    version="15.0"
    start="System_PLL.sys_clk"
-   end="pio_lorenz_clk.clk" />
+   end="pio_wr_addr.clk" />
  <connection
    kind="clock"
    version="15.0"
@@ -1463,42 +1456,42 @@
    kind="reset"
    version="15.0"
    start="ARM_A9_HPS.h2f_reset"
-   end="pio_lorenz_clk.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_lorenz_reset.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_phasor_out_1.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_phasor_out_2.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_mag_cos.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_mag_sin.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
-   end="pio_freq.reset" />
- <connection
-   kind="reset"
-   version="15.0"
-   start="ARM_A9_HPS.h2f_reset"
    end="Bus_master_audio.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_a.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_b.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_c.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_d.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_reset.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_wr_en.reset" />
+ <connection
+   kind="reset"
+   version="15.0"
+   start="ARM_A9_HPS.h2f_reset"
+   end="pio_wr_addr.reset" />
  <connection
    kind="reset"
    version="15.0"
@@ -1538,37 +1531,37 @@
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_lorenz_clk.reset" />
+   end="pio_a.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_lorenz_reset.reset" />
+   end="pio_b.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_phasor_out_1.reset" />
+   end="pio_c.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_phasor_out_2.reset" />
+   end="pio_d.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_mag_cos.reset" />
+   end="pio_reset.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_mag_sin.reset" />
+   end="pio_wr_en.reset" />
  <connection
    kind="reset"
    version="15.0"
    start="System_PLL.reset_source"
-   end="pio_freq.reset" />
+   end="pio_wr_addr.reset" />
  <connection
    kind="reset"
    version="15.0"

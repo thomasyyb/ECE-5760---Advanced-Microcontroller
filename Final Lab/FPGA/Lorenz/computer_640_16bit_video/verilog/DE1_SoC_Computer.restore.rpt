@@ -1,5 +1,5 @@
 Restore Archived Project report for DE1_SoC_Computer
-Mon May 02 11:29:04 2022
+Sat May 07 15:46:25 2022
 Quartus II 64-Bit Version 15.0.0 Build 145 04/22/2015 SJ Full Version
 
 
@@ -34,27 +34,27 @@ agreement for further details.
 
 
 
-+-------------------------------------------------------------------------+
-; Restore Archived Project Summary                                        ;
-+---------------------------------+---------------------------------------+
-; Restore Archived Project Status ; Successful - Mon May 02 11:29:04 2022 ;
-; Revision Name                   ; DE1_SoC_Computer                      ;
-; Top-level Entity Name           ; DE1_SoC_Computer                      ;
-; Family                          ; Cyclone V                             ;
-+---------------------------------+---------------------------------------+
++---------------------------------------------------------------------+
+; Restore Archived Project Summary                                    ;
++---------------------------------+-----------------------------------+
+; Restore Archived Project Status ; Failed - Sat May 07 15:46:25 2022 ;
+; Revision Name                   ; DE1_SoC_Computer                  ;
+; Top-level Entity Name           ; DE1_SoC_Computer                  ;
+; Family                          ; Cyclone V                         ;
++---------------------------------+-----------------------------------+
 
 
 +-----------------------------------+
 ; Restore Archived Project Messages ;
 +-----------------------------------+
-Info: Successfully restored 'C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/DE1_SoC_Computer_640_480.qar' into the 'C:\\Users\\hh543\\Desktop\\ECE-5760---Advanced-Microcontroller\\Final Lab\\FPGA\\Lorenz\\computer_640_16bit_video\\verilog/' directory
+Error: Failed to restore C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/DE1_SoC_Computer_640_480.qar
 Info: Generated report 'DE1_SoC_Computer.restore.rpt'
-Info (23030): Evaluation of Tcl script c:/altera/15.0/quartus/common/tcl/apps/qpm/qar.tcl was successful
-Info: Quartus II 64-Bit Shell was successful. 0 errors, 316 warnings
-    Info: Peak virtual memory: 4525 megabytes
-    Info: Processing ended: Mon May 02 11:29:04 2022
-    Info: Elapsed time: 00:00:20
-    Info: Total CPU time (on all processors): 00:00:19
+Error (23031): Evaluation of Tcl script c:/altera/15.0/quartus/common/tcl/apps/qpm/qar.tcl unsuccessful
+Error: Quartus II 64-Bit Shell was unsuccessful. 3 errors, 315 warnings
+    Error: Peak virtual memory: 4522 megabytes
+    Error: Processing ended: Sat May 07 15:46:25 2022
+    Error: Elapsed time: 00:00:06
+    Error: Total CPU time (on all processors): 00:00:04
 
 
 +----------------+

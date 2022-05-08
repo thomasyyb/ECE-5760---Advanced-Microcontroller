@@ -110,7 +110,14 @@
 			vga_G                                           : out   std_logic_vector(7 downto 0);                     -- G
 			vga_B                                           : out   std_logic_vector(7 downto 0);                     -- B
 			vga_pll_ref_clk_clk                             : in    std_logic                     := 'X';             -- clk
-			vga_pll_ref_reset_reset                         : in    std_logic                     := 'X'              -- reset
+			vga_pll_ref_reset_reset                         : in    std_logic                     := 'X';             -- reset
+			pio_a_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_b_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_c_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_d_external_connection_export                : out   std_logic_vector(26 downto 0);                    -- export
+			pio_reset_external_connection_export            : out   std_logic;                                        -- export
+			pio_wr_en_external_connection_export            : out   std_logic;                                        -- export
+			pio_wr_addr_external_connection_export          : out   std_logic_vector(4 downto 0)                      -- export
 		);
 	end component Computer_System;
 
@@ -226,6 +233,13 @@
 			vga_G                                           => CONNECTED_TO_vga_G,                                           --                                    .G
 			vga_B                                           => CONNECTED_TO_vga_B,                                           --                                    .B
 			vga_pll_ref_clk_clk                             => CONNECTED_TO_vga_pll_ref_clk_clk,                             --                     vga_pll_ref_clk.clk
-			vga_pll_ref_reset_reset                         => CONNECTED_TO_vga_pll_ref_reset_reset                          --                   vga_pll_ref_reset.reset
+			vga_pll_ref_reset_reset                         => CONNECTED_TO_vga_pll_ref_reset_reset,                         --                   vga_pll_ref_reset.reset
+			pio_a_external_connection_export                => CONNECTED_TO_pio_a_external_connection_export,                --           pio_a_external_connection.export
+			pio_b_external_connection_export                => CONNECTED_TO_pio_b_external_connection_export,                --           pio_b_external_connection.export
+			pio_c_external_connection_export                => CONNECTED_TO_pio_c_external_connection_export,                --           pio_c_external_connection.export
+			pio_d_external_connection_export                => CONNECTED_TO_pio_d_external_connection_export,                --           pio_d_external_connection.export
+			pio_reset_external_connection_export            => CONNECTED_TO_pio_reset_external_connection_export,            --       pio_reset_external_connection.export
+			pio_wr_en_external_connection_export            => CONNECTED_TO_pio_wr_en_external_connection_export,            --       pio_wr_en_external_connection.export
+			pio_wr_addr_external_connection_export          => CONNECTED_TO_pio_wr_addr_external_connection_export           --     pio_wr_addr_external_connection.export
 		);
 

@@ -463,8 +463,8 @@ reg audio_input_ready ;
 wire [15:0] right_audio_output, left_audio_output ;
 
 // For audio loopback, or filtering
-assign right_audio_output = SW[1]? right_filter_output : right_audio_input ;
-assign left_audio_output  = SW[0]? decimated_filter_300_out : left_audio_input;
+// assign right_audio_output = SW[1]? right_filter_output : right_audio_input ;
+// assign left_audio_output  = SW[0]? decimated_filter_300_out : left_audio_input;
 
 // DDS update signal for testing
 reg [31:0] dds_accum ;
@@ -480,16 +480,99 @@ wire [15:0] sine_out ;
 // DDS sine wave ROM
 // sync_rom sineTable(CLOCK_50, dds_accum[31:24], sine_out);
 
+//==============================================================
+//===================== AUDIO SYNTHESIS ========================
+//==============================================================
+reg  		audio_clk;
+wire [26:0] audio_syn_out_x;
+wire [26:0] audio_syn_out_y;
+
 reg  		phasor_clk;
-reg  [3:0]  mag_cos, mag_sin;
-wire [7:0]  freq;
-wire [19:0] phasor_out;
+reg  [26:0] mag_cos, mag_sin;
+wire [3:0]  freq;		
+// wire [26:0] phasor_out;
+wire [3:0]  amp_shift;
 
-assign freq = SW[7:0];
+assign freq = SW[3:0];
+assign amp_shift = SW[7:4];
 
-phasor p_test (.clk(phasor_clk), .reset(reset),
-			.sine_mag(mag_sin), .cosine_mag(mag_cos), .freq(freq),
-			.out(phasor_out));
+// phasor p_test (.clk(phasor_clk), .reset(reset),
+// 			.sine_mag(coeff_a), .cosine_mag(coeff_b), .freq(freq),
+// 			.out(phasor_out));
+
+wire pio_wr_en, pio_reset;
+wire [4:0] pio_wr_addr;
+wire signed [26:0] pio_a, pio_b, pio_c, pio_d;
+reg	signed [26:0] coeff_a [20:0];
+reg	signed [26:0] coeff_b [20:0];
+reg	signed [26:0] coeff_c [20:0];
+reg	signed [26:0] coeff_d [20:0];
+
+parameter bitwidth = 27;
+parameter N = 21;
+wire signed [bitwidth-1:0] phasor_out_x [N-1:0];
+wire signed [bitwidth-1:0] phasor_out_y [N-1:0];
+generate
+	genvar i;
+	for (i = 1; i <= N; i = i+1) begin: audio_syn
+		phasor x_phasor (
+		.clk(audio_clk),
+		.reset(reset),
+		.sine_mag(coeff_a[i-1]),
+		.cosine_mag(coeff_b[i-1]),
+		.freq(i[4:0]),
+		.out(phasor_out_x[i-1])
+		);
+		phasor y_phasor (
+		.clk(audio_clk),
+		.reset(reset),
+		.sine_mag(coeff_c[i-1]),
+		.cosine_mag(coeff_d[i-1]),
+		.freq(i[4:0]),
+		.out(phasor_out_y[i-1])
+		);
+	end
+endgenerate
+reg signed [bitwidth-1:0] sum_x;
+reg signed [bitwidth-1:0] sum_y;
+
+integer j;
+always @(*) begin
+	sum_x = {(bitwidth-1){1'b0}}; // all zero
+	sum_y = {(bitwidth-1){1'b0}}; // all zero
+		for(j = 0; j < N; j=j+1) begin
+			sum_x = sum_x + phasor_out_x[j];
+			sum_y = sum_y + phasor_out_y[j];
+		end
+	end
+assign audio_syn_out_x = sum_x;
+assign audio_syn_out_y = sum_y;
+
+always @(posedge CLOCK_50) begin //CLOCK_50
+	// reset state machine and read/write controls
+	if (pio_reset) begin
+		for(j=0; j<21; j=j+1) begin
+			coeff_a[j] <= 0;
+			coeff_b[j] <= 0;
+			coeff_c[j] <= 0;
+			coeff_d[j] <= 0;
+		end
+	end else begin
+		if (pio_wr_en) begin
+			coeff_a[pio_wr_addr[4:0]] <= pio_a << amp_shift;
+			coeff_b[pio_wr_addr[4:0]] <= pio_b << amp_shift;
+			coeff_c[pio_wr_addr[4:0]] <= pio_c << amp_shift;
+			coeff_d[pio_wr_addr[4:0]] <= pio_d << amp_shift;
+		end 
+	end
+end
+
+assign GPIO_0[4] = pio_a[0];
+assign GPIO_0[5] = pio_b[0];
+assign GPIO_0[6] = pio_c[0];
+assign GPIO_0[7] = pio_d[0];
+assign GPIO_0[8] = pio_reset;
+assign GPIO_0[9] = pio_wr_en;
 
 // get some signals exposed
 // connect bus master signals to i/o for probes
@@ -497,82 +580,6 @@ assign GPIO_0[0] = bus_write ;
 assign GPIO_0[1] = bus_read ;
 assign GPIO_0[2] = decimated_audio_ready ;
 assign GPIO_0[3] = audio_input_ready ;
-
-// ======================================================
-// === Filters ==========================================
-// ======================================================
-wire [15:0] right_filter_output, left_filter_output ;
-wire [15:0] left_decimation_out, decimated_filter_300_out ;
-
-// Bandpass filter at 300 with BW ~100 Hz
-// 2-pole butterworth
-// filter definition are from matlab pgm at bottom of this file
-// Compare to decimated filter below
-// IIR2_18bit_fixed filter_right( 
-//      .audio_out (right_filter_output), 
-//      .audio_in (right_audio_input),  
-//      .b1 (18'sd426), 
-//      .b2 (18'sd0), 
-//      .b3 (-18'sd426), 
-//      .a2 (18'sd130122), 
-//      .a3 (-18'sd64683), 
-//      .state_clk(CLOCK_50), 
-//      .audio_input_ready(audio_input_ready), 
-//      .reset(reset) 
-// ) ; //end filter 
-
-// === 6:1 decimator filters =====================
-// First stage decimation filter
-// Filter: frequency cutoff is 4.2KHz
-// chebychev with 9 db peaking 
-// low pass cutoff 4KHz for decimation
-// to 8KHz sample rate
-// This filter runs at full 48KHz
-// But only every 6th output is used by the
-// slower 8KHz filters
-// The slower data-ready signal will come from the
-// bus-master state machine
-// IIR2_18bit_fixed filter_decimation1( 
-//      .audio_out (left_filter_output), 
-//      .audio_in (left_audio_input), 
-//      .b1 (18'sd885), 
-//      .b2 (18'sd1771), 
-//      .b3 (18'sd885), 
-//      .a2 (18'sd112357), 
-//      .a3 (-18'sd56805),  
-//      .state_clk(CLOCK_50), 
-//      .audio_input_ready(audio_input_ready), 
-//      .reset(reset) 
-// ) ; //end filter 
-//Filter: frequency=0.083333 2KHz butterworth
-// second stage decimation filter
-// IIR2_18bit_fixed filter_decimation2( 
-//      .audio_out (left_decimation_out), 
-//      .audio_in (left_filter_output), 
-//      .b1 (18'sd943), 
-//      .b2 (18'sd1887), 
-//      .b3 (18'sd943), 
-//      .a2 (18'sd107019), 
-//      .a3 (-18'sd45259), 
-//      .state_clk(CLOCK_50), 
-//      .audio_input_ready(audio_input_ready), 
-//      .reset(reset) 
-// ) ; //end filter 
-// === 6:1 decimator filters end==================
-
-// decimated bandpass 300 Hz, BW 100 Hz filter running at 8KHz
-// IIR2_18bit_fixed dec_filter_300( 
-//      .audio_out (decimated_filter_300_out), 
-//      .audio_in (left_decimation_out<<1),  //lose amp in decimator
-//      .b1 (18'sd2477), 
-//      .b2 (18'sd0), 
-//      .b3 (-18'sd2477), 
-//      .a2 (18'sd122726), 
-//      .a3 (-18'sd60580), 
-//      .state_clk(CLOCK_50), 
-//      .audio_input_ready(decimated_audio_ready), 
-//      .reset(reset) 
-// ) ; //end filter 
 
 // ===============================================
 // === Audio bus master state machine ============
@@ -601,9 +608,11 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		bus_read <= 0 ; // set to one if a read opeation from bus
 		bus_write <= 0 ; // set to one if a write operation to bus
 		timer <= 0;
-		phasor_clk <= 0;
-		mag_cos <= 2;
-		mag_sin <= 3;
+		// phasor_clk <= 0;
+		audio_clk <= 0;
+		// small sound
+		mag_cos <= 27'd5 << 14;
+		mag_sin <= 27'd8 << 14;
 	end
 	else begin
 		// timer just for deubgging
@@ -640,7 +649,8 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		// then Fout=48000/(2^32)*(2^25) = 375 Hz
 		// dds_accum <= dds_accum + {SW[9:0], 16'b0};
 		// convert 16-bit table to 32-bit format
-		bus_write_data <= (phasor_out << 12);
+		// bus_write_data <= (phasor_out << 5);
+		bus_write_data <= (audio_syn_out_x << 5);
 		// bus_write_data <= (sine_out << 16) ;
 		bus_addr <= audio_data_right_address ;
 		bus_byte_enable <= 4'b1111;
@@ -663,13 +673,15 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	// -- now the right channel
 	if (state==4'd4) begin // 
 		state <= 4'd5;
-		bus_write_data <= (phasor_out << 12);
+		// bus_write_data <= (phasor_out << 5);
+		bus_write_data <= (audio_syn_out_y << 5);
 		// bus_write_data <= (sine_out << 16) ;
 		bus_addr <= audio_data_left_address ;
 		bus_write <= 1'b1 ;
 
 		// To synchronize the phasor and the audio codec
-		phasor_clk <= 1;
+		// phasor_clk <= 1;
+		audio_clk <= 1;
 	end	
 	
 	// detect bus-transaction-complete ACK
@@ -681,7 +693,8 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		bus_write <= 0;
 
 		// To synchronize the phasor and the audio codec
-		phasor_clk <= 0;
+		// phasor_clk <= 0;
+		audio_clk <= 0;
 	end
 	
 	// NOT USING THIS PART
@@ -784,6 +797,15 @@ Computer_System The_System (
 	////////////////////////////////////
 	// FPGA Side
 	////////////////////////////////////
+
+	// PIO ports
+	.pio_a_external_connection_export(pio_a),    
+	.pio_b_external_connection_export(pio_b),    
+	.pio_c_external_connection_export(pio_c),    
+	.pio_d_external_connection_export(pio_d),    
+	.pio_reset_external_connection_export(pio_reset),
+	.pio_wr_en_external_connection_export(pio_wr_en),
+	.pio_wr_addr_external_connection_export(pio_wr_addr),
 
 	// Global signals
 	.system_pll_ref_clk_clk					(CLOCK_50),

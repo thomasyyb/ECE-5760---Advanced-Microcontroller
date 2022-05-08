@@ -1,4 +1,4 @@
-//Legal Notice: (C)2017 Altera Corporation. All rights reserved.  Your
+//Legal Notice: (C)2022 Altera Corporation. All rights reserved.  Your
 //use of Altera Corporation's design tools, logic functions and other
 //software and tools, and its AMPP partner logic functions, and any
 //output files any of the foregoing (including device programming or
@@ -18,19 +18,19 @@
 // altera message_level Level1 
 // altera message_off 10034 10035 10036 10037 10230 10240 10030 
 
-module Computer_System_Video_In_Subsystem_Edge_Detection_Subsystem_Edge_Detection_Router_Controller (
-                                                                                                      // inputs:
-                                                                                                       address,
-                                                                                                       chipselect,
-                                                                                                       clk,
-                                                                                                       reset_n,
-                                                                                                       write_n,
-                                                                                                       writedata,
+module Computer_System_pio_reset (
+                                   // inputs:
+                                    address,
+                                    chipselect,
+                                    clk,
+                                    reset_n,
+                                    write_n,
+                                    writedata,
 
-                                                                                                      // outputs:
-                                                                                                       out_port,
-                                                                                                       readdata
-                                                                                                    )
+                                   // outputs:
+                                    out_port,
+                                    readdata
+                                 )
 ;
 
   output           out_port;

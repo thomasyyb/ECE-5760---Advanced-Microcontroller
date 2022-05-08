@@ -109,6 +109,13 @@
 		.vga_G                                           (<connected-to-vga_G>),                                           //                                    .G
 		.vga_B                                           (<connected-to-vga_B>),                                           //                                    .B
 		.vga_pll_ref_clk_clk                             (<connected-to-vga_pll_ref_clk_clk>),                             //                     vga_pll_ref_clk.clk
-		.vga_pll_ref_reset_reset                         (<connected-to-vga_pll_ref_reset_reset>)                          //                   vga_pll_ref_reset.reset
+		.vga_pll_ref_reset_reset                         (<connected-to-vga_pll_ref_reset_reset>),                         //                   vga_pll_ref_reset.reset
+		.pio_a_external_connection_export                (<connected-to-pio_a_external_connection_export>),                //           pio_a_external_connection.export
+		.pio_b_external_connection_export                (<connected-to-pio_b_external_connection_export>),                //           pio_b_external_connection.export
+		.pio_c_external_connection_export                (<connected-to-pio_c_external_connection_export>),                //           pio_c_external_connection.export
+		.pio_d_external_connection_export                (<connected-to-pio_d_external_connection_export>),                //           pio_d_external_connection.export
+		.pio_reset_external_connection_export            (<connected-to-pio_reset_external_connection_export>),            //       pio_reset_external_connection.export
+		.pio_wr_en_external_connection_export            (<connected-to-pio_wr_en_external_connection_export>),            //       pio_wr_en_external_connection.export
+		.pio_wr_addr_external_connection_export          (<connected-to-pio_wr_addr_external_connection_export>)           //     pio_wr_addr_external_connection.export
 	);
 

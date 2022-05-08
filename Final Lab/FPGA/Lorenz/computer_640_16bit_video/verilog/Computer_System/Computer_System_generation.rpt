@@ -1,5 +1,5 @@
 Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate "C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\Computer_System.qsys" --block-symbol-file --output-directory="C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\Computer_System" --family="Cyclone V" --part=5CSEMA5F31C6
+Info: qsys-generate "C:\Users\hh543\Desktop\New_branch_final_lab\ECE-5760---Advanced-Microcontroller\Final Lab\FPGA\Lorenz\computer_640_16bit_video\verilog\Computer_System.qsys" --block-symbol-file --output-directory="C:\Users\hh543\Desktop\New_branch_final_lab\ECE-5760---Advanced-Microcontroller\Final Lab\FPGA\Lorenz\computer_640_16bit_video\verilog\Computer_System" --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading verilog/Computer_System.qsys
 Progress: Reading input file
 Progress: Adding ARM_A9_HPS [altera_hps 15.0]
@@ -20,20 +20,20 @@ Progress: Adding System_PLL [altera_up_avalon_sys_sdram_pll 15.0]
 Progress: Parameterizing module System_PLL
 Progress: Adding VGA_Subsystem [VGA_Subsystem 1.0]
 Progress: Parameterizing module VGA_Subsystem
-Progress: Adding pio_freq [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_freq
-Progress: Adding pio_lorenz_clk [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_lorenz_clk
-Progress: Adding pio_lorenz_reset [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_lorenz_reset
-Progress: Adding pio_mag_cos [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_mag_cos
-Progress: Adding pio_mag_sin [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_mag_sin
-Progress: Adding pio_phasor_out_1 [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_phasor_out_1
-Progress: Adding pio_phasor_out_2 [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_phasor_out_2
+Progress: Adding pio_a [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_a
+Progress: Adding pio_b [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_b
+Progress: Adding pio_c [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_c
+Progress: Adding pio_d [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_d
+Progress: Adding pio_reset [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_reset
+Progress: Adding pio_wr_addr [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_wr_addr
+Progress: Adding pio_wr_en [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_wr_en
 Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
@@ -52,7 +52,7 @@ Info: ip-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate "C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\Computer_System.qsys" --synthesis=VERILOG --output-directory="C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\Computer_System\synthesis" --family="Cyclone V" --part=5CSEMA5F31C6
+Info: qsys-generate "C:\Users\hh543\Desktop\New_branch_final_lab\ECE-5760---Advanced-Microcontroller\Final Lab\FPGA\Lorenz\computer_640_16bit_video\verilog\Computer_System.qsys" --synthesis=VERILOG --output-directory="C:\Users\hh543\Desktop\New_branch_final_lab\ECE-5760---Advanced-Microcontroller\Final Lab\FPGA\Lorenz\computer_640_16bit_video\verilog\Computer_System\synthesis" --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading verilog/Computer_System.qsys
 Progress: Reading input file
 Progress: Adding ARM_A9_HPS [altera_hps 15.0]
@@ -73,20 +73,20 @@ Progress: Adding System_PLL [altera_up_avalon_sys_sdram_pll 15.0]
 Progress: Parameterizing module System_PLL
 Progress: Adding VGA_Subsystem [VGA_Subsystem 1.0]
 Progress: Parameterizing module VGA_Subsystem
-Progress: Adding pio_freq [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_freq
-Progress: Adding pio_lorenz_clk [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_lorenz_clk
-Progress: Adding pio_lorenz_reset [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_lorenz_reset
-Progress: Adding pio_mag_cos [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_mag_cos
-Progress: Adding pio_mag_sin [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_mag_sin
-Progress: Adding pio_phasor_out_1 [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_phasor_out_1
-Progress: Adding pio_phasor_out_2 [altera_avalon_pio 15.0]
-Progress: Parameterizing module pio_phasor_out_2
+Progress: Adding pio_a [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_a
+Progress: Adding pio_b [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_b
+Progress: Adding pio_c [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_c
+Progress: Adding pio_d [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_d
+Progress: Adding pio_reset [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_reset
+Progress: Adding pio_wr_addr [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_wr_addr
+Progress: Adding pio_wr_en [altera_avalon_pio 15.0]
+Progress: Parameterizing module pio_wr_en
 Progress: Building connections
 Progress: Parameterizing connections
 Progress: Validating
@@ -120,16 +120,28 @@ Info: Audio_Subsystem: "Computer_System" instantiated Audio_Subsystem "Audio_Sub
 Info: Bus_master_audio: Starting Generation of External Bus to Avalon Bridge
 Info: Bus_master_audio: "Computer_System" instantiated altera_up_external_bus_to_avalon_bridge "Bus_master_audio"
 Info: Onchip_SRAM: Starting RTL generation for module 'Computer_System_Onchip_SRAM'
-Info: Onchip_SRAM:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=Computer_System_Onchip_SRAM --dir=C:/Users/hh543/AppData/Local/Temp/alt9112_9132435014231128059.dir/0003_Onchip_SRAM_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9112_9132435014231128059.dir/0003_Onchip_SRAM_gen//Computer_System_Onchip_SRAM_component_configuration.pl  --do_build_sim=0  ]
+Info: Onchip_SRAM:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=Computer_System_Onchip_SRAM --dir=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0060_Onchip_SRAM_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0060_Onchip_SRAM_gen//Computer_System_Onchip_SRAM_component_configuration.pl  --do_build_sim=0  ]
 Info: Onchip_SRAM: Done RTL generation for module 'Computer_System_Onchip_SRAM'
 Info: Onchip_SRAM: "Computer_System" instantiated altera_avalon_onchip_memory2 "Onchip_SRAM"
 Info: Pixel_DMA_Addr_Translation: "Computer_System" instantiated altera_up_avalon_video_dma_ctrl_addr_trans "Pixel_DMA_Addr_Translation"
 Info: SDRAM: Starting RTL generation for module 'Computer_System_SDRAM'
-Info: SDRAM:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller/generate_rtl.pl --name=Computer_System_SDRAM --dir=C:/Users/hh543/AppData/Local/Temp/alt9112_9132435014231128059.dir/0005_SDRAM_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9112_9132435014231128059.dir/0005_SDRAM_gen//Computer_System_SDRAM_component_configuration.pl  --do_build_sim=0  ]
+Info: SDRAM:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller/generate_rtl.pl --name=Computer_System_SDRAM --dir=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0062_SDRAM_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0062_SDRAM_gen//Computer_System_SDRAM_component_configuration.pl  --do_build_sim=0  ]
 Info: SDRAM: Done RTL generation for module 'Computer_System_SDRAM'
 Info: SDRAM: "Computer_System" instantiated altera_avalon_new_sdram_controller "SDRAM"
 Info: System_PLL: "Computer_System" instantiated altera_up_avalon_sys_sdram_pll "System_PLL"
 Info: VGA_Subsystem: "Computer_System" instantiated VGA_Subsystem "VGA_Subsystem"
+Info: pio_a: Starting RTL generation for module 'Computer_System_pio_a'
+Info: pio_a:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=Computer_System_pio_a --dir=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0063_pio_a_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0063_pio_a_gen//Computer_System_pio_a_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_a: Done RTL generation for module 'Computer_System_pio_a'
+Info: pio_a: "Computer_System" instantiated altera_avalon_pio "pio_a"
+Info: pio_reset: Starting RTL generation for module 'Computer_System_pio_reset'
+Info: pio_reset:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=Computer_System_pio_reset --dir=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0064_pio_reset_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0064_pio_reset_gen//Computer_System_pio_reset_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_reset: Done RTL generation for module 'Computer_System_pio_reset'
+Info: pio_reset: "Computer_System" instantiated altera_avalon_pio "pio_reset"
+Info: pio_wr_addr: Starting RTL generation for module 'Computer_System_pio_wr_addr'
+Info: pio_wr_addr:   Generation command is [exec C:/altera/15.0/quartus/bin64/perl/bin/perl.exe -I C:/altera/15.0/quartus/bin64/perl/lib -I C:/altera/15.0/quartus/sopc_builder/bin/europa -I C:/altera/15.0/quartus/sopc_builder/bin/perl_lib -I C:/altera/15.0/quartus/sopc_builder/bin -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/common -I C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- C:/altera/15.0/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=Computer_System_pio_wr_addr --dir=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0065_pio_wr_addr_gen/ --quartus_dir=C:/altera/15.0/quartus --verilog --config=C:/Users/hh543/AppData/Local/Temp/alt9119_1117532870804960354.dir/0065_pio_wr_addr_gen//Computer_System_pio_wr_addr_component_configuration.pl  --do_build_sim=0  ]
+Info: pio_wr_addr: Done RTL generation for module 'Computer_System_pio_wr_addr'
+Info: pio_wr_addr: "Computer_System" instantiated altera_avalon_pio "pio_wr_addr"
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
@@ -138,6 +150,13 @@ Info: mm_interconnect_0: "Computer_System" instantiated altera_mm_interconnect "
 Info: avalon_st_adapter: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_001: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_002: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_003: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_004: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_005: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_006: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_007: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_008: Inserting error_adapter: error_adapter_0
+Info: avalon_st_adapter_009: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_1: "Computer_System" instantiated altera_mm_interconnect "mm_interconnect_1"
 Info: mm_interconnect_2: "Computer_System" instantiated altera_mm_interconnect "mm_interconnect_2"
 Info: irq_mapper: "Computer_System" instantiated altera_irq_mapper "irq_mapper"
@@ -176,41 +195,45 @@ Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_
 Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
 Info: router_004: "mm_interconnect_0" instantiated altera_merlin_router "router_004"
 Info: ARM_A9_HPS_h2f_lw_axi_master_wr_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "ARM_A9_HPS_h2f_lw_axi_master_wr_limiter"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_avalon_sc_fifo.v
 Info: Audio_Subsystem_audio_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "Audio_Subsystem_audio_slave_burst_adapter"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_avalon_st_pipeline_base.v
 Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
 Info: cmd_demux_002: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux_002"
 Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
 Info: cmd_mux_001: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_001"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_demux_001: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_001"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_mux_002: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_002"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
 Info: router: "mm_interconnect_1" instantiated altera_merlin_router "router"
 Info: router_002: "mm_interconnect_1" instantiated altera_merlin_router "router_002"
 Info: router_003: "mm_interconnect_1" instantiated altera_merlin_router "router_003"
 Info: router_004: "mm_interconnect_1" instantiated altera_merlin_router "router_004"
+Info: router_005: "mm_interconnect_1" instantiated altera_merlin_router "router_005"
 Info: cmd_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux"
 Info: cmd_demux_002: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "cmd_demux_002"
 Info: cmd_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: cmd_mux_001: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux_001"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_mux_002: "mm_interconnect_1" instantiated altera_merlin_multiplexer "cmd_mux_002"
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_demux: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_demux_001: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "rsp_demux_001"
+Info: rsp_demux_002: "mm_interconnect_1" instantiated altera_merlin_demultiplexer "rsp_demux_002"
 Info: rsp_mux: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_mux_002: "mm_interconnect_1" instantiated altera_merlin_multiplexer "rsp_mux_002"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: ARM_A9_HPS_h2f_axi_master_wr_to_VGA_Subsystem_char_buffer_slave_cmd_width_adapter: "mm_interconnect_1" instantiated altera_merlin_width_adapter "ARM_A9_HPS_h2f_axi_master_wr_to_VGA_Subsystem_char_buffer_slave_cmd_width_adapter"
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file C:/Users/hh543/Documents/Final Lab/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file C:/Users/hh543/Desktop/New_branch_final_lab/ECE-5760---Advanced-Microcontroller/Final Lab/FPGA/Lorenz/computer_640_16bit_video/verilog/Computer_System/synthesis/submodules/altera_merlin_burst_uncompressor.sv
 Info: avalon_st_adapter: "mm_interconnect_1" instantiated altera_avalon_st_adapter "avalon_st_adapter"
 Info: avalon_st_adapter_001: "mm_interconnect_1" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: border: "hps_io" instantiated altera_interface_generator "border"
@@ -219,6 +242,6 @@ Info: video_pll: "VGA_PLL" instantiated altera_pll "video_pll"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
 Info: error_adapter_0: "avalon_st_adapter" instantiated error_adapter "error_adapter_0"
 Info: error_adapter_0: "avalon_st_adapter_001" instantiated error_adapter "error_adapter_0"
-Info: Computer_System: Done "Computer_System" with 72 modules, 158 files
+Info: Computer_System: Done "Computer_System" with 78 modules, 164 files
 Info: ip-generate succeeded.
 Info: Finished: Create HDL design files for synthesis
