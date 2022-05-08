@@ -1,0 +1,122 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/altera/15.0
+vaudio_syn_tb
+Z0 DXx6 sv_std 3 std 0 22 <EOTafDcUY:cQeO^ICn]m3
+Z1 !s110 1651714727
+!i10b 1
+!s100 lREnOooDezZ`gT>eM0i?H1
+IaB]B2eIGN8mDd`D3FP8[93
+Z2 V`JN@9S9cnhjKRR_L]QIcM3
+Z3 !s105 audio_synthesis_sv_unit
+S1
+Z4 dC:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation
+Z5 w1651714721
+Z6 8C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/audio_synthesis.sv
+Z7 FC:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/audio_synthesis.sv
+L0 52
+Z8 OV;L;10.3d;59
+r1
+!s85 0
+31
+Z9 !s108 1651714727.819000
+Z10 !s107 C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/audio_synthesis.sv|
+Z11 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/audio_synthesis.sv|
+!i113 1
+Z12 o-work work -sv
+vaudio_synthesis
+R0
+R1
+!i10b 1
+!s100 PK[ElCeCQI;5eh>]KPUal0
+IT9bG9Pl92<8WPzG1g6MA63
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 8
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+vphasor
+R0
+Z13 !s110 1651714728
+!i10b 1
+!s100 ogo[^;0Lj6f?I>zcHzmR11
+I2383k=9cK?=n7feB4B8^d2
+R2
+!s105 phasor_sv_unit
+S1
+R4
+w1651712433
+8C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv
+FC:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv
+L0 1
+R8
+r1
+!s85 0
+31
+!s108 1651714728.037000
+!s107 C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/phasor.sv|
+!i113 1
+R12
+vsigned_mult
+R13
+!i10b 1
+!s100 :YRzU^f[3nP2XXdD45hJf0
+IjPR73`Q[oQ5<8Q3dJdCR63
+R2
+R4
+w1651713679
+8C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v
+FC:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v
+L0 6
+R8
+r1
+!s85 0
+31
+!s108 1651714728.397000
+!s107 C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/signed_mult.v|
+!i113 1
+o-work work
+vsync_rom
+R0
+R13
+!i10b 1
+!s100 :UDUXlho0;4z3P@dS^dUb3
+InJTldnJ`BG9A;?hGzD1Uz3
+R2
+!s105 sync_rom_sv_unit
+S1
+R4
+w1651500492
+8C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv
+FC:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv
+L0 7
+R8
+r1
+!s85 0
+31
+!s108 1651714728.236000
+!s107 C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/hh543/Desktop/ECE-5760---Advanced-Microcontroller/Final Lab/simulation/Audio synthesis simulation/sync_rom.sv|
+!i113 1
+R12

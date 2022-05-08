@@ -1,0 +1,32 @@
+# Load canceled
+vlog -work rtl_work -refresh -force_refresh
+# Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 11:05:45 on Feb 11,2022
+# vlog -reportprogress 300 -work rtl_work -refresh -force_refresh 
+# ** Error: (vlog-19) Failed to access library 'rtl_work' at "rtl_work".
+# 
+# No such file or directory. (errno = ENOENT)
+# End time: 11:05:45 on Feb 11,2022, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# C:/altera/15.0/modelsim_ase/win32aloem/vlog failed.
+vcom -work rtl_work -refresh -force_refresh
+# Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 11:05:45 on Feb 11,2022
+# vcom -reportprogress 300 -work rtl_work -refresh -force_refresh 
+# ** Error: (vcom-19) Failed to access library 'rtl_work' at "rtl_work".
+# 
+# No such file or directory. (errno = ENOENT)
+# End time: 11:05:45 on Feb 11,2022, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# C:/altera/15.0/modelsim_ase/win32aloem/vcom failed.
+# Compile of components.v was successful.
+# Compile of lorenz.v was successful.
+# Compile of DE1_SoC_Computer.v was successful.
+# Compile of Computer_System_inst.v failed with 1 errors.
+# 4 compiles, 1 failed with 1 error.
+# Compile of components.v was successful.
+# Compile of lorenz.v was successful.
+# Compile of DE1_SoC_Computer.v was successful.
+# Compile of Computer_System_inst.v failed with 1 errors.
+# 4 compiles, 1 failed with 1 error.
+quit

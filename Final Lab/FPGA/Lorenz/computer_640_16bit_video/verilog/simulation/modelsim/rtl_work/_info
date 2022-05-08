@@ -1,0 +1,52 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/simulation/modelsim
+vintegrator
+Z1 !s110 1644595014
+!i10b 1
+!s100 0WkbOGe=c[lP^BjfD@d0G0
+IG4U>bcgQdTn0<i15mEmh73
+Z2 V`JN@9S9cnhjKRR_L]QIcM3
+R0
+Z3 w1643485942
+Z4 8C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v
+Z5 FC:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v
+L0 17
+Z6 OV;L;10.3d;59
+r1
+!s85 0
+31
+Z7 !s108 1644595014.549000
+Z8 !s107 C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v|
+Z9 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog|C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v|
+!i113 1
+Z10 o-vlog01compat -work work
+Z11 !s92 -vlog01compat -work work +incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog
+vsigned_mult
+R1
+!i10b 1
+!s100 ML;cF8j2heKT>A]_Cl9EV0
+ILYWzLmd9<5z[f8m=hECCd1
+R2
+R0
+R3
+R4
+R5
+L0 41
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+!i113 1
+R10
+R11

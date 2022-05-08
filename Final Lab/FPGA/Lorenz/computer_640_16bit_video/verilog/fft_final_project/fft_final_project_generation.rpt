@@ -1,0 +1,28 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate "C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\fft_final_project.qsys" --block-symbol-file --output-directory="C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\fft_final_project" --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading verilog/fft_final_project.qsys
+Progress: Reading input file
+Progress: Adding fft_ii_0 [altera_fft_ii 15.0]
+Progress: Parameterizing module fft_ii_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: ip-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate "C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\fft_final_project.qsys" --synthesis=VERILOG --output-directory="C:\Users\hh543\Documents\Final Lab\Lorenz\computer_640_16bit_video\verilog\fft_final_project\synthesis" --family="Cyclone V" --part=5CSEMA5F31C6
+Progress: Loading verilog/fft_final_project.qsys
+Progress: Reading input file
+Progress: Adding fft_ii_0 [altera_fft_ii 15.0]
+Progress: Parameterizing module fft_ii_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: fft_final_project: Generating fft_final_project "fft_final_project" for QUARTUS_SYNTH
+Info: fft_ii_0: "fft_final_project" instantiated altera_fft_ii "fft_ii_0"
+Info: fft_final_project: Done "fft_final_project" with 2 modules, 53 files
+Info: ip-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

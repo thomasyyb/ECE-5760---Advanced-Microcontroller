@@ -1,0 +1,51 @@
+# Reading C:/altera/15.0/modelsim_ase/tcl/vsim/pref.tcl
+# do DE1_SoC_Computer_run_msim_rtl_systemverilog.do
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Model Technology ModelSim PE vmap 10.3d Lib Mapping Utility 2014.10 Oct  7 2014
+# vmap -modelsim_quiet work rtl_work 
+# Copying C:/altera/15.0/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# ** Warning: Copied C:/altera/15.0/modelsim_ase/win32aloem/../modelsim.ini to modelsim.ini.
+#          Updated modelsim.ini.
+# 
+# vlog -vlog01compat -work work +incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog {C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v}
+# Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 10:56:54 on Feb 11,2022
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog" C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/components.v 
+# -- Compiling module integrator
+# -- Compiling module signed_mult
+# 
+# Top level modules:
+# 	integrator
+# 	signed_mult
+# End time: 10:56:54 on Feb 11,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vlog -vlog01compat -work work +incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog {C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v}
+# Model Technology ModelSim ALTERA vlog 10.3d Compiler 2014.10 Oct  7 2014
+# Start time: 10:56:54 on Feb 11,2022
+# vlog -reportprogress 300 -vlog01compat -work work "+incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog" C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v 
+# -- Compiling module DE1_SoC_Computer
+# ** Error: C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog/DE1_SoC_Computer.v(383): near "assign": syntax error, unexpected assign, expecting ';'
+# End time: 10:56:54 on Feb 11,2022, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+# ** Error: C:/altera/15.0/modelsim_ase/win32aloem/vlog failed.
+# Error in macro ./DE1_SoC_Computer_run_msim_rtl_systemverilog.do line 9
+# C:/altera/15.0/modelsim_ase/win32aloem/vlog failed.
+#     while executing
+# "vlog -vlog01compat -work work +incdir+C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog {C:/Users/hh543/Documents/lab1/computer_640_16bit..."
+# Load canceled
+vmap DE1_SoC C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog
+# Model Technology ModelSim PE vmap 10.3d Lib Mapping Utility 2014.10 Oct  7 2014
+# vmap -modelsim_quiet DE1_SoC C:/Users/hh543/Documents/lab1/computer_640_16bit_video/verilog 
+# Modifying modelsim.ini
+vmap -del DE1_SoC
+# Model Technology ModelSim PE vmap 10.3d Lib Mapping Utility 2014.10 Oct  7 2014
+# vmap -modelsim_quiet -del DE1_SoC 
+# Removing reference to logical library DE1_SoC
+# Modifying modelsim.ini
+# reading C:/altera/15.0/modelsim_ase/win32aloem/../modelsim.ini
+# Loading project DE1_SoC
