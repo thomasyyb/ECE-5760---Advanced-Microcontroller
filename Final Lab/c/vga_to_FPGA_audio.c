@@ -76,7 +76,7 @@ void mouse_record(struct Mouse_Input* mi);
 float fill_coefficients (struct Mouse_Input* mi, int morph);
 
 #define N				 20 		// number of mouse inputs (n in Fourier analysis)
-#define th_harmonic 	 21			// starts from 0th harmonic
+#define th_harmonic 	 5			// starts from 0th harmonic
 
 /*************** Drum stuff *****************/
 // drum-specific multiply macros simulated by shifts
@@ -695,7 +695,6 @@ int main(void)
 			VGA_line(x_coor_for_spec, 480 - 100, x_coor_for_spec, 480 - 100 - amp_x, colors[6]);
 			VGA_line(x_coor_for_spec, 480 - 30, x_coor_for_spec, 480 - 30 - amp_y, colors[6]);
 		}
-		
 
 		// Writing coefficients to FPGA
 		*pio_reset_write_ptr = 0;
@@ -739,10 +738,12 @@ int main(void)
 		float *deltaStep_x = (float*) calloc ((2 * th_harmonic + 1) , sizeof(float));
 		float *deltaStep_y = (float*) calloc ((2 * th_harmonic + 1) , sizeof(float));
 		float deltaL;
-		int step = 0; // steps for morphing, goes to 30 
+		
 		int morph_steps = 30;
+		int step = morph_steps; // steps for morphing, goes to 30 
 		while(1) {
-			VGA_box (0, 0, 639, 479, 0x0000);
+			
+			syn_t = 0.0;
 			while(syn_t <= L) {
 				syn_x_old = syn_x;
 				syn_y_old = syn_y;
@@ -779,7 +780,6 @@ int main(void)
 				VGA_line(x_coor_for_spec, 480 - 100, x_coor_for_spec, 480 - 100 - amp_x, colors[6]);
 				VGA_line(x_coor_for_spec, 480 - 30, x_coor_for_spec, 480 - 30 - amp_y, colors[6]);
 			}
-			
 
 			// printf("syn_x = %d, syn_y = %d\n", (int)syn_x, (int)syn_y);
 			if(redraw_flag) {
@@ -808,8 +808,29 @@ int main(void)
 				}
 				// increment analysis_out_x_coeff by deltaStep
 			}
-
+			
+			// erase previous
+			// usleep(10000);
+			// while(syn_t <= L) {
+			// 	syn_x_old = syn_x;
+			// 	syn_y_old = syn_y;
+				
+			// 	syn_x = 0;
+			// 	syn_y = 0;	
+			// 	syn_x += analysis_out_x_coeff[0];
+			// 	syn_y += analysis_out_y_coeff[0];
+			// 	for (i = 1; i <= th_harmonic; i++) {
+			// 		syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
+			// 		syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
+			// 		syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
+			// 		syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
+			// 	}
+			// 	syn_t += 10;
+			// 	VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[10]); // black 
+				
+			// }
 			if(step < morph_steps) {
+				VGA_box (0, 0, 639, 479, 0x0000);
 				analysis_out_x_coeff[0] += deltaStep_x[0];
 				analysis_out_y_coeff[0] += deltaStep_y[0];
 				for(i = 1; i <= th_harmonic; i++ ) {
@@ -822,7 +843,7 @@ int main(void)
 				step++;
 			}
 
-						// Writing coefficients to FPGA
+			// Writing coefficients to FPGA
 			*pio_reset_write_ptr = 0;
 			*pio_reset_write_ptr = 1;
 			*pio_reset_write_ptr = 0;
@@ -1439,54 +1460,41 @@ void mouse_record(struct Mouse_Input* mi) {
 }
 
 float fill_coefficients (struct Mouse_Input* mi, int morph) {
-		float* analysis_x = (float*) malloc((N+1) * sizeof(float));
-		float* analysis_y = (float*) malloc((N+1) * sizeof(float));
-		int analysis_count = 0; 
-		int i ;
-		for (i = 0; i < N; i++) {
-			if (mi[i].x < 0) break;
-			analysis_x[i] = (float) mi[i].x;
-			analysis_y[i] = (float) mi[i].y;
-			// printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
-			analysis_count++; 
-		}
-		analysis_x[analysis_count] = (float) mi[0].x;
-		analysis_y[analysis_count] = (float) mi[0].y;
 
-		float L = 0.0;
+	float* analysis_x = (float*) malloc((N+1) * sizeof(float));
+	float* analysis_y = (float*) malloc((N+1) * sizeof(float));
+	int analysis_count = 0; 
+	int i ;
+	for (i = 0; i < N; i++) {
+		if (mi[i].x < 0) break;
+		analysis_x[i] = (float) mi[i].x;
+		analysis_y[i] = (float) mi[i].y;
+		// printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
+		analysis_count++; 
+	}
+	analysis_x[analysis_count] = (float) mi[0].x;
+	analysis_y[analysis_count] = (float) mi[0].y;
 
-		// analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-		float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
-		
-		// analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-		float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
+	float L = 0.0;
 
-		float* analysis_out_L 		= &L; 
+	// analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+	float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
+	
+	// analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+	float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
 
-		// th_harmonic = analysis_count;
-		if(!morph) {
-			analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
-			analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
-		} else {
-			analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff_2, &analysis_out_x_l, analysis_out_L);
-			analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff_2, &analysis_out_y_l, analysis_out_L);
-		}
+	float* analysis_out_L 		= &L; 
 
-		// sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
-		// float threshold = ((*analysis_out_L) * 0.01);
-		// float error = (*analysis_out_L) - (*analysis_out_L);
-		// if (error < 0) {
-		// 	if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
-		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-		// 		return -1; 
-		// 	} 
-		// } else {
-		// 	if (threshold < error) {
-		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-		// 		return -1;
-		// 	}
-		// }
+	// th_harmonic = analysis_count;
+	if(!morph) {
+		analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
+		analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
+	} else {
+		analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff_2, &analysis_out_x_l, analysis_out_L);
+		analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff_2, &analysis_out_y_l, analysis_out_L);
+	}
 
-		free(analysis_x); free(analysis_y);
-		return L;
+	free(analysis_x); free(analysis_y);
+	return L;
+
 }
