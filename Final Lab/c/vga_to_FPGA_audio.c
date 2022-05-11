@@ -72,8 +72,11 @@ void synthesis (float L, float* coeff, float* l, int K, int n, float out);
 struct Mouse_Input {
 	int x, y; 
 }; 
+void mouse_record(struct Mouse_Input* mi);
+float fill_coefficients (struct Mouse_Input* mi, int morph);
+
 #define N				 20 		// number of mouse inputs (n in Fourier analysis)
-#define th_harmonic 	 20			// starts from 0th harmonic
+#define th_harmonic 	 21			// starts from 0th harmonic
 
 /*************** Drum stuff *****************/
 // drum-specific multiply macros simulated by shifts
@@ -229,7 +232,7 @@ void * read_input() {
 	while(1){
 		pthread_mutex_lock(&print_lock);
 		pthread_cond_wait(&print_cond, &print_lock);
-		// printf("Enter command: ");
+		printf("Enter command: ");
 		if(scanf("%s", input_buffer) == 0) {
 			printf("input is wrong!\n");
 			exit(1);
@@ -240,10 +243,16 @@ void * read_input() {
 
 }
 
-
+// float analysis_out_x_coeff[2*th_harmonic+1];
+// float analysis_out_y_coeff[2*th_harmonic+1];
+float* analysis_out_x_coeff;
+float* analysis_out_y_coeff;
+float* analysis_out_x_coeff_2;
+float* analysis_out_y_coeff_2; 
 // I think a parter to bounce the signals 
 int pause_flag = 0;
-int reset_flag = 0;
+int redraw_flag = 0;
+int morph_flag = 0;
 unsigned int sleep_time = 10000;
 void *write_status() {
 	sleep(1);  // cond would be sent before pthread_cond_wait
@@ -254,35 +263,97 @@ void *write_status() {
 		pthread_mutex_lock(&enter_lock);
 		pthread_cond_wait(&enter_cond, &enter_lock);
 	
-		// do command-dependant functions	
-		// update flag: pause flag, update speed, resset flag
-		if(!strcmp(input_buffer, "p")) {
-			pause_flag = !pause_flag;
-		}
+		// r for redraw
 		if(!strcmp(input_buffer, "r")) {
-			reset_flag = 1;
+			redraw_flag = 1;
 		}
-		if(!strcmp(input_buffer, "s")) {
-			sleep_time *= 2;
-		}
-		if(!strcmp(input_buffer, "f")) {
-			sleep_time /= 2;
-		}
-		if(!strcmp(input_buffer, "c")) {
-			VGA_box (0, 0, 639, 479, 0x0000);
-		}
-		if(!strcmp(input_buffer, "set")) {
+		// c for coeff change
+		else if(!strcmp(input_buffer, "c")) {
+			// Get harmonic
+			printf("Which dimension? x or y?\n");
+			char dimension[1];
+			if(scanf("%s", dimension) == 0) {
+				printf("input is wrong!\n");
+				exit(1);
+			}
+			printf("dimension is %s\n", dimension);
+			
+			
+			// Get harmonic
+			printf("Which harmonic?(1~21)\n");
+			char harmonic[2];
+			if(scanf("%s", harmonic) == 0) {
+				printf("input is wrong!\n");
+				exit(1);
+			}
+			int harm = atoi(harmonic);
+			if(strcmp(dimension, "x") == 0) {
 
-			pause_flag = 1;
+			
+				// Change coefficient
+				printf("The current coefficients for harmonic %d is :\n", harm);
+				printf("coeff_sin: %d, coeff_cos: %d:\n", (int)analysis_out_x_coeff[harm], (int)analysis_out_x_coeff[harm+th_harmonic]);
+				int new_sin_coeff, new_cos_coeff;
+				printf("Input new value:\n");
+				printf("coeff_sin and coeff_cos: (0~100)\n");
+				if(scanf("%i %i", &new_sin_coeff, &new_cos_coeff) == 0) {
+					printf("input is wrong!\n");
+					exit(1);
+				}
+				analysis_out_x_coeff[harm] = new_sin_coeff;
+				analysis_out_x_coeff[harm+th_harmonic] = new_cos_coeff;
+			} else if (strcmp(dimension, "y") == 0) {
+				// Change coefficient
+				printf("The current coefficients for harmonic %d is :\n", harm);
+				printf("coeff_sin: %d, coeff_cos: %d:\n", (int)analysis_out_y_coeff[harm], (int)analysis_out_y_coeff[harm+th_harmonic]);
+				int new_sin_coeff, new_cos_coeff;
+				printf("Input new value:\n");
+				printf("coeff_sin and coeff_cos: (0~100)\n");
+				if(scanf("%i %i", &new_sin_coeff, &new_cos_coeff) == 0) {
+					printf("input is wrong!\n");
+					exit(1);
+				}
+				analysis_out_y_coeff[harm] = new_sin_coeff;
+				analysis_out_y_coeff[harm+th_harmonic] = new_cos_coeff;
+			} else {
+				printf("I asked x or y, you troll\n");
+			}
+			// clear screen
+			VGA_box(0, 0, 639, 479, 0x0000);
+			// Redraw the spectrum
+			int amp_x, amp_y;
+			int x_coor_for_spec = 20;
+			int i = 0;
+			for(i = 1; i <= th_harmonic; i++, x_coor_for_spec+=3) {
+				amp_x = (int)round(sqrt(pow(analysis_out_x_coeff[i], 2) + pow(analysis_out_x_coeff[i+th_harmonic], 2))/5);
+				amp_y = (int)round(sqrt(pow(analysis_out_y_coeff[i], 2) + pow(analysis_out_y_coeff[i+th_harmonic], 2))/5);
+				VGA_line(x_coor_for_spec, 480 - 100, x_coor_for_spec, 480 - 100 - amp_x, colors[6]);
+				VGA_line(x_coor_for_spec, 480 - 30, x_coor_for_spec, 480 - 30 - amp_y, colors[6]);
+			}
+			// Writing coefficients to FPGA
+			*pio_reset_write_ptr = 0;
+			*pio_reset_write_ptr = 1;
+			*pio_reset_write_ptr = 0;
 
+			*pio_wr_en_write_ptr = 0;
+			*pio_wr_addr_write_ptr = 0;
+
+			// i = 1 because audio synthesis has no offsets
+			for(i = 1; i <= th_harmonic; i++) {
+				*pio_a_write_ptr = float_to_fix8(analysis_out_x_coeff[i]);
+				*pio_b_write_ptr = float_to_fix8(analysis_out_x_coeff[i + th_harmonic]);
+				*pio_c_write_ptr = float_to_fix8(analysis_out_y_coeff[i]);
+				*pio_d_write_ptr = float_to_fix8(analysis_out_y_coeff[i + th_harmonic]);
+				*pio_wr_addr_write_ptr = i-1;
+				*pio_wr_en_write_ptr = 1;
+				*pio_wr_en_write_ptr = 0;
+			}
+		} else if (!strcmp(input_buffer, "m")) {
 			// clear the screen
-			VGA_box (0, 0, 639, 479, 0x0000);
-			// clear the text
-			VGA_text_clear();
-			// write text
-
-			pause_flag = 0;
-
+			morph_flag = 1;
+			// VGA_box (0, 0, 639, 479, 0x0000);
+			
+			// analysis_out_
 		}
 
 		pthread_mutex_unlock(&enter_lock);
@@ -409,123 +480,124 @@ int main(void)
 	pthread_create(&thread_r, &attr, read_input, NULL);
 	pthread_create(&thread_w, &attr, write_status, NULL);
 
-	//==============================================================
-	//===================== MOUSE ==================================
-	//==============================================================
+	
 	while(1) {
-		int fd_mouse, bytes;
-		unsigned char data[3];
-		int mouse_x = 320, mouse_y = 240, mouse_x_old = 320, mouse_y_old = 240;
-		int click_x_new=0, click_y_new=0, click_x_old=0, click_y_old=0;
-		int left = 0; 
-		int right = 0; 
-		int middle;
-		signed char mouse_x_tmp, mouse_y_tmp;
-		// int first_click = 1;
-		const char *pDevice = "/dev/input/mice";
-		struct Mouse_Input mi[N];
-		int mi_count = 0; 
-		int debounce_left = 1; 
-		// TODO
+		// //==============================================================
+		// //===================== MOUSE ==================================
+		// //==============================================================
+		// int fd_mouse, bytes;
+		// unsigned char data[3];
+		// int mouse_x = 320, mouse_y = 240, mouse_x_old = 320, mouse_y_old = 240;
+		// int click_x_new=0, click_y_new=0, click_x_old=0, click_y_old=0;
+		// int left = 0; 
+		// int right = 0; 
+		// int middle;
+		// signed char mouse_x_tmp, mouse_y_tmp;
+		// // int first_click = 1;
+		// const char *pDevice = "/dev/input/mice";
+		// struct Mouse_Input mi[N];
+		// int mi_count = 0; 
+		// int debounce_left = 1; 
 
-		// Open Mouse
-		fd_mouse = open(pDevice, O_RDWR);
-		if(fd_mouse == -1)
-		{
-			printf("ERROR Opening %s\n", pDevice);
-			return -1;
-		}
+		// // Open Mouse
+		// fd_mouse = open(pDevice, O_RDWR);
+		// if(fd_mouse == -1)
+		// {
+		// 	printf("ERROR Opening %s\n", pDevice);
+		// 	return -1;
+		// }
 
-		// initialize Mouse_Input
-		for (i = 0; i < N; i++) {
-			mi[i].x = -1; mi[i].y = -1;
-		}
+		// // initialize Mouse_Input
+		// for (i = 0; i < N; i++) {
+		// 	mi[i].x = -1; mi[i].y = -1;
+		// }
 
-		// draw the mouse starting point
-		VGA_circle(320, 240, 1, colors[7]);
+		// // draw the mouse starting point
+		// VGA_circle(320, 240, 1, colors[7]);
 
-		printf("Receiving mouse inputs..\n");
+		// printf("Receiving mouse inputs..\n");
 
-		while (right < 2) { // right == 2 when clicked (signals end of inputs for analysis)
+		// while (right < 2) { // right == 2 when clicked (signals end of inputs for analysis)
 
-			// Read Mouse     
-			bytes = read(fd_mouse, data, sizeof(data));
+		// 	// Read Mouse     
+		// 	bytes = read(fd_mouse, data, sizeof(data));
 
-			if (bytes > 0)
-			{
-				left = data[0] & 0x1;
-				right = data[0] & 0x2;
-				middle = data[0] & 0x4;
+		// 	if (bytes > 0)
+		// 	{
+		// 		left = data[0] & 0x1;
+		// 		right = data[0] & 0x2;
+		// 		middle = data[0] & 0x4;
 
-				mouse_x_tmp = data[1];
-				mouse_y_tmp = data[2];
-				// printf("mouse_x_tmp=%d, mouse_y_tmp=%d, left=%d, middle=%d, right=%d, ", mouse_x_tmp, mouse_y_tmp, left, middle, right);
+		// 		mouse_x_tmp = data[1];
+		// 		mouse_y_tmp = data[2];
+		// 		// printf("mouse_x_tmp=%d, mouse_y_tmp=%d, left=%d, middle=%d, right=%d, ", mouse_x_tmp, mouse_y_tmp, left, middle, right);
 
-				mouse_x_old = mouse_x;
-				mouse_y_old = mouse_y;
+		// 		mouse_x_old = mouse_x;
+		// 		mouse_y_old = mouse_y;
 
-				mouse_x += mouse_x_tmp;
-				if(mouse_x > 639) {
-					mouse_x = 639;
-				}
-				if(mouse_x < 0) {
-					mouse_x = 0;
-				}
-				mouse_y -= mouse_y_tmp;
-				if(mouse_y > 479) {
-					mouse_y = 479;
-				}
-				if(mouse_y < 0) {
-					mouse_y = 0;
-				}
-				// printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
+		// 		mouse_x += mouse_x_tmp;
+		// 		if(mouse_x > 639) {
+		// 			mouse_x = 639;
+		// 		}
+		// 		if(mouse_x < 0) {
+		// 			mouse_x = 0;
+		// 		}
+		// 		mouse_y -= mouse_y_tmp;
+		// 		if(mouse_y > 479) {
+		// 			mouse_y = 479;
+		// 		}
+		// 		if(mouse_y < 0) {
+		// 			mouse_y = 0;
+		// 		}
+		// 		// printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
 
-				// printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
+		// 		// printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
 
-				VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
-				VGA_circle(mouse_x, mouse_y, 1, colors[7]);
+		// 		VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
+		// 		VGA_circle(mouse_x, mouse_y, 1, colors[7]);
 				
-				if (left && debounce_left) {
-					debounce_left = 0; 
+		// 		if (left && debounce_left) {
+		// 			debounce_left = 0; 
 
-					click_x_old = click_x_new;
-					click_y_old = click_y_new;
-					click_x_new = mouse_x;
-					click_y_new = mouse_y;
+		// 			click_x_old = click_x_new;
+		// 			click_y_old = click_y_new;
+		// 			click_x_new = mouse_x;
+		// 			click_y_new = mouse_y;
 
-					printf("mouse_x = %d, mouse_y = %d\n", mouse_x, mouse_y);
+		// 			printf("mouse_x = %d, mouse_y = %d\n", mouse_x, mouse_y);
 
-					// if (mi_count > 0) {
-					// 	if ((mi[mi_count-1].x == mi[mi_count].x) && (mi[mi_count-1].y == mi[mi_count].y)) {
-					// 		mi[mi_count].x = mi[mi_count-1].x++;
-					// 	}
-					// }
+		// 			// if (mi_count > 0) {
+		// 			// 	if ((mi[mi_count-1].x == mi[mi_count].x) && (mi[mi_count-1].y == mi[mi_count].y)) {
+		// 			// 		mi[mi_count].x = mi[mi_count-1].x++;
+		// 			// 	}
+		// 			// }
 
-					mi[mi_count].x = mouse_x;
-					mi[mi_count].y = mouse_y; 
-					mi_count++;
+		// 			mi[mi_count].x = mouse_x;
+		// 			mi[mi_count].y = mouse_y; 
+		// 			mi_count++;
 
-					printf("mi_count: %d\n", mi_count);
+		// 			printf("mi_count: %d\n", mi_count);
 
-					if(mi_count == 1) {
-						;
-					} else { // red lines 
-						VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
-						if (mi_count == N) {
-							VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
-						}
-					}
+		// 			if(mi_count == 1) {
+		// 				;
+		// 			} else { // red lines 
+		// 				VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
+		// 				if (mi_count == N) {
+		// 					VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
+		// 				}
+		// 			}
 
-					if (mi_count == N) break; 
-				} else if (!left) {
-					debounce_left = 1; 
-				}
+		// 			if (mi_count == N) break; 
+		// 		} else if (!left) {
+		// 			debounce_left = 1; 
+		// 		}
 
-				// TODO: less than N clicks
+		// 		// TODO: less than N clicks
 
-			}
-		}
-
+		// 	}
+		// }
+		struct Mouse_Input mi[N];
+		mouse_record(mi);
 		//==============================================================
 		// end of MOUSE ================================================
 		//==============================================================
@@ -533,77 +605,98 @@ int main(void)
 		//==============================================================
 		//===================== ANALYSIS ===============================
 		//==============================================================
+
+		analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));		
+		analysis_out_x_coeff_2 = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		analysis_out_y_coeff_2 = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		float L = fill_coefficients(mi, 0);	
+		// float* analysis_x = (float*) malloc((N+1) * sizeof(float));
+		// float* analysis_y = (float*) malloc((N+1) * sizeof(float));
+		// int analysis_count = 0; 
+
+		// for (i = 0; i < N; i++) {
+		// 	if (mi[i].x < 0) break;
+		// 	analysis_x[i] = (float) mi[i].x;
+		// 	analysis_y[i] = (float) mi[i].y;
+		// 	// printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
+		// 	analysis_count++; 
+		// }
+		// analysis_x[analysis_count] = (float) mi[0].x;
+		// analysis_y[analysis_count] = (float) mi[0].y;
+
+		// float L = 0.0;
+
+		// analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		// float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
 		
-		float* analysis_x = (float*) malloc((N+1) * sizeof(float));
-		float* analysis_y = (float*) malloc((N+1) * sizeof(float));
-		int analysis_count = 0; 
+		// analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		// float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
 
-		for (i = 0; i < N; i++) {
-			if (mi[i].x < 0) break;
-			analysis_x[i] = (float) mi[i].x;
-			analysis_y[i] = (float) mi[i].y;
-			// printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
-			analysis_count++; 
-		}
-		analysis_x[analysis_count] = (float) mi[0].x;
-		analysis_y[analysis_count] = (float) mi[0].y;
+		// float* analysis_out_L 		= &L; 
 
-		float L = 0.0;
+		// // th_harmonic = analysis_count;
+		// analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
+		// analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
 
-		float* analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-		float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
-		
-		float* analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
-		float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
+		// // sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
+		// // float threshold = ((*analysis_out_L) * 0.01);
+		// // float error = (*analysis_out_L) - (*analysis_out_L);
+		// // if (error < 0) {
+		// // 	if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
+		// // 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+		// // 		return -1; 
+		// // 	} 
+		// // } else {
+		// // 	if (threshold < error) {
+		// // 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+		// // 		return -1;
+		// // 	}
+		// // }
 
-		float* analysis_out_L 		= &L; 
+		// free(analysis_x); free(analysis_y);
 
-		// th_harmonic = analysis_count;
-		analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
-		analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
-
-		// sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
-		// float threshold = ((*analysis_out_L) * 0.01);
-		// float error = (*analysis_out_L) - (*analysis_out_L);
-		// if (error < 0) {
-		// 	if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
-		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-		// 		return -1; 
-		// 	} 
-		// } else {
-		// 	if (threshold < error) {
-		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
-		// 		return -1;
-		// 	}
+		// for (i = 0; i < (2 * th_harmonic + 1); i++) {
+		// 	printf("analysis_out_x_coeff[%d]: %f\n", i, analysis_out_x_coeff[i]);
 		// }
 
-		free(analysis_x); free(analysis_y);
+		// for (i = 0; i < (2 * th_harmonic + 1); i++) {
+		// 	printf("analysis_out_y_coeff[%d]: %f\n", i, analysis_out_y_coeff[i]);
+		// }
 
-		for (i = 0; i < (2 * th_harmonic + 1); i++) {
-			printf("analysis_out_x_coeff[%d]: %f\n", i, analysis_out_x_coeff[i]);
-		}
-
-		for (i = 0; i < (2 * th_harmonic + 1); i++) {
-			printf("analysis_out_y_coeff[%d]: %f\n", i, analysis_out_y_coeff[i]);
-		}
-
-		printf("analysis_out_L: %f\n", L);
+		// printf("analysis_out_L: %f\n", L);
 
 		//==============================================================
 		// end of ANALYSIS =============================================
 		//==============================================================
 
-		printf("===============================================\n");
-		printf("====================SYNTHESIS==================\n");
-		printf("===============================================\n");
+		// printf("===============================================\n");
+		// printf("====================SYNTHESIS==================\n");
+		// printf("===============================================\n");
 
 		//==============================================================
 		//===================== SYNTHESIS ==============================
 		//==============================================================
 
 		
-		printf("float_to_fix8(analysis_out_x_coeff[%d]) = 0x%x\n", 1, float_to_fix8(analysis_out_x_coeff[1]));
-		printf("float_to_fix8(analysis_out_y_coeff[%d]) = 0x%x\n", 1, float_to_fix8(analysis_out_y_coeff[1]));
+		// printf("float_to_fix8(analysis_out_x_coeff[%d]) = 0x%x\n", 1, float_to_fix8(analysis_out_x_coeff[1]));
+		// printf("float_to_fix8(analysis_out_y_coeff[%d]) = 0x%x\n", 1, float_to_fix8(analysis_out_y_coeff[1]));
+
+		// printing spectrum
+		int amp_x, amp_y;
+		int x_coor_for_spec = 20;
+		char x_text[40] = "x spectrum\0";
+		char y_text[40] = "y spectrum\0";
+		VGA_text(2, 48, x_text);
+		VGA_text(2, 57, y_text);
+		for(i = 1; i <= th_harmonic; i++, x_coor_for_spec+=3) {
+			amp_x = (int)round(sqrt(pow(analysis_out_x_coeff[i], 2) + pow(analysis_out_x_coeff[i+th_harmonic], 2))/5);
+			amp_y = (int)round(sqrt(pow(analysis_out_y_coeff[i], 2) + pow(analysis_out_y_coeff[i+th_harmonic], 2))/5);
+			VGA_line(x_coor_for_spec, 480 - 100, x_coor_for_spec, 480 - 100 - amp_x, colors[6]);
+			VGA_line(x_coor_for_spec, 480 - 30, x_coor_for_spec, 480 - 30 - amp_y, colors[6]);
+		}
+		
+
 		// Writing coefficients to FPGA
 		*pio_reset_write_ptr = 0;
 		*pio_reset_write_ptr = 1;
@@ -642,36 +735,114 @@ int main(void)
 		}
 		// int counter = 0;
 		int left_audio = 0xFFFF, right_audio = 0x6FFF;
+		//// morphing stuff
+		float *deltaStep_x = (float*) calloc ((2 * th_harmonic + 1) , sizeof(float));
+		float *deltaStep_y = (float*) calloc ((2 * th_harmonic + 1) , sizeof(float));
+		float deltaL;
+		int step = 0; // steps for morphing, goes to 30 
+		int morph_steps = 30;
 		while(1) {
-			syn_x_old = syn_x;
-			syn_y_old = syn_y;
+			VGA_box (0, 0, 639, 479, 0x0000);
+			while(syn_t <= L) {
+				syn_x_old = syn_x;
+				syn_y_old = syn_y;
+				
+				syn_x = 0;
+				syn_y = 0;	
+				syn_x += analysis_out_x_coeff[0];
+				syn_y += analysis_out_y_coeff[0];
+				for (i = 1; i <= th_harmonic; i++) {
+					syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
+					syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
+					syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
+					syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
+				}
+				syn_t += 10;
+				VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[6]); // yellow 
+				
+			}
+			syn_t = 0.0;
+			// syn_t += 10;
+			// if(syn_t > L) {
+			// 	syn_t = 0.0;
+			// }
+
+			// redraw spectrum
+			int x_coor_for_spec = 20;
+			char x_text[40] = "x spectrum\0";
+			char y_text[40] = "y spectrum\0";
+			VGA_text(2, 48, x_text);
+			VGA_text(2, 57, y_text);
+			for(i = 1; i <= th_harmonic; i++, x_coor_for_spec+=3) {
+				amp_x = (int)round(sqrt(pow(analysis_out_x_coeff[i], 2) + pow(analysis_out_x_coeff[i+th_harmonic], 2))/5);
+				amp_y = (int)round(sqrt(pow(analysis_out_y_coeff[i], 2) + pow(analysis_out_y_coeff[i+th_harmonic], 2))/5);
+				VGA_line(x_coor_for_spec, 480 - 100, x_coor_for_spec, 480 - 100 - amp_x, colors[6]);
+				VGA_line(x_coor_for_spec, 480 - 30, x_coor_for_spec, 480 - 30 - amp_y, colors[6]);
+			}
 			
-			syn_x = 0;
-			syn_y = 0;	
-			syn_x += analysis_out_x_coeff[0];
-			syn_y += analysis_out_y_coeff[0];
-			for (i = 1; i <= th_harmonic; i++) {
-				syn_x += analysis_out_x_coeff[i]    		   * cos(2.0 * M_PI * i * syn_t/L); // a_n
-				syn_x += analysis_out_x_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // b_n
-				syn_y += analysis_out_y_coeff[i]     		   * cos(2.0 * M_PI * i * syn_t/L); // c_n
-				syn_y += analysis_out_y_coeff[i + th_harmonic] * sin(2.0 * M_PI * i * syn_t/L); // d_n
-			}
-
-			syn_t += 0.1;
-			if(syn_t > L) {
-				syn_t = 0.0;
-			}
-
-			VGA_line((int)syn_x_old, (int)syn_y_old, (int)syn_x, (int)syn_y, colors[6]); // yellow 
 
 			// printf("syn_x = %d, syn_y = %d\n", (int)syn_x, (int)syn_y);
-			if(reset_flag) {
-				reset_flag = 0;
+			if(redraw_flag) {
+				redraw_flag = 0;
 				// clear the screen
 				VGA_box (0, 0, 639, 479, 0x0000);
 				break;
 			}
-		} // end while(1)
+
+			if(morph_flag) {
+				morph_flag = 0; 
+				step = 0;
+				// new mouse input struct 
+				struct Mouse_Input mi_new[N];
+				mouse_record(mi_new);
+				float L_new = fill_coefficients(mi_new, 1);  // later morph distance too
+				deltaL = (L_new - L)/morph_steps;
+				// create a delta array that adds 
+				deltaStep_x[0] = (analysis_out_x_coeff_2[0] - analysis_out_x_coeff[0])/morph_steps;
+				deltaStep_y[0] = (analysis_out_y_coeff_2[0] - analysis_out_y_coeff[0])/morph_steps;
+				for(i = 1; i <= th_harmonic; i++ ) {
+					deltaStep_x[i] = (analysis_out_x_coeff_2[i] - analysis_out_x_coeff[i])/morph_steps;
+					deltaStep_x[i+th_harmonic] = (analysis_out_x_coeff_2[i+th_harmonic] - analysis_out_x_coeff[i+th_harmonic])/morph_steps;
+					deltaStep_y[i] = (analysis_out_y_coeff_2[i] - analysis_out_y_coeff[i])/morph_steps;
+					deltaStep_y[i+th_harmonic] = (analysis_out_y_coeff_2[i+th_harmonic] - analysis_out_y_coeff[i+th_harmonic])/morph_steps;
+				}
+				// increment analysis_out_x_coeff by deltaStep
+			}
+
+			if(step < morph_steps) {
+				analysis_out_x_coeff[0] += deltaStep_x[0];
+				analysis_out_y_coeff[0] += deltaStep_y[0];
+				for(i = 1; i <= th_harmonic; i++ ) {
+					analysis_out_x_coeff[i] += deltaStep_x[i];
+					analysis_out_x_coeff[i+th_harmonic] += deltaStep_x[i+th_harmonic];
+					analysis_out_y_coeff[i] += deltaStep_y[i];
+					analysis_out_y_coeff[i+th_harmonic] += deltaStep_y[i+th_harmonic];
+				}
+				L += deltaL;
+				step++;
+			}
+
+						// Writing coefficients to FPGA
+			*pio_reset_write_ptr = 0;
+			*pio_reset_write_ptr = 1;
+			*pio_reset_write_ptr = 0;
+
+			*pio_wr_en_write_ptr = 0;
+			*pio_wr_addr_write_ptr = 0;
+
+			// i = 1 because audio synthesis has no offsets
+			for(i = 1; i <= th_harmonic; i++) {
+				*pio_a_write_ptr = float_to_fix8(analysis_out_x_coeff[i]);
+				*pio_b_write_ptr = float_to_fix8(analysis_out_x_coeff[i + th_harmonic]);
+				*pio_c_write_ptr = float_to_fix8(analysis_out_y_coeff[i]);
+				*pio_d_write_ptr = float_to_fix8(analysis_out_y_coeff[i + th_harmonic]);
+				*pio_wr_addr_write_ptr = i-1;
+				*pio_wr_en_write_ptr = 1;
+				*pio_wr_en_write_ptr = 0;
+				// printf("float_to_fix8(analysis_out_x_coeff[%d]) = 0x%x\n", i, float_to_fix8(analysis_out_x_coeff[i]));
+				// printf("float_to_fix8(analysis_out_x_coeff[%d+th_harmonic]) = 0x%x\n", i, float_to_fix8(analysis_out_x_coeff[i + th_harmonic]));
+			}
+ 		} // end while(1)
 
 		//==============================================================
 		// end of SYNTHESIS ============================================
@@ -720,7 +891,7 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
 
     // }
     for(i = 0; i < K; i++) {
-        printf("dl[%d] = %f\n", i, l_j[i]);
+        // printf("dl[%d] = %f\n", i, l_j[i]);
     }
     // for(i = 0; i < K; i++) {
     //     printf("al[%d] = %f\n", i, al_j[i]);
@@ -760,8 +931,8 @@ void analysis (float* x, float* y, int K, int n, float** out_coeff, float** out_
     for(i = 0; i < n; i++) {
         coeff[i+1] = a_n[i];
         coeff[i+1+n] = b_n[i];
-		printf("a_n[%d] = %f\n", i, a_n[i]);
-		printf("b_n[%d] = %f\n", i, b_n[i]);
+		// printf("a_n[%d] = %f\n", i, a_n[i]);
+		// printf("b_n[%d] = %f\n", i, b_n[i]);
     }
     
     *out_coeff = coeff;
@@ -1146,4 +1317,176 @@ void VGA_line(int x1, int y1, int x2, int y2, short c) {
 
 		e = e + ((int)dy<<1);
 	}
+}
+
+
+void mouse_record(struct Mouse_Input* mi) {
+		//==============================================================
+		//===================== MOUSE ==================================
+		//==============================================================
+		int fd_mouse, bytes;
+		unsigned char data[3];
+		int mouse_x = 320, mouse_y = 240, mouse_x_old = 320, mouse_y_old = 240;
+		int click_x_new=0, click_y_new=0, click_x_old=0, click_y_old=0;
+		int left = 0; 
+		int right = 0; 
+		int middle;
+		signed char mouse_x_tmp, mouse_y_tmp;
+		// int first_click = 1;
+		const char *pDevice = "/dev/input/mice";
+		// struct Mouse_Input mi[N];
+		int mi_count = 0; 
+		int debounce_left = 1; 
+		int i;
+		
+		// Open Mouse
+		fd_mouse = open(pDevice, O_RDWR);
+		if(fd_mouse == -1)
+		{
+			printf("ERROR Opening %s\n", pDevice);
+			// return -1;
+		}
+
+		// initialize Mouse_Input
+		for (i = 0; i < N; i++) {
+			mi[i].x = -1; mi[i].y = -1;
+		}
+
+		// draw the mouse starting point
+		VGA_circle(320, 240, 1, colors[7]);
+
+		printf("Receiving mouse inputs..\n");
+
+		while (right < 2) { // right == 2 when clicked (signals end of inputs for analysis)
+
+			// Read Mouse     
+			bytes = read(fd_mouse, data, sizeof(data));
+
+			if (bytes > 0)
+			{
+				left = data[0] & 0x1;
+				right = data[0] & 0x2;
+				middle = data[0] & 0x4;
+
+				mouse_x_tmp = data[1];
+				mouse_y_tmp = data[2];
+				// printf("mouse_x_tmp=%d, mouse_y_tmp=%d, left=%d, middle=%d, right=%d, ", mouse_x_tmp, mouse_y_tmp, left, middle, right);
+
+				mouse_x_old = mouse_x;
+				mouse_y_old = mouse_y;
+
+				mouse_x += mouse_x_tmp;
+				if(mouse_x > 639) {
+					mouse_x = 639;
+				}
+				if(mouse_x < 0) {
+					mouse_x = 0;
+				}
+				mouse_y -= mouse_y_tmp;
+				if(mouse_y > 479) {
+					mouse_y = 479;
+				}
+				if(mouse_y < 0) {
+					mouse_y = 0;
+				}
+				// printf("mouse_x=%d, mouse_y=%d, left=%d, middle=%d, right=%d\n",  mouse_x, mouse_y, left, middle, right);
+
+				// printf("mouse_x=%d, mouse_y=%d\n", mouse_x, mouse_y);
+
+				VGA_circle(mouse_x_old, mouse_y_old, 1, colors[10]);
+				VGA_circle(mouse_x, mouse_y, 1, colors[7]);
+				
+				if (left && debounce_left) {
+					debounce_left = 0; 
+
+					click_x_old = click_x_new;
+					click_y_old = click_y_new;
+					click_x_new = mouse_x;
+					click_y_new = mouse_y;
+
+					printf("mouse_x = %d, mouse_y = %d\n", mouse_x, mouse_y);
+
+					// if (mi_count > 0) {
+					// 	if ((mi[mi_count-1].x == mi[mi_count].x) && (mi[mi_count-1].y == mi[mi_count].y)) {
+					// 		mi[mi_count].x = mi[mi_count-1].x++;
+					// 	}
+					// }
+
+					mi[mi_count].x = mouse_x;
+					mi[mi_count].y = mouse_y; 
+					mi_count++;
+
+					printf("mi_count: %d\n", mi_count);
+
+					if(mi_count == 1) {
+						;
+					} else { // red lines 
+						VGA_line(click_x_old, click_y_old, click_x_new, click_y_new, colors[0]);	
+						if (mi_count == N) {
+							VGA_line(click_x_new, click_y_new, mi[0].x, mi[0].y, colors[0]);
+						}
+					}
+
+					if (mi_count == N) break; 
+				} else if (!left) {
+					debounce_left = 1; 
+				}
+
+				// TODO: less than N clicks
+
+			}
+		}
+}
+
+float fill_coefficients (struct Mouse_Input* mi, int morph) {
+		float* analysis_x = (float*) malloc((N+1) * sizeof(float));
+		float* analysis_y = (float*) malloc((N+1) * sizeof(float));
+		int analysis_count = 0; 
+		int i ;
+		for (i = 0; i < N; i++) {
+			if (mi[i].x < 0) break;
+			analysis_x[i] = (float) mi[i].x;
+			analysis_y[i] = (float) mi[i].y;
+			// printf("analysis_x[%d] = %f, analysis_y[%d] = %f\n", i, analysis_x[i], i, analysis_y[i]);
+			analysis_count++; 
+		}
+		analysis_x[analysis_count] = (float) mi[0].x;
+		analysis_y[analysis_count] = (float) mi[0].y;
+
+		float L = 0.0;
+
+		// analysis_out_x_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		float* analysis_out_x_l 	= (float*) malloc(analysis_count * sizeof(float));
+		
+		// analysis_out_y_coeff = (float*) malloc((2 * th_harmonic + 1) * sizeof(float));
+		float* analysis_out_y_l 	= (float*) malloc(analysis_count * sizeof(float));
+
+		float* analysis_out_L 		= &L; 
+
+		// th_harmonic = analysis_count;
+		if(!morph) {
+			analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff, &analysis_out_x_l, analysis_out_L);
+			analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff, &analysis_out_y_l, analysis_out_L);
+		} else {
+			analysis(analysis_x, analysis_y, analysis_count, th_harmonic, &analysis_out_x_coeff_2, &analysis_out_x_l, analysis_out_L);
+			analysis(analysis_y, analysis_x, analysis_count, th_harmonic, &analysis_out_y_coeff_2, &analysis_out_y_l, analysis_out_L);
+		}
+
+		// sanity check : x_L == y_L (allows 1% error) (x_l[i] == y_l[i])
+		// float threshold = ((*analysis_out_L) * 0.01);
+		// float error = (*analysis_out_L) - (*analysis_out_L);
+		// if (error < 0) {
+		// 	if (threshold < (-1 * error)) { // TODO: abs function may not work sometimes? 
+		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+		// 		return -1; 
+		// 	} 
+		// } else {
+		// 	if (threshold < error) {
+		// 		printf("ERROR: x_L != y_L [x_L: %2.8e, y_L: %2.8e]", x_L, y_L);
+		// 		return -1;
+		// 	}
+		// }
+
+		free(analysis_x); free(analysis_y);
+		return L;
 }

@@ -2101,14 +2101,17 @@
         <trigger_in_editor/>
         <trigger_out_editor/>
       </presentation>
-      <trigger CRC="59128B4" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2022/05/07 20:52:54  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
+      <trigger CRC="59128B4" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2022/05/07 20:52:54  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no"/>
         <events use_custom_flow_control="no">
-          <level editor="basic_or" enabled="yes" name="condition1" type="advanced"><power_up enabled="yes">
+          <level editor="basic_or" enabled="yes" name="condition1" type="advanced">
+            <power_up enabled="yes">
               <power_up_expression><![CDATA[alt_reduction(alt_true, {((mbpm('X', 'reset') && variable(1))), (alt_reduction(alt_false, {(mbpm('X', 'Computer_System:The_System|pio_reset_external_connection_export') && variable(1))}))})]]>
               </power_up_expression>
-            </power_up><expression><![CDATA[alt_reduction(alt_or, {((mbpm('R', 'reset') && variable(1))), (alt_reduction(alt_or, {(mbpm('R', 'Computer_System:The_System|pio_reset_external_connection_export') && variable(1))}))})]]>
-            </expression><op_node/>
+            </power_up>
+            <expression><![CDATA[alt_reduction(alt_or, {((mbpm('R', 'reset') && variable(1))), (alt_reduction(alt_or, {(mbpm('R', 'Computer_System:The_System|pio_reset_external_connection_export') && variable(1))}))})]]>
+            </expression>
+            <op_node/>
           </level>
         </events>
         <storage_qualifier_events>
